@@ -22,6 +22,9 @@
 - weighted_multi_market_risk_ratio: `{weighted_multi_market_risk_ratio}`
 - deployable_event_equivalent: `{deployable_event_equivalent}`
 - deployable_event_density: `{deployable_event_density}`
+- active_trading_days: `{active_trading_days}`
+- trade_count: `{trade_count}`
+- avg_trades_per_active_day: `{avg_trades_per_active_day}`
 
 ## 3. 收益曲线评估
 - all_time_shape: `{pnl_all_time_shape}`
@@ -43,7 +46,9 @@
 - raw_score: `{raw_score}`
 - anchored_score: `{anchored_score}`
 - delta_vs_anchor_60: `{delta_vs_anchor_60}`
+- delta_vs_anchor_raw: `{delta_vs_anchor_raw}`
 - final_score: `{final_score}`
+- decision_score_basis: `{decision_score_basis}`
 - decision: `{decision}`
 - anchor_version: `{anchor_version}`
 - anchor_account: `{anchor_account}`

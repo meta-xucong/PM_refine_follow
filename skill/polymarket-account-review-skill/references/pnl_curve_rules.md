@@ -47,22 +47,22 @@ Suggested baseline thresholds:
 ## 4) Score Table
 
 All-time window:
-- `smooth_up`: `+10..+15`
-- `volatile_up`: `+4..+9`
-- `flat`: `0..+3`
-- `down`: `-8..-15`
+- `smooth_up`: `+12`
+- `volatile_up`: `+6`
+- `flat`: `+1`
+- `down`: `-10`
 
 30d window:
-- `smooth_up` or clear `up`: `+4..+8`
-- `flat`: `0..+2`
-- `down`: `-4..-8`
+- `smooth_up` or clear `up`: `+6`
+- `flat`: `+1`
+- `down`: `-6`
 
 7d window:
-- `up`: `+1..+4`
+- `up`: `+2`
 - `flat`: `0..+1`
-- `down`: `-1..-4`
+- `down`: `-2`
 
-Implementation may assign one deterministic integer within each range.
+Implementation scales the summed 3-window score by `1.35` and clamps to `[-22, +22]` to increase PnL impact vs pure structure-only scoring.
 
 ## 5) Interpretation Tags
 

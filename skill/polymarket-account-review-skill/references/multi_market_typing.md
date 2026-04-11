@@ -34,6 +34,7 @@ Material overlap defaults:
 - overlap duration >= `3` minutes
 - overlapping notional >= max(`$10`, `10%` of event BUY notional)
 - concurrent active legs >= `2`
+- per-leg material floor: max(`$5`, `3%` of event BUY notional)
 
 Allowed transient overlap (do not auto-mark dirty):
 - very short overlap
@@ -49,6 +50,10 @@ For `exclusive`:
 For `nested_deadline`:
 - `nested_concurrent_ladder`: concurrent material overlap of multiple deadline legs
 - `nested_sequential_roll`: sequential roll from near deadline to further deadline
+
+Implementation thresholds:
+- `exclusive_concurrent_multi_leg` if concurrent ratio >= `22%` or overlap-time ratio >= `18%`
+- `nested_concurrent_ladder` if concurrent ratio >= `35%` or overlap-time ratio >= `30%`
 
 ## 4) Risk Interpretation
 

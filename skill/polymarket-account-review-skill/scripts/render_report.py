@@ -66,6 +66,9 @@ def assumptions_zh(items: list[str]) -> list[str]:
         "No matched SELL inventory found; holding-time metrics unavailable": "未匹配到可用 SELL 库存，持仓时长指标不可用",
         "--account omitted; auto-selected only account in CSV": "未提供 --account，已自动选择 CSV 中唯一账户",
         "Hard exclusion triggered; decision forced to not_recommended": "触发硬风控排除规则，结论被强制为不值得跟",
+        "API summary missing/incomplete and live fallback disabled": "API 汇总缺失或不完整，且已禁用分析阶段在线兜底拉取",
+        "API summary missing/incomplete; fetched live fallback during analysis": "API 汇总缺失或不完整，分析阶段已在线兜底补拉",
+        "API summary missing/incomplete; live fallback failed": "API 汇总缺失或不完整，分析阶段在线兜底拉取失败",
     }
     return [mapping.get(x, x) for x in items]
 
@@ -167,6 +170,9 @@ def render(template: str, data: dict, lang: str) -> str:
         "weighted_multi_market_risk_ratio": fmt_pct(metrics.get("weighted_multi_market_risk_ratio")),
         "deployable_event_equivalent": fmt_num(metrics.get("deployable_event_equivalent")),
         "deployable_event_density": fmt_num(metrics.get("deployable_event_density")),
+        "active_trading_days": fmt_num(metrics.get("active_trading_days")),
+        "trade_count": fmt_num(metrics.get("trade_count")),
+        "avg_trades_per_active_day": fmt_num(metrics.get("avg_trades_per_active_day")),
         "pnl_all_time_shape": shape_zh((pnl.get("all_time") or {}).get("shape", "unknown")) if is_zh else (pnl.get("all_time") or {}).get("shape", "unknown"),
         "pnl_all_time_score": fmt_num((pnl.get("all_time") or {}).get("score")),
         "pnl_30d_shape": shape_zh((pnl.get("d30") or {}).get("shape", "unknown")) if is_zh else (pnl.get("d30") or {}).get("shape", "unknown"),
@@ -184,7 +190,9 @@ def render(template: str, data: dict, lang: str) -> str:
         "raw_score": fmt_num(data.get("raw_score")),
         "anchored_score": fmt_num(data.get("anchored_score")),
         "delta_vs_anchor_60": fmt_num(data.get("delta_vs_anchor_60")),
+        "delta_vs_anchor_raw": fmt_num(data.get("delta_vs_anchor_raw")),
         "final_score": fmt_num(data.get("final_score")),
+        "decision_score_basis": fmt_num(score.get("decision_score_basis")),
         "decision": decision_zh(data.get("decision")) if is_zh else data.get("decision"),
         "anchor_version": (data.get("anchor_context") or {}).get("anchor_version", "none"),
         "anchor_account": (data.get("anchor_context") or {}).get("anchor_account", "none"),

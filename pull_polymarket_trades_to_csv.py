@@ -4,6 +4,7 @@ import json
 import os
 import re
 import socket
+import subprocess
 import sys
 import time
 import urllib.error
@@ -378,6 +379,59 @@ def read_csv_rows(path: str) -> list[dict]:
     return rows
 
 
+def fetch_account_summary_via_skill_script(account: dict, output_dir: str, summary_cfg: dict) -> str:
+    summary_subdir = str(summary_cfg.get("output_subdir", "account_summaries"))
+    summary_dir = os.path.join(output_dir, summary_subdir)
+    os.makedirs(summary_dir, exist_ok=True)
+
+    address = account["address"].lower()
+    summary_path = os.path.join(summary_dir, f"account_summary_{address}.json")
+    skip_existing = bool(summary_cfg.get("skip_existing", True))
+    if skip_existing and os.path.exists(summary_path):
+        return summary_path
+
+    default_script = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "skill",
+        "polymarket-account-review-skill",
+        "scripts",
+        "fetch_polymarket_summary.py",
+    )
+    script_path = str(summary_cfg.get("script_path") or default_script)
+    if not os.path.exists(script_path):
+        raise FileNotFoundError(f"Summary fetch script not found: {script_path}")
+
+    cmd = [
+        sys.executable,
+        script_path,
+        "--account",
+        address,
+        "--output",
+        summary_path,
+        "--timeout",
+        str(int(summary_cfg.get("timeout_seconds", 30))),
+        "--retries",
+        str(int(summary_cfg.get("max_retries", 4))),
+        "--page-limit",
+        str(int(summary_cfg.get("page_limit", 500))),
+        "--max-closed-records",
+        str(int(summary_cfg.get("max_closed_records", 5000))),
+        "--max-open-records",
+        str(int(summary_cfg.get("max_open_records", 5000))),
+    ]
+    proc = subprocess.run(cmd, capture_output=True, text=True)
+    if proc.returncode != 0:
+        raise RuntimeError(
+            "Summary fetch failed:\n"
+            + " ".join(cmd)
+            + "\nSTDOUT:\n"
+            + (proc.stdout or "")
+            + "\nSTDERR:\n"
+            + (proc.stderr or "")
+        )
+    return summary_path
+
+
 def main() -> None:
     config_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_CONFIG_PATH
     if not os.path.exists(config_path):
@@ -401,6 +455,8 @@ def main() -> None:
     req_cfg = cfg.get("request", {}) or {}
     continue_on_account_error = bool(req_cfg.get("continue_on_account_error", True))
     high_frequency_flag_text = str(req_cfg.get("high_frequency_flag_text", "超高频账号，不宜跟单"))
+    summary_cfg = cfg.get("summary_fetch", {}) or {}
+    summary_enabled = bool(summary_cfg.get("enabled", True))
 
     print(f"Accounts: {len(accounts)}")
     print(f"Time range: {start_ts} -> {end_ts}")
@@ -408,6 +464,8 @@ def main() -> None:
     all_accounts_rows = []
     failed_accounts = []
     high_frequency_accounts = []
+    summary_failed_accounts = []
+    summary_success_count = 0
     merged_path = os.path.join(output_dir, merged_file)
 
     for account in accounts:
@@ -421,6 +479,20 @@ def main() -> None:
             print(f"Skip existing account file: {out_path}")
             all_accounts_rows.extend(read_csv_rows(out_path))
             flush_merged_snapshot(all_accounts_rows, merged_path)
+            if summary_enabled:
+                try:
+                    summary_path = fetch_account_summary_via_skill_script(account, output_dir, summary_cfg)
+                    summary_success_count += 1
+                    print(f"Summary ready for {account['name']} -> {summary_path}")
+                except Exception as summary_err:
+                    summary_failed_accounts.append(
+                        {
+                            "name": account["name"],
+                            "address": account["address"],
+                            "error": str(summary_err),
+                        }
+                    )
+                    print(f"Summary fetch failed {account['name']} ({account['address']}): {summary_err}")
             continue
 
         try:
@@ -461,6 +533,21 @@ def main() -> None:
             flush_merged_snapshot(all_accounts_rows, merged_path)
             print(f"Updated merged snapshot -> {merged_path}")
             continue
+        finally:
+            if summary_enabled:
+                try:
+                    summary_path = fetch_account_summary_via_skill_script(account, output_dir, summary_cfg)
+                    summary_success_count += 1
+                    print(f"Summary ready for {account['name']} -> {summary_path}")
+                except Exception as summary_err:
+                    summary_failed_accounts.append(
+                        {
+                            "name": account["name"],
+                            "address": account["address"],
+                            "error": str(summary_err),
+                        }
+                    )
+                    print(f"Summary fetch failed {account['name']} ({account['address']}): {summary_err}")
 
     flush_merged_snapshot(all_accounts_rows, merged_path)
     print(f"\nSaved merged {len(all_accounts_rows)} rows to {merged_path}")
@@ -472,6 +559,12 @@ def main() -> None:
         print("\nFailed accounts summary:")
         for item in failed_accounts:
             print(f"- {item['name']} {item['address']}: {item['error']}")
+    if summary_enabled:
+        print(f"\nAccount summary files ready: {summary_success_count}")
+        if summary_failed_accounts:
+            print("\nAccount summary fetch failures:")
+            for item in summary_failed_accounts:
+                print(f"- {item['name']} {item['address']}: {item['error']}")
 
 
 if __name__ == "__main__":

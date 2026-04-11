@@ -172,7 +172,8 @@ def collect_window_candidates(group_rows: list[dict[str, Any]], require_multi_co
         sell_usdc = sum(x["usdcSize"] for x in sell_rows)
         if buy_usdc < 10 or sell_usdc < 10:
             continue
-        if min(buy_usdc, sell_usdc) / max(buy_usdc, sell_usdc) < 0.2:
+        balance = min(buy_usdc, sell_usdc) / max(buy_usdc, sell_usdc)
+        if balance < 0.2:
             continue
 
         cond_count = len({x["conditionId"] for x in window if x["conditionId"]})
@@ -194,13 +195,15 @@ def collect_window_candidates(group_rows: list[dict[str, Any]], require_multi_co
                 "end_ts": window[-1]["timestamp"],
                 "buy_usdc": buy_usdc,
                 "sell_usdc": sell_usdc,
+                "balance_ratio": balance,
                 "buy_count": len(buy_rows),
                 "sell_count": len(sell_rows),
                 "first_sell_lag_sec": max(0, first_sell_ts - first_buy_ts),
                 "window_span_sec": span,
                 "buy_max_trade_share": buy_max_share,
                 "sell_max_trade_share": sell_max_share,
-                "turnover_ratio": (buy_usdc + sell_usdc) / max(buy_usdc, sell_usdc, 1e-9),
+                # Balanced two-way turnover in the window; avoid always-true ratio definitions.
+                "turnover_ratio": min(buy_usdc, sell_usdc) / max(buy_usdc, sell_usdc, 1e-9),
                 "row_ids": {x["row_id"] for x in window},
                 "eventSlugs": sorted({x["eventSlug"] for x in window if x["eventSlug"]}),
             }
@@ -225,6 +228,7 @@ def fast_metrics(rows: list[dict[str, Any]], total_buy_usdc: float, total_sell_u
     noncopyable: list[dict[str, Any]] = []
     for c in token_candidates:
         hits = 0
+        speed_signal = c["first_sell_lag_sec"] < 120 or c["window_span_sec"] < 300
         if c["first_sell_lag_sec"] < 120:
             hits += 1
         if c["window_span_sec"] < 300:
@@ -237,7 +241,7 @@ def fast_metrics(rows: list[dict[str, Any]], total_buy_usdc: float, total_sell_u
             hits += 1
         if token_count[c["token_key"]] >= 2:
             hits += 1
-        if hits >= 2:
+        if speed_signal and hits >= 3:
             cc = dict(c)
             cc["rule_hits"] = hits
             noncopyable.append(cc)
@@ -346,6 +350,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
     rebalance_by_event: Counter[str] = Counter(c["eventSlug"] for c in rebalance_candidates)
     relation_buy_sum: Counter[str] = Counter()
     relation_concurrent_buy: Counter[str] = Counter()
+    relation_overlap_seconds: Counter[str] = Counter()
+    relation_total_seconds: Counter[str] = Counter()
 
     exclusive_switch_count = 0
     nested_roll_count = 0
@@ -359,8 +365,11 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
         conditions = {r["conditionId"] for r in event_rows_sorted if r["conditionId"]}
         relation_type = classify_relation_type(event_rows_sorted) if len(conditions) >= 2 else "single_market"
         relation_buy_sum[relation_type] += event_buy_usdc
+        material_overlap_floor = max(10.0, event_buy_usdc * 0.10)
+        leg_material_floor = max(5.0, event_buy_usdc * 0.03)
 
         net_size: dict[str, float] = defaultdict(float)
+        net_notional: dict[str, float] = defaultdict(float)
         max_legs = 0
         concurrent_buy_usdc = 0.0
         concurrent_seconds = 0
@@ -372,18 +381,22 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
         for row in event_rows_sorted:
             ts = row["timestamp"]
             active_before = [c for c, s in net_size.items() if abs(s) > 1e-9]
-            if len(active_before) >= 2:
+            material_before = [c for c in active_before if abs(net_notional.get(c, 0.0)) >= leg_material_floor]
+            if len(material_before) >= 2:
                 concurrent_seconds += max(0, ts - last_ts)
 
             sign = 1.0 if row["side"] == "BUY" else -1.0
-            net_size[row["conditionId"]] += sign * max(row["size"], 0.0)
+            cond = row["conditionId"] or "_unknown_condition"
+            net_size[cond] += sign * max(row["size"], 0.0)
+            net_notional[cond] += sign * max(row["usdcSize"], 0.0)
             active_after = [c for c, s in net_size.items() if abs(s) > 1e-9]
-            max_legs = max(max_legs, len(active_after))
+            material_after = [c for c in active_after if abs(net_notional.get(c, 0.0)) >= leg_material_floor]
+            max_legs = max(max_legs, len(material_after))
 
-            if len(active_after) >= 2 and row["side"] == "BUY":
+            if len(material_after) >= 2 and row["side"] == "BUY":
                 concurrent_buy_usdc += row["usdcSize"]
 
-            current_single = active_after[0] if len(active_after) == 1 else None
+            current_single = material_after[0] if len(material_after) == 1 else None
             if prev_single_leg and current_single and current_single != prev_single_leg:
                 switch_count += 1
             if current_single:
@@ -391,9 +404,14 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
             last_ts = ts
 
         total_event_span = max(1, event_rows_sorted[-1]["timestamp"] - event_rows_sorted[0]["timestamp"])
+        if concurrent_seconds < 180 and concurrent_buy_usdc < material_overlap_floor:
+            concurrent_seconds = 0
+            concurrent_buy_usdc = 0.0
         concurrent_ratio = safe_ratio(concurrent_buy_usdc, event_buy_usdc) or 0.0
         overlap_time_ratio = concurrent_seconds / total_event_span
         relation_concurrent_buy[relation_type] += concurrent_buy_usdc
+        relation_overlap_seconds[relation_type] += concurrent_seconds
+        relation_total_seconds[relation_type] += total_event_span
 
         event_dual_side = any(r["conditionId"] in dual_side_conditions for r in event_rows_sorted)
         event_noncopyable_buy = sum(r["usdcSize"] for r in buy_rows if r["row_id"] in noncopy_rows)
@@ -401,13 +419,13 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
 
         subtype = "single_leg"
         if relation_type == "exclusive":
-            if concurrent_ratio >= 0.20 or overlap_time_ratio >= 0.15 or max_legs >= 3:
+            if concurrent_ratio >= 0.22 or overlap_time_ratio >= 0.18 or max_legs >= 3:
                 subtype = "exclusive_concurrent_multi_leg"
             elif switch_count > 0:
                 subtype = "exclusive_sequential_switch"
                 exclusive_switch_count += switch_count
         elif relation_type == "nested_deadline":
-            if concurrent_ratio >= 0.25 or overlap_time_ratio >= 0.20 or max_legs >= 3:
+            if concurrent_ratio >= 0.35 or overlap_time_ratio >= 0.30 or max_legs >= 4:
                 subtype = "nested_concurrent_ladder"
             elif switch_count > 0:
                 subtype = "nested_sequential_roll"
@@ -416,7 +434,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
             subtype = "independent_multi_market"
 
         rebalance_hits = rebalance_by_event[event_slug]
-        if subtype in {"exclusive_concurrent_multi_leg", "nested_concurrent_ladder"} or event_noncopyable_buy_ratio > 0.20 or event_dual_side or rebalance_hits >= 3:
+        material_concurrent = concurrent_buy_usdc >= material_overlap_floor or concurrent_seconds >= 180
+        if (subtype in {"exclusive_concurrent_multi_leg", "nested_concurrent_ladder"} and material_concurrent) or event_noncopyable_buy_ratio > 0.25 or event_dual_side or rebalance_hits >= 4:
             classification = "dirty"
         elif subtype in {"exclusive_sequential_switch", "nested_sequential_roll", "independent_multi_market"} or rebalance_hits > 0:
             classification = "semiclean"
@@ -428,6 +447,7 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
             "relation_type": relation_type,
             "event_subtype": subtype,
             "classification": classification,
+            "distinct_conditions": len(conditions),
             "event_buy_usdc": round(event_buy_usdc, 6),
             "concurrent_buy_usdc": round(concurrent_buy_usdc, 6),
             "concurrent_ratio": round(concurrent_ratio, 6),
@@ -460,6 +480,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
 
     exclusive_concurrent_ratio = safe_ratio(relation_concurrent_buy["exclusive"], relation_buy_sum["exclusive"]) if relation_buy_sum["exclusive"] > 0 else 0.0
     nested_concurrent_ratio = safe_ratio(relation_concurrent_buy["nested_deadline"], relation_buy_sum["nested_deadline"]) if relation_buy_sum["nested_deadline"] > 0 else 0.0
+    exclusive_overlap_ratio = safe_ratio(relation_overlap_seconds["exclusive"], relation_total_seconds["exclusive"]) if relation_total_seconds["exclusive"] > 0 else 0.0
+    nested_overlap_ratio = safe_ratio(relation_overlap_seconds["nested_deadline"], relation_total_seconds["nested_deadline"]) if relation_total_seconds["nested_deadline"] > 0 else 0.0
 
     weighted_multi_market_risk_ratio = (
         1.00 * (exclusive_buy_ratio or 0.0) * max(0.35, exclusive_concurrent_ratio or 0.0)
@@ -475,6 +497,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
         "unknown_multi_market_buy_ratio": unknown_buy_ratio,
         "exclusive_concurrent_leg_ratio": exclusive_concurrent_ratio,
         "nested_concurrent_leg_ratio": nested_concurrent_ratio,
+        "exclusive_overlap_time_ratio": exclusive_overlap_ratio,
+        "nested_overlap_time_ratio": nested_overlap_ratio,
         "weighted_multi_market_risk_ratio": weighted_multi_market_risk_ratio,
         "exclusive_sequential_switch_count": int(exclusive_switch_count),
         "nested_sequential_roll_count": int(nested_roll_count),
@@ -557,6 +581,33 @@ def holding_metrics(rows: list[dict[str, Any]], total_sell_usdc: float) -> dict[
     }
 
 
+def activity_metrics(rows: list[dict[str, Any]]) -> dict[str, float]:
+    if not rows:
+        return {
+            "trade_count": 0.0,
+            "active_trading_days": 0.0,
+            "window_days": 0.0,
+            "active_day_ratio": 0.0,
+            "avg_trades_per_active_day": 0.0,
+        }
+
+    unique_days = {
+        datetime.fromtimestamp(r["timestamp"], tz=timezone.utc).date().isoformat()
+        for r in rows
+    }
+    active_days = len(unique_days)
+    span_days = ((rows[-1]["timestamp"] - rows[0]["timestamp"]) / 86400.0) + 1.0
+    window_days = max(1.0, span_days)
+
+    return {
+        "trade_count": float(len(rows)),
+        "active_trading_days": float(active_days),
+        "window_days": float(window_days),
+        "active_day_ratio": active_days / max(window_days, 1e-9),
+        "avg_trades_per_active_day": len(rows) / max(active_days, 1),
+    }
+
+
 def tokenize(text: str) -> list[str]:
     tokens = re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{2,}", text.lower())
     return [t for t in tokens if t not in STOPWORDS]
@@ -622,6 +673,67 @@ def load_api_summary(path: str | None) -> dict[str, Any] | None:
         return json.load(f)
 
 
+def api_summary_has_core_fields(api_summary: dict[str, Any] | None) -> bool:
+    if not isinstance(api_summary, dict):
+        return False
+    if not isinstance(api_summary.get("summary"), dict):
+        return False
+    if not isinstance(api_summary.get("pnl_curve"), dict):
+        return False
+    return True
+
+
+def fetch_api_summary_live(
+    account: str,
+    timeout_seconds: int,
+    retries: int,
+) -> dict[str, Any] | None:
+    try:
+        from fetch_polymarket_summary import FetchConfig, fetch_account_summary
+
+        cfg = FetchConfig(
+            timeout_seconds=max(5, int(timeout_seconds)),
+            max_retries=max(0, int(retries)),
+        )
+        return fetch_account_summary(
+            account=account.lower(),
+            page_limit=500,
+            max_closed_records=5000,
+            max_open_records=5000,
+            cfg=cfg,
+        )
+    except Exception:
+        return None
+
+
+def ensure_api_summary(
+    current_api_summary: dict[str, Any] | None,
+    account: str,
+    allow_live_fallback: bool,
+    live_timeout: int,
+    live_retries: int,
+    assumptions: list[str],
+) -> dict[str, Any] | None:
+    if api_summary_has_core_fields(current_api_summary):
+        return current_api_summary
+
+    if not allow_live_fallback:
+        assumptions.append("API summary missing/incomplete and live fallback disabled")
+        return current_api_summary
+
+    live = fetch_api_summary_live(
+        account=account,
+        timeout_seconds=live_timeout,
+        retries=live_retries,
+    )
+    if api_summary_has_core_fields(live):
+        assumptions.append("API summary missing/incomplete; fetched live fallback during analysis")
+        return live
+
+    assumptions.append("API summary missing/incomplete; live fallback failed")
+    return current_api_summary
+
+
 def load_anchor_config(path: str | None) -> dict[str, Any] | None:
     if not path:
         return None
@@ -651,89 +763,130 @@ def compute_scores(
 
     deployable = metrics.get("deployable_event_equivalent") or 0.0
     density = metrics.get("deployable_event_density") or 0.0
+    event_rebalance_ratio = metrics.get("event_rebalance_20m_event_ratio") or 0.0
+
+    trade_count = metrics.get("trade_count") or 0.0
+    active_days = metrics.get("active_trading_days") or 0.0
+    active_day_ratio = metrics.get("active_day_ratio") or 0.0
+    avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
 
     copyability = 35.0
-    copyability -= dual_side * 40
-    copyability -= noncopy_buy * 45
-    copyability -= excl_conc * 55
-    copyability -= nested_conc * 35
-    copyability -= weighted_risk * 25
+    copyability -= dual_side * 30
+    copyability -= noncopy_buy * 34
+    copyability -= excl_conc * 42
+    copyability -= nested_conc * 18
+    copyability -= weighted_risk * 18
+    if noncopy_sell > 0.30:
+        copyability -= (noncopy_sell - 0.30) * 10
     copyability = clamp(copyability, 0, 35)
 
-    deployability = min(12.0, deployable * 1.6) + min(8.0, density * 30.0)
+    deployability = min(11.0, deployable * 1.5) + min(6.0, density * 24.0)
+    deployability += min(3.0, active_days * 0.3)
+    deployability += min(2.0, max(0.0, avg_trades_per_active_day - 1.0) * 0.25)
     deployability = clamp(deployability, 0, 20)
 
     structure = 20.0
-    structure -= excl_conc * 50
-    structure -= nested_conc * 35
-    structure -= min(5.0, (metrics.get("exclusive_sequential_switch_count") or 0) * 0.25)
-    structure -= min(4.0, (metrics.get("nested_sequential_roll_count") or 0) * 0.2)
-    structure -= (metrics.get("unknown_multi_market_buy_ratio") or 0.0) * 10
+    structure -= excl_conc * 40
+    structure -= nested_conc * 22
+    structure -= min(4.0, (metrics.get("exclusive_sequential_switch_count") or 0) * 0.18)
+    structure -= min(3.0, (metrics.get("nested_sequential_roll_count") or 0) * 0.12)
+    structure -= (metrics.get("unknown_multi_market_buy_ratio") or 0.0) * 8
+    if event_rebalance_ratio > 0.25:
+        structure -= 2.5
     structure = clamp(structure, 0, 20)
 
     pnl_all = 0
     pnl_30 = 0
     pnl_7 = 0
     pnl_tag = "unknown"
+    pnl_shape_all = "unknown"
+    pnl_shape_30 = "unknown"
+    pnl_shape_7 = "unknown"
     if api_summary and isinstance(api_summary.get("pnl_curve"), dict):
         pnl = api_summary["pnl_curve"]
-        pnl_all = to_int((pnl.get("all_time") or {}).get("score"), 0)
-        pnl_30 = to_int((pnl.get("d30") or {}).get("score"), 0)
-        pnl_7 = to_int((pnl.get("d7") or {}).get("score"), 0)
+        all_node = pnl.get("all_time") or {}
+        d30_node = pnl.get("d30") or {}
+        d7_node = pnl.get("d7") or {}
+        pnl_all = to_int(all_node.get("score"), 0)
+        pnl_30 = to_int(d30_node.get("score"), 0)
+        pnl_7 = to_int(d7_node.get("score"), 0)
+        pnl_shape_all = str(all_node.get("shape") or "unknown")
+        pnl_shape_30 = str(d30_node.get("shape") or "unknown")
+        pnl_shape_7 = str(d7_node.get("shape") or "unknown")
         pnl_tag = str(pnl.get("summary_tag") or "unknown")
     else:
         assumptions.append("API summary missing; PnL curve contribution set to neutral")
 
-    pnl_score = clamp(float(pnl_all + pnl_30 + pnl_7), -15, 15)
+    available_windows = sum(
+        1 for shape in [pnl_shape_all, pnl_shape_30, pnl_shape_7] if shape not in {"unknown", "insufficient_data"}
+    )
+    pnl_confidence = {3: 1.0, 2: 0.75, 1: 0.45}.get(available_windows, 0.0)
+    pnl_score_raw = float(pnl_all + pnl_30 + pnl_7)
+    pnl_score = clamp(pnl_score_raw * 1.35 * pnl_confidence, -22, 22)
 
     risk_penalty = 0.0
-    if excl_conc > 0.35:
+    if excl_conc > 0.45:
+        risk_penalty -= 10
+    if nested_conc > 0.60 and event_rebalance_ratio >= 0.20:
         risk_penalty -= 8
-    if nested_conc > 0.40 and (metrics.get("event_rebalance_20m_event_ratio") or 0) >= 0.15:
-        risk_penalty -= 6
-    if weighted_risk > 0.50 and (excl_conc > 0.20 or nested_conc > 0.25):
-        risk_penalty -= 6
-    if noncopy_buy > 0.20:
-        risk_penalty -= 5
-    if noncopy_sell > 0.25:
-        risk_penalty -= 5
-    if noncopy_token > 0.20:
+    if nested_conc > 0.55:
         risk_penalty -= 4
-    if dual_side > 0.40:
-        risk_penalty -= 5
-    if dual_side_1h > 0.20:
+    if nested_conc > 0.75:
+        risk_penalty -= 3
+    if weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35):
+        risk_penalty -= 8
+    if noncopy_buy > 0.30:
+        risk_penalty -= 6
+    if noncopy_sell > 0.45:
         risk_penalty -= 4
-    risk_penalty = clamp(risk_penalty, -20, 0)
+    if noncopy_sell > 0.65:
+        risk_penalty -= 3
+    if noncopy_token > 0.40:
+        risk_penalty -= 3
+    if dual_side > 0.45:
+        risk_penalty -= 6
+    if dual_side_1h > 0.25:
+        risk_penalty -= 5
+    if trade_count < 40 or active_days < 5:
+        risk_penalty -= 6
+    elif trade_count < 70 or active_days < 8:
+        risk_penalty -= 3
+    if active_day_ratio < 0.20:
+        risk_penalty -= 4
+    elif active_day_ratio < 0.30:
+        risk_penalty -= 2
+    risk_penalty = clamp(risk_penalty, -30, 0)
 
     concentration_penalty = 0.0
     if (metrics.get("top1_event_buy_ratio") or 0) > 0.50 and deployable < 5:
-        concentration_penalty += 5
+        concentration_penalty += 6
     if (metrics.get("top3_event_buy_ratio") or 0) > 0.80 and deployable < 8:
-        concentration_penalty += 5
+        concentration_penalty += 6
+    if (metrics.get("top1_event_buy_ratio") or 0) > 0.65 and deployable < 8:
+        concentration_penalty += 3
 
     raw_before_cap = copyability + deployability + structure + pnl_score + risk_penalty - concentration_penalty
     raw_before_cap = clamp(raw_before_cap, 0, 100)
 
     low_freq_cap = None
-    if deployable < 3 or density < 0.10:
-        low_freq_cap = 55
-    elif deployable < 5 or density < 0.17:
-        low_freq_cap = 62
-    elif deployable < 8 or density < 0.26:
-        low_freq_cap = 70
+    if deployable < 3 or density < 0.10 or active_days < 4 or trade_count < 40:
+        low_freq_cap = 50
+    elif deployable < 5 or density < 0.17 or active_days < 8 or trade_count < 100:
+        low_freq_cap = 58
+    elif deployable < 8 or density < 0.26 or active_days < 12 or trade_count < 180:
+        low_freq_cap = 66
 
     raw_score = min(raw_before_cap, low_freq_cap) if low_freq_cap is not None else raw_before_cap
     raw_score = round(clamp(raw_score, 0, 100), 2)
 
     hard_exclusion = (
-        excl_conc > 0.35
-        or (nested_conc > 0.40 and (metrics.get("event_rebalance_20m_event_ratio") or 0) >= 0.15)
-        or (weighted_risk > 0.50 and (excl_conc > 0.20 or nested_conc > 0.25))
-        or noncopy_buy > 0.20
-        or noncopy_sell > 0.25
-        or noncopy_token > 0.20
-        or dual_side > 0.40
-        or dual_side_1h > 0.20
+        excl_conc > 0.45
+        or (nested_conc > 0.60 and event_rebalance_ratio >= 0.20)
+        or (weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35))
+        or noncopy_buy > 0.30
+        or noncopy_sell > 0.70
+        or dual_side > 0.45
+        or dual_side_1h > 0.25
     )
     if hard_exclusion:
         assumptions.append("Hard exclusion triggered; decision forced to not_recommended")
@@ -742,6 +895,7 @@ def compute_scores(
     anchor_target = 60.0
     anchor_version = "none"
     anchor_account = None
+    anchor_raw_base = None
     anchor_enabled = False
     if anchor_cfg:
         anchor_enabled = True
@@ -749,13 +903,14 @@ def compute_scores(
         anchor_target = float(anchor_cfg.get("target_anchor_score") or 60.0)
         anchor_version = str(anchor_cfg.get("anchor_version") or "anchor_v1")
         anchor_account = anchor_cfg.get("anchor_account")
+        anchor_raw_base = anchor_cfg.get("raw_base_score")
 
     anchored_score = round(clamp(raw_score + anchor_offset, 0, 100), 2)
-    final_score = anchored_score
+    final_score = raw_score
 
-    if anchored_score >= 75 and not hard_exclusion:
+    if final_score >= 75 and not hard_exclusion:
         decision = "relative_copyable"
-    elif anchored_score >= 60 and not hard_exclusion:
+    elif final_score >= 60 and not hard_exclusion:
         decision = "selective_copying_only"
     else:
         decision = "not_recommended"
@@ -765,11 +920,18 @@ def compute_scores(
         "deployability_score": round(deployability, 2),
         "multi_market_structure_score": round(structure, 2),
         "pnl_curve_stability_score": round(pnl_score, 2),
+        "pnl_confidence": round(pnl_confidence, 3),
+        "pnl_windows_available": int(available_windows),
         "risk_penalty_adjustment": round(risk_penalty, 2),
         "concentration_penalty": round(concentration_penalty, 2),
         "low_frequency_cap": low_freq_cap,
+        "active_trading_days": round(active_days, 3),
+        "trade_count": round(trade_count, 3),
+        "active_day_ratio": round(active_day_ratio, 6),
+        "avg_trades_per_active_day": round(avg_trades_per_active_day, 6),
         "raw_before_cap": round(raw_before_cap, 2),
         "pnl_tag": pnl_tag,
+        "decision_score_basis": "raw_score",
         "anchor_offset": round(anchor_offset, 6),
         "anchor_target_score": anchor_target,
         "anchor_enabled": anchor_enabled,
@@ -781,6 +943,7 @@ def compute_scores(
         "anchor_account": anchor_account,
         "anchor_target_score": anchor_target,
         "anchor_offset": round(anchor_offset, 6),
+        "anchor_raw_base_score": anchor_raw_base,
     }
     return breakdown, raw_score, anchored_score, decision, assumptions, anchor_context
 
@@ -844,6 +1007,7 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
     reb_m, rebalance_candidates = event_rebalance_metrics(rows, total_buy_usdc, total_sell_usdc)
     struct_m, event_records, event_buy_by_slug = event_structure_metrics(rows, dual_side_conditions, noncopy_rows, rebalance_candidates, total_buy_usdc)
     hold_m = holding_metrics(rows, total_sell_usdc)
+    act_m = activity_metrics(rows)
 
     metrics: dict[str, Any] = {}
     metrics.update(dual_m)
@@ -851,8 +1015,17 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
     metrics.update(reb_m)
     metrics.update(struct_m)
     metrics.update(hold_m)
+    metrics.update(act_m)
 
     api_summary = load_api_summary(args.api_summary)
+    api_summary = ensure_api_summary(
+        current_api_summary=api_summary,
+        account=account,
+        allow_live_fallback=bool(args.allow_live_api_fallback),
+        live_timeout=int(args.live_api_timeout),
+        live_retries=int(args.live_api_retries),
+        assumptions=assumptions,
+    )
     anchor_cfg = None if args.disable_anchor else load_anchor_config(args.anchor_file)
     (
         breakdown,
@@ -890,7 +1063,14 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         api_rollup["positions_value"] = api_summary["summary"].get("positions_value")
         api_rollup["traded_markets"] = api_summary["summary"].get("traded_markets")
 
-    narrative = build_narrative(anchored_score, decision, metrics, pnl_section.get("summary_tag", "unknown"))
+    narrative = build_narrative(float(raw_score), decision, metrics, pnl_section.get("summary_tag", "unknown"))
+    anchor_raw_base = (anchor_context.get("anchor_raw_base_score") if isinstance(anchor_context, dict) else None)
+    delta_vs_anchor_raw = None
+    try:
+        if anchor_raw_base is not None:
+            delta_vs_anchor_raw = round(float(raw_score) - float(anchor_raw_base), 2)
+    except (TypeError, ValueError):
+        delta_vs_anchor_raw = None
 
     return {
         "account_address": account,
@@ -908,7 +1088,8 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         "raw_score": raw_score,
         "anchored_score": anchored_score,
         "delta_vs_anchor_60": round(anchored_score - 60.0, 2),
-        "final_score": anchored_score,
+        "delta_vs_anchor_raw": delta_vs_anchor_raw,
+        "final_score": raw_score,
         "decision": decision,
         "anchor_context": anchor_context,
         "pnl_curve": pnl_section,
@@ -924,6 +1105,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--csv", required=True, help="Path to trade CSV (single-account or merged).")
     parser.add_argument("--account", required=False, help="Target account address if CSV has multiple accounts.")
     parser.add_argument("--api-summary", required=False, help="Path to summary JSON from fetch_polymarket_summary.py.")
+    parser.add_argument(
+        "--allow-live-api-fallback",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="If api summary is missing/incomplete, fetch live account summary once during analysis.",
+    )
+    parser.add_argument("--live-api-timeout", type=int, default=30, help="Timeout seconds for live API fallback.")
+    parser.add_argument("--live-api-retries", type=int, default=2, help="Retry count for live API fallback.")
     parser.add_argument("--anchor-file", required=False, help="Path to frozen anchor baseline JSON.")
     parser.add_argument("--disable-anchor", action="store_true", help="Disable anchored-score adjustment and use raw score only.")
     parser.add_argument("--output-json", required=True, help="Output JSON path.")
@@ -941,7 +1130,7 @@ def main() -> None:
     print(f"Account: {result['account_address']}")
     print(
         f"Raw score: {result['raw_score']} | Anchored score: {result['anchored_score']} | "
-        f"Final score: {result['final_score']} | Decision: {result['decision']}"
+        f"Final score(decision basis): {result['final_score']} | Decision: {result['decision']}"
     )
     print(
         "Key risk ratios -> "

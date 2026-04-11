@@ -15,7 +15,8 @@ Preferred one-shot command:
 ```bash
 python scripts/run_full_screening.py \
   --csv <trade_csv_path> \
-  --output-dir <output_dir>
+  --output-dir <output_dir> \
+  --summary-dir <optional_prefetched_summary_dir>
 ```
 
 This command automatically:
@@ -25,6 +26,9 @@ This command automatically:
 - runs V2.2 scoring and classification for each account
 - generates **English report + Chinese translated report** for each account
 - produces a final all-account summary table
+- uses dual-layer account PnL summary sourcing:
+  - layer 1: reuse prefetched summary JSON files (if provided)
+  - layer 2: if missing/incomplete, analysis stage performs one live API fallback
 
 ## 60-Point Anchor Baseline (Stable Scoring)
 
@@ -36,8 +40,8 @@ Anchor file:
 
 Mechanism:
 - score model first computes `raw_score` from V2.2 rules
-- then applies frozen anchor offset: `anchored_score = clamp(raw_score + score_offset, 0, 100)`
-- `final_score = anchored_score`
+- then computes anchor reference score: `anchored_score = clamp(raw_score + score_offset, 0, 100)`
+- `final_score` (decision basis) uses `raw_score`; `anchored_score` is cross-batch benchmark reference
 - hard exclusion rules still override decision outcome
 
 Auto behavior:
@@ -79,6 +83,7 @@ Read and enforce:
 - [`references/multi_market_typing.md`](references/multi_market_typing.md)
 - [`references/pnl_curve_rules.md`](references/pnl_curve_rules.md)
 - [`references/polymarket_api.md`](references/polymarket_api.md)
+- [`references/tuning_table_20260411.md`](references/tuning_table_20260411.md) (parameter-change rationale and expected impact)
 
 ## Output Structure
 
@@ -98,7 +103,7 @@ Before finishing:
 - ensure all discovered accounts are analyzed exactly once
 - ensure each account has both `report_en.md` and `report_zh.md`
 - ensure anchor baseline exists and is attached to scoring
-- ensure summary table is sorted by `final_score` (descending)
+- ensure summary table is sorted by `final_score` (raw decision score, descending)
 - ensure percentage metrics are `[0,1]` in JSON and `%` in report
 - ensure low-frequency caps and concentration penalties are applied
 - ensure missing data assumptions are explicitly listed

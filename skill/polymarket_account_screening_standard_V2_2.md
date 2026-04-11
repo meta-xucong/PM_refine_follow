@@ -1291,3 +1291,27 @@ score_offset   = 60 - anchor_raw_base_score
 - `anchor_account`
 
 这保证不同日期批量跑出的结果，始终可解释为“相对同一60分基线”的稳定比较。
+
+## 19. 2026-04-11 Scoring Stabilization Addendum (Implementation Binding)
+
+This addendum is binding for automated skill execution and resolves the drift observed between descriptive review and scripted scoring.
+
+1. Anchor usage is reference-first:
+- keep frozen anchor file and anchored score (`anchored_score`) for cross-run comparability.
+- decision thresholding uses `raw_score` (after caps/penalties), not anchor-shifted score.
+
+2. Low-frequency constraints are strengthened:
+- caps now also depend on `active_trading_days` and `trade_count`.
+- low activity can reduce score even when structure metrics look clean.
+
+3. PnL curve influence is strengthened:
+- three-window PnL score is scaled to avoid underweighting versus structure terms.
+- accounts with weak long/mid/short curve quality should be visibly pushed down.
+
+4. Nested concurrent handling is de-noised:
+- only material overlaps (time + notional) are treated as true concurrent ladders.
+- short/tiny transitional overlap should not be auto-escalated to dirty.
+
+5. API retrieval follows two-layer policy:
+- layer 1: prefetch account summary in data pull stage.
+- layer 2: if missing/incomplete, analysis stage performs one live fallback query.

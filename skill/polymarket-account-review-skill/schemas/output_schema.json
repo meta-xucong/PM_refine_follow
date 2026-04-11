@@ -18,6 +18,7 @@
     "raw_score": { "type": "number", "minimum": 0, "maximum": 100 },
     "anchored_score": { "type": "number", "minimum": 0, "maximum": 100 },
     "delta_vs_anchor_60": { "type": "number" },
+    "delta_vs_anchor_raw": { "type": ["number", "null"] },
     "final_score": { "type": "number", "minimum": 0, "maximum": 100 },
     "decision": {
       "type": "string",
@@ -42,7 +43,8 @@
         "risk_penalty_adjustment": { "type": "number" },
         "concentration_penalty": { "type": "number" },
         "low_frequency_cap": { "type": ["number", "null"] },
-        "raw_before_cap": { "type": "number" }
+        "raw_before_cap": { "type": "number" },
+        "decision_score_basis": { "type": "string" }
       },
       "additionalProperties": true
     },

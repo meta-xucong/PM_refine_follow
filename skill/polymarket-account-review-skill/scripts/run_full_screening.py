@@ -43,6 +43,21 @@ def discover_accounts(csv_path: Path) -> list[str]:
     return sorted(accounts)
 
 
+def find_prefetched_summary(summary_dir: Path | None, account: str) -> Path | None:
+    if summary_dir is None or not summary_dir.exists():
+        return None
+
+    patterns = [
+        f"account_summary_{account}.json",
+        f"*{account}*.json",
+    ]
+    for pattern in patterns:
+        matches = sorted(summary_dir.glob(pattern))
+        if matches:
+            return matches[0]
+    return None
+
+
 def run_cmd(args: list[str]) -> None:
     proc = subprocess.run(args, capture_output=True, text=True)
     if proc.returncode != 0:
@@ -77,15 +92,20 @@ def write_summary_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         "raw_score",
         "anchored_score",
         "delta_vs_anchor_60",
+        "delta_vs_anchor_raw",
         "final_score",
+        "decision_score_basis",
         "decision",
         "decision_zh",
         "anchor_version",
         "anchor_account",
+        "summary_source",
         "deployable_event_equivalent",
         "weighted_multi_market_risk_ratio",
         "exclusive_concurrent_leg_ratio",
         "nested_concurrent_leg_ratio",
+        "active_trading_days",
+        "trade_count",
         "dual_side_buy_usdc_ratio",
         "noncopyable_token_fast_buy_ratio",
         "traded_markets",
@@ -111,8 +131,8 @@ def write_summary_md(path: Path, rows: list[dict[str, Any]], output_dir: Path) -
             f"- 锚点: {(rows[0].get('anchor_account') or 'none')} | 版本: {(rows[0].get('anchor_version') or 'none')}"
         )
     lines.append("")
-    lines.append("|排名|账户|Raw|Anchored|Δvs60|结论|可利用事件等价值|加权结构风险|双边买入比率|EN 报告|中文报告|")
-    lines.append("|---|---|---:|---:|---:|---|---:|---:|---:|---|---|")
+    lines.append("|排名|账户|DecisionScore|AnchoredRef|Δvs60|结论|活跃天数|交易数|可利用事件等价值|加权结构风险|双边买入比率|EN 报告|中文报告|")
+    lines.append("|---|---|---:|---:|---:|---|---:|---:|---:|---:|---:|---|---|")
 
     for row in rows:
         en_rel = row.get("report_en", "")
@@ -120,13 +140,15 @@ def write_summary_md(path: Path, rows: list[dict[str, Any]], output_dir: Path) -
         en_md = f"[EN]({en_rel})" if en_rel else "-"
         zh_md = f"[中文]({zh_rel})" if zh_rel else "-"
         lines.append(
-            "|{rank}|{account}|{raw:.2f}|{anchored:.2f}|{delta:+.2f}|{decision}|{deploy:.2f}|{risk:.2%}|{dual:.2%}|{en}|{zh}|".format(
+            "|{rank}|{account}|{raw:.2f}|{anchored:.2f}|{delta:+.2f}|{decision}|{active_days:.0f}|{trades:.0f}|{deploy:.2f}|{risk:.2%}|{dual:.2%}|{en}|{zh}|".format(
                 rank=row.get("rank", ""),
                 account=row.get("account_address", ""),
                 raw=float(row.get("raw_score") or 0.0),
                 anchored=float(row.get("anchored_score") or row.get("final_score") or 0.0),
                 delta=float(row.get("delta_vs_anchor_60") or 0.0),
                 decision=row.get("decision_zh", row.get("decision", "")),
+                active_days=float(row.get("active_trading_days") or 0.0),
+                trades=float(row.get("trade_count") or 0.0),
                 deploy=float(row.get("deployable_event_equivalent") or 0.0),
                 risk=float(row.get("weighted_multi_market_risk_ratio") or 0.0),
                 dual=float(row.get("dual_side_buy_usdc_ratio") or 0.0),
@@ -147,6 +169,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--csv", required=True, help="Merged CSV path with one or more account_address values")
     parser.add_argument("--output-dir", required=True, help="Output directory for all generated artifacts")
     parser.add_argument("--skip-api", action="store_true", help="Skip API fetch step")
+    parser.add_argument("--summary-dir", default=None, help="Optional directory containing prefetched account summary JSON files.")
+    parser.add_argument(
+        "--prefer-prefetched-summary",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Prefer prefetched account summary files before live API fetching.",
+    )
+    parser.add_argument(
+        "--live-api-fallback",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Allow analyze stage live fallback if summary file is missing/incomplete.",
+    )
+    parser.add_argument("--live-api-timeout", type=int, default=30, help="Timeout seconds for analyze-stage live fallback.")
+    parser.add_argument("--live-api-retries", type=int, default=2, help="Retry count for analyze-stage live fallback.")
     parser.add_argument("--anchor-account", default=DEFAULT_ANCHOR_ACCOUNT, help="Anchor account address for 60-point baseline")
     parser.add_argument("--anchor-file", default=None, help="Path to frozen anchor baseline JSON")
     parser.add_argument("--anchor-window-days", type=int, default=30, help="Fallback pull window days when anchor account is missing in CSV")
@@ -192,6 +229,11 @@ def main() -> None:
     csv_path = Path(args.csv).resolve()
     output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    summary_dir = (
+        Path(args.summary_dir).resolve()
+        if args.summary_dir
+        else (csv_path.parent / "account_summaries").resolve()
+    )
 
     script_dir = Path(__file__).resolve().parent
     fetch_script = script_dir / "fetch_polymarket_summary.py"
@@ -233,8 +275,12 @@ def main() -> None:
         analysis_json = account_dir / "account_analysis.json"
         report_en = account_dir / "report_en.md"
         report_zh = account_dir / "report_zh.md"
-
-        if not args.skip_api:
+        summary_source = "none"
+        prefetched = find_prefetched_summary(summary_dir, account) if args.prefer_prefetched_summary else None
+        if prefetched and prefetched.exists():
+            shutil.copy2(prefetched, summary_json)
+            summary_source = "prefetched"
+        elif not args.skip_api:
             run_cmd([
                 sys.executable,
                 str(fetch_script),
@@ -243,6 +289,9 @@ def main() -> None:
                 "--output",
                 str(summary_json),
             ])
+            summary_source = "live_fetch"
+        else:
+            summary_source = "missing"
 
         analyze_cmd = [
             sys.executable,
@@ -255,7 +304,13 @@ def main() -> None:
             str(anchor_file),
             "--output-json",
             str(analysis_json),
+            "--live-api-timeout",
+            str(max(5, int(args.live_api_timeout))),
+            "--live-api-retries",
+            str(max(0, int(args.live_api_retries))),
         ]
+        if not args.live_api_fallback:
+            analyze_cmd.append("--no-allow-live-api-fallback")
         if summary_json.exists():
             analyze_cmd.extend(["--api-summary", str(summary_json)])
         run_cmd(analyze_cmd)
@@ -295,15 +350,22 @@ def main() -> None:
             "raw_score": float(analysis.get("raw_score") or analysis.get("final_score") or 0.0),
             "anchored_score": float(analysis.get("anchored_score") or analysis.get("final_score") or 0.0),
             "delta_vs_anchor_60": float(analysis.get("delta_vs_anchor_60") or 0.0),
+            "delta_vs_anchor_raw": (
+                float(analysis.get("delta_vs_anchor_raw")) if analysis.get("delta_vs_anchor_raw") is not None else None
+            ),
             "final_score": float(analysis.get("final_score") or 0.0),
+            "decision_score_basis": (analysis.get("score_breakdown") or {}).get("decision_score_basis", "raw_score"),
             "decision": analysis.get("decision") or "unknown",
             "decision_zh": decision_zh(analysis.get("decision") or "unknown"),
             "anchor_version": anchor_context.get("anchor_version"),
             "anchor_account": anchor_context.get("anchor_account"),
+            "summary_source": summary_source,
             "deployable_event_equivalent": float(metrics.get("deployable_event_equivalent") or 0.0),
             "weighted_multi_market_risk_ratio": float(metrics.get("weighted_multi_market_risk_ratio") or 0.0),
             "exclusive_concurrent_leg_ratio": float(metrics.get("exclusive_concurrent_leg_ratio") or 0.0),
             "nested_concurrent_leg_ratio": float(metrics.get("nested_concurrent_leg_ratio") or 0.0),
+            "active_trading_days": float(metrics.get("active_trading_days") or 0.0),
+            "trade_count": float(metrics.get("trade_count") or 0.0),
             "dual_side_buy_usdc_ratio": float(metrics.get("dual_side_buy_usdc_ratio") or 0.0),
             "noncopyable_token_fast_buy_ratio": float(metrics.get("noncopyable_token_fast_buy_ratio") or 0.0),
             "traded_markets": api_summary.get("traded_markets"),
@@ -313,8 +375,8 @@ def main() -> None:
         }
         rows.append(row)
         print(
-            f"[{idx}/{len(accounts)}] Done {account} | raw={row['raw_score']:.2f} | "
-            f"anchored={row['anchored_score']:.2f} | decision={row['decision']}"
+            f"[{idx}/{len(accounts)}] Done {account} | decision_score={row['final_score']:.2f} | "
+            f"anchored_ref={row['anchored_score']:.2f} | decision={row['decision']} | summary={summary_source}"
         )
 
     rows.sort(key=lambda x: x["final_score"], reverse=True)

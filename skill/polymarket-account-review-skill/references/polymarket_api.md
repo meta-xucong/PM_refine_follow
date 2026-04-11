@@ -39,6 +39,16 @@ This skill uses official Polymarket documentation and endpoints for account-leve
 - `closed-positions`: realized PnL timeline (all-time / 30d / 7d trend features)
 - `snapshot`: additional consistency check for current equity state
 
+## Two-Layer Retrieval Strategy
+
+1. Layer 1 (preferred): fetch/store account summaries during trade-pull stage
+- `pull_polymarket_trades_to_csv.py` writes `output/account_summaries/account_summary_<address>.json`
+- batch screening (`run_full_screening.py`) reuses these files first
+
+2. Layer 2 (fallback): live fetch during analysis
+- if summary file is missing or incomplete, `analyze_account.py` performs one live fallback query
+- fallback can be disabled explicitly via `--no-live-api-fallback`
+
 ## Error Handling Rules
 
 - Retry transient errors (5xx / timeout) with backoff.
