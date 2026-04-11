@@ -1,0 +1,151 @@
+{
+  "account_address": "0xbb8e6477bcb4d0a79449507c607d36fd228fb243",
+  "fetched_at_utc": "2026-04-11T15:37:16.756657+00:00",
+  "sources": {
+    "value": "/value",
+    "traded": "/traded",
+    "positions": "/positions",
+    "closed_positions": "/closed-positions",
+    "accounting_snapshot": "/v1/accounting/snapshot"
+  },
+  "summary": {
+    "positions_value": 15023.376,
+    "traded_markets": 296,
+    "open_positions_count": 58,
+    "open_positions_cash_pnl_sum": -157792.131,
+    "open_positions_realized_pnl_sum": -31448.8535,
+    "closed_positions_count": 50,
+    "closed_positions_realized_pnl_total": 23223.283553,
+    "closed_positions_realized_pnl_30d": 0,
+    "closed_positions_realized_pnl_7d": 0
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 16,
+      "total_return": 23459.077245,
+      "trend_slope": 1545.695607,
+      "max_drawdown": 2287.674788,
+      "daily_volatility": 2799.946209
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak",
+    "daily_points": [
+      {
+        "date": "2025-03-19",
+        "daily_realized_pnl": -235.793692,
+        "cumulative_realized_pnl": -235.793692
+      },
+      {
+        "date": "2025-03-20",
+        "daily_realized_pnl": 1110.509938,
+        "cumulative_realized_pnl": 874.716246
+      },
+      {
+        "date": "2025-03-24",
+        "daily_realized_pnl": -2287.674788,
+        "cumulative_realized_pnl": -1412.958542
+      },
+      {
+        "date": "2025-03-25",
+        "daily_realized_pnl": 2553.673993,
+        "cumulative_realized_pnl": 1140.715451
+      },
+      {
+        "date": "2025-03-27",
+        "daily_realized_pnl": -487.28,
+        "cumulative_realized_pnl": 653.435451
+      },
+      {
+        "date": "2025-03-28",
+        "daily_realized_pnl": -144.204794,
+        "cumulative_realized_pnl": 509.230657
+      },
+      {
+        "date": "2025-04-01",
+        "daily_realized_pnl": 425.690869,
+        "cumulative_realized_pnl": 934.921526
+      },
+      {
+        "date": "2025-04-02",
+        "daily_realized_pnl": 766.37024,
+        "cumulative_realized_pnl": 1701.291766
+      },
+      {
+        "date": "2025-04-03",
+        "daily_realized_pnl": 8647.648445,
+        "cumulative_realized_pnl": 10348.940211
+      },
+      {
+        "date": "2025-04-07",
+        "daily_realized_pnl": -258.650648,
+        "cumulative_realized_pnl": 10090.289563
+      },
+      {
+        "date": "2025-04-09",
+        "daily_realized_pnl": 111.11,
+        "cumulative_realized_pnl": 10201.399563
+      },
+      {
+        "date": "2025-04-22",
+        "daily_realized_pnl": 446.780288,
+        "cumulative_realized_pnl": 10648.179851
+      },
+      {
+        "date": "2025-04-24",
+        "daily_realized_pnl": 11.42,
+        "cumulative_realized_pnl": 10659.599851
+      },
+      {
+        "date": "2025-04-29",
+        "daily_realized_pnl": 4896.122864,
+        "cumulative_realized_pnl": 15555.722715
+      },
+      {
+        "date": "2025-04-30",
+        "daily_realized_pnl": 6266.962213,
+        "cumulative_realized_pnl": 21822.684928
+      },
+      {
+        "date": "2025-05-01",
+        "daily_realized_pnl": 1400.598625,
+        "cumulative_realized_pnl": 23223.283553
+      }
+    ]
+  },
+  "snapshot": {
+    "equity": {
+      "cashBalance": "199555.749689",
+      "positionsValue": "15023.150700",
+      "equity": "214578.900389",
+      "valuationTime": "2026-04-11T15:37:15Z"
+    },
+    "positions_rows": 58,
+    "raw_files": [
+      "equity.csv",
+      "positions.csv"
+    ]
+  },
+  "snapshot_error": null
+}

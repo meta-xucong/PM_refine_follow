@@ -1,0 +1,151 @@
+{
+  "account_address": "0x1f6b85cb85876df272199039207b33166757267e",
+  "fetched_at_utc": "2026-04-11T15:25:54.415598+00:00",
+  "sources": {
+    "value": "/value",
+    "traded": "/traded",
+    "positions": "/positions",
+    "closed_positions": "/closed-positions",
+    "accounting_snapshot": "/v1/accounting/snapshot"
+  },
+  "summary": {
+    "positions_value": 43.5909,
+    "traded_markets": 4325,
+    "open_positions_count": 2476,
+    "open_positions_cash_pnl_sum": -141674.6065,
+    "open_positions_realized_pnl_sum": 29869.2922,
+    "closed_positions_count": 50,
+    "closed_positions_realized_pnl_total": 2023.411684,
+    "closed_positions_realized_pnl_30d": 0,
+    "closed_positions_realized_pnl_7d": 0
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 16,
+      "total_return": 1991.534367,
+      "trend_slope": 134.584707,
+      "max_drawdown": 193.21218,
+      "daily_volatility": 240.948826
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak",
+    "daily_points": [
+      {
+        "date": "2024-11-11",
+        "daily_realized_pnl": 31.877317,
+        "cumulative_realized_pnl": 31.877317
+      },
+      {
+        "date": "2024-11-12",
+        "daily_realized_pnl": 18.80017,
+        "cumulative_realized_pnl": 50.677487
+      },
+      {
+        "date": "2024-11-13",
+        "daily_realized_pnl": -4.8,
+        "cumulative_realized_pnl": 45.877487
+      },
+      {
+        "date": "2024-11-14",
+        "daily_realized_pnl": 0.50112,
+        "cumulative_realized_pnl": 46.378607
+      },
+      {
+        "date": "2024-11-15",
+        "daily_realized_pnl": -162.9133,
+        "cumulative_realized_pnl": -116.534693
+      },
+      {
+        "date": "2024-11-16",
+        "daily_realized_pnl": -26.0,
+        "cumulative_realized_pnl": -142.534693
+      },
+      {
+        "date": "2024-11-20",
+        "daily_realized_pnl": 0.247193,
+        "cumulative_realized_pnl": -142.2875
+      },
+      {
+        "date": "2024-11-21",
+        "daily_realized_pnl": 64.762747,
+        "cumulative_realized_pnl": -77.524753
+      },
+      {
+        "date": "2024-11-22",
+        "daily_realized_pnl": -14.485069,
+        "cumulative_realized_pnl": -92.009822
+      },
+      {
+        "date": "2024-11-23",
+        "daily_realized_pnl": 241.562523,
+        "cumulative_realized_pnl": 149.552701
+      },
+      {
+        "date": "2024-11-24",
+        "daily_realized_pnl": 629.519883,
+        "cumulative_realized_pnl": 779.072584
+      },
+      {
+        "date": "2024-11-25",
+        "daily_realized_pnl": -177.519925,
+        "cumulative_realized_pnl": 601.552659
+      },
+      {
+        "date": "2024-11-29",
+        "daily_realized_pnl": 511.588982,
+        "cumulative_realized_pnl": 1113.141641
+      },
+      {
+        "date": "2024-11-30",
+        "daily_realized_pnl": 487.594302,
+        "cumulative_realized_pnl": 1600.735943
+      },
+      {
+        "date": "2024-12-01",
+        "daily_realized_pnl": 330.29476,
+        "cumulative_realized_pnl": 1931.030703
+      },
+      {
+        "date": "2024-12-02",
+        "daily_realized_pnl": 92.380981,
+        "cumulative_realized_pnl": 2023.411684
+      }
+    ]
+  },
+  "snapshot": {
+    "equity": {
+      "cashBalance": "113.853044",
+      "positionsValue": "43.590923",
+      "equity": "157.443967",
+      "valuationTime": "2026-04-11T15:25:52Z"
+    },
+    "positions_rows": 2485,
+    "raw_files": [
+      "equity.csv",
+      "positions.csv"
+    ]
+  },
+  "snapshot_error": null
+}

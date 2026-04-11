@@ -1,0 +1,27 @@
+{
+  "anchor_version": "anchor_v2_20260411",
+  "created_at_utc": "2026-04-11T13:30:54.911260+00:00",
+  "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
+  "target_anchor_score": 60.0,
+  "raw_base_score": 47.31,
+  "score_offset": 12.69,
+  "calibration_scale": 0.65,
+  "source_mode": "pulled_from_api",
+  "source_csv": "D:\\AI\\PM_refine_follow\\skill\\polymarket-account-review-skill\\baseline\\anchor_activity_0x39d0f1dca6fb7e5514858c1a337724a426764fe8_1773322175_1775914175.csv",
+  "window_days": 30,
+  "data_fingerprint": {
+    "rows": 2082,
+    "min_ts": 1773326133,
+    "max_ts": 1775913467,
+    "sha256": "254f679f9cd60a8d5134a4bb125a3848244c229a9146e165a722eb02f0d9c2d0"
+  },
+  "baseline_metrics": {
+    "dual_side_buy_usdc_ratio": 0.006193,
+    "exclusive_concurrent_leg_ratio": 0.0,
+    "nested_concurrent_leg_ratio": 0.537557,
+    "weighted_multi_market_risk_ratio": 0.187712,
+    "noncopyable_token_fast_buy_ratio": 0.04642,
+    "deployable_event_equivalent": 34.5,
+    "deployable_event_density": 1.152074
+  }
+}

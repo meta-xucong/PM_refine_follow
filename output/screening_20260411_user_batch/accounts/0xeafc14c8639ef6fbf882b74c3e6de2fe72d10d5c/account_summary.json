@@ -1,0 +1,151 @@
+{
+  "account_address": "0xeafc14c8639ef6fbf882b74c3e6de2fe72d10d5c",
+  "fetched_at_utc": "2026-04-11T15:20:35.862547+00:00",
+  "sources": {
+    "value": "/value",
+    "traded": "/traded",
+    "positions": "/positions",
+    "closed_positions": "/closed-positions",
+    "accounting_snapshot": "/v1/accounting/snapshot"
+  },
+  "summary": {
+    "positions_value": 0.0,
+    "traded_markets": 832,
+    "open_positions_count": 0,
+    "open_positions_cash_pnl_sum": 0,
+    "open_positions_realized_pnl_sum": 0,
+    "closed_positions_count": 50,
+    "closed_positions_realized_pnl_total": 495.583896,
+    "closed_positions_realized_pnl_30d": 0,
+    "closed_positions_realized_pnl_7d": 0
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 16,
+      "total_return": 622.912672,
+      "trend_slope": 40.315274,
+      "max_drawdown": 38.452044,
+      "daily_volatility": 97.194179
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak",
+    "daily_points": [
+      {
+        "date": "2025-07-12",
+        "daily_realized_pnl": -127.328776,
+        "cumulative_realized_pnl": -127.328776
+      },
+      {
+        "date": "2025-07-13",
+        "daily_realized_pnl": 45.364216,
+        "cumulative_realized_pnl": -81.96456
+      },
+      {
+        "date": "2025-07-16",
+        "daily_realized_pnl": 41.016675,
+        "cumulative_realized_pnl": -40.947885
+      },
+      {
+        "date": "2025-07-17",
+        "daily_realized_pnl": 0.0,
+        "cumulative_realized_pnl": -40.947885
+      },
+      {
+        "date": "2025-07-18",
+        "daily_realized_pnl": 390.911723,
+        "cumulative_realized_pnl": 349.963838
+      },
+      {
+        "date": "2025-07-19",
+        "daily_realized_pnl": 13.851092,
+        "cumulative_realized_pnl": 363.81493
+      },
+      {
+        "date": "2025-07-20",
+        "daily_realized_pnl": 18.011646,
+        "cumulative_realized_pnl": 381.826576
+      },
+      {
+        "date": "2025-07-21",
+        "daily_realized_pnl": 7.598036,
+        "cumulative_realized_pnl": 389.424612
+      },
+      {
+        "date": "2025-07-22",
+        "daily_realized_pnl": 62.572925,
+        "cumulative_realized_pnl": 451.997537
+      },
+      {
+        "date": "2025-07-23",
+        "daily_realized_pnl": -38.452044,
+        "cumulative_realized_pnl": 413.545493
+      },
+      {
+        "date": "2025-07-24",
+        "daily_realized_pnl": 20.394686,
+        "cumulative_realized_pnl": 433.940179
+      },
+      {
+        "date": "2025-07-25",
+        "daily_realized_pnl": -18.219138,
+        "cumulative_realized_pnl": 415.721041
+      },
+      {
+        "date": "2025-07-26",
+        "daily_realized_pnl": 25.0,
+        "cumulative_realized_pnl": 440.721041
+      },
+      {
+        "date": "2025-07-27",
+        "daily_realized_pnl": -4.665382,
+        "cumulative_realized_pnl": 436.055659
+      },
+      {
+        "date": "2025-07-28",
+        "daily_realized_pnl": 60.439837,
+        "cumulative_realized_pnl": 496.495496
+      },
+      {
+        "date": "2025-07-29",
+        "daily_realized_pnl": -0.9116,
+        "cumulative_realized_pnl": 495.583896
+      }
+    ]
+  },
+  "snapshot": {
+    "equity": {
+      "cashBalance": "19048.046160",
+      "positionsValue": "0.000000",
+      "equity": "19048.046160",
+      "valuationTime": "2026-04-11T15:20:34Z"
+    },
+    "positions_rows": 0,
+    "raw_files": [
+      "equity.csv",
+      "positions.csv"
+    ]
+  },
+  "snapshot_error": null
+}

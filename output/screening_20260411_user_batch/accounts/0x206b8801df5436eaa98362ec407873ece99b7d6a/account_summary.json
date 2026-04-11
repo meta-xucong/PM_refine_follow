@@ -1,0 +1,156 @@
+{
+  "account_address": "0x206b8801df5436eaa98362ec407873ece99b7d6a",
+  "fetched_at_utc": "2026-04-11T15:15:36.314140+00:00",
+  "sources": {
+    "value": "/value",
+    "traded": "/traded",
+    "positions": "/positions",
+    "closed_positions": "/closed-positions",
+    "accounting_snapshot": "/v1/accounting/snapshot"
+  },
+  "summary": {
+    "positions_value": 699.98,
+    "traded_markets": 2102,
+    "open_positions_count": 1332,
+    "open_positions_cash_pnl_sum": -122111.4901,
+    "open_positions_realized_pnl_sum": 1815.3723,
+    "closed_positions_count": 50,
+    "closed_positions_realized_pnl_total": 826.942785,
+    "closed_positions_realized_pnl_30d": 0,
+    "closed_positions_realized_pnl_7d": 0
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "down",
+      "score": -10,
+      "points_count": 17,
+      "total_return": 824.895241,
+      "trend_slope": -26.102673,
+      "max_drawdown": 2953.508261,
+      "daily_volatility": 793.096484
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak",
+    "daily_points": [
+      {
+        "date": "2024-11-23",
+        "daily_realized_pnl": 2.047544,
+        "cumulative_realized_pnl": 2.047544
+      },
+      {
+        "date": "2024-11-24",
+        "daily_realized_pnl": 143.758779,
+        "cumulative_realized_pnl": 145.806323
+      },
+      {
+        "date": "2024-11-29",
+        "daily_realized_pnl": -999.809439,
+        "cumulative_realized_pnl": -854.003116
+      },
+      {
+        "date": "2024-12-05",
+        "daily_realized_pnl": -40.8,
+        "cumulative_realized_pnl": -894.803116
+      },
+      {
+        "date": "2024-12-30",
+        "daily_realized_pnl": -15.99984,
+        "cumulative_realized_pnl": -910.802956
+      },
+      {
+        "date": "2025-01-30",
+        "daily_realized_pnl": 79.501,
+        "cumulative_realized_pnl": -831.301956
+      },
+      {
+        "date": "2025-01-31",
+        "daily_realized_pnl": 202.481933,
+        "cumulative_realized_pnl": -628.820023
+      },
+      {
+        "date": "2025-02-07",
+        "daily_realized_pnl": -2072.275827,
+        "cumulative_realized_pnl": -2701.09585
+      },
+      {
+        "date": "2025-02-10",
+        "daily_realized_pnl": -6.998953,
+        "cumulative_realized_pnl": -2708.094803
+      },
+      {
+        "date": "2025-02-11",
+        "daily_realized_pnl": -58.708585,
+        "cumulative_realized_pnl": -2766.803388
+      },
+      {
+        "date": "2025-02-12",
+        "daily_realized_pnl": -40.89855,
+        "cumulative_realized_pnl": -2807.701938
+      },
+      {
+        "date": "2025-02-13",
+        "daily_realized_pnl": 914.004206,
+        "cumulative_realized_pnl": -1893.697732
+      },
+      {
+        "date": "2025-02-14",
+        "daily_realized_pnl": 828.657303,
+        "cumulative_realized_pnl": -1065.040429
+      },
+      {
+        "date": "2025-02-20",
+        "daily_realized_pnl": -62.444939,
+        "cumulative_realized_pnl": -1127.485368
+      },
+      {
+        "date": "2025-02-21",
+        "daily_realized_pnl": 239.898698,
+        "cumulative_realized_pnl": -887.58667
+      },
+      {
+        "date": "2025-02-26",
+        "daily_realized_pnl": -60.3972,
+        "cumulative_realized_pnl": -947.98387
+      },
+      {
+        "date": "2025-02-28",
+        "daily_realized_pnl": 1774.926655,
+        "cumulative_realized_pnl": 826.942785
+      }
+    ]
+  },
+  "snapshot": {
+    "equity": {
+      "cashBalance": "27472.614831",
+      "positionsValue": "699.979900",
+      "equity": "28172.594731",
+      "valuationTime": "2026-04-11T15:15:35Z"
+    },
+    "positions_rows": 1332,
+    "raw_files": [
+      "equity.csv",
+      "positions.csv"
+    ]
+  },
+  "snapshot_error": null
+}
