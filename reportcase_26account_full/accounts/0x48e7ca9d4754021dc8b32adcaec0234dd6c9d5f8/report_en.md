@@ -8,7 +8,7 @@
 - Source local name: `account_20`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: movie, jumanji, top, grossing. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: jumanji, top, grossing, movie. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -36,7 +36,7 @@ Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copy
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: movie, jumanji, top, grossing.
+- Hard blacklist themes to avoid: jumanji, top, grossing, movie.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -46,10 +46,10 @@ Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copy
 - (none)
 
 ### Hard Blacklist Keywords
-- movie
 - jumanji
 - top
 - grossing
+- movie
 
 ### Soft Blacklist Keywords
 - (none)

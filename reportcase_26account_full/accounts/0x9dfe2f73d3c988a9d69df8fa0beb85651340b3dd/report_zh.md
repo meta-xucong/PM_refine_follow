@@ -8,49 +8,49 @@
 - 本地名称: `account_11`
 
 ## 1. 执行结论
-校准后决策分 58.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、enter、forces、ceasefire。软黑名单主题（谨慎跟）：video、mrbeast、views、above、fdv。白名单主题（优先筛选）：april、netanyahu、out、iranian、regime。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 58.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、forces、enter、ceasefire。软黑名单主题（谨慎跟）：views、video、mrbeast、above、one。白名单主题（优先筛选）：april、out、netanyahu、iranian、fall。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
-- decision: `只适合筛着跟`
-- final_score（决策分）: `58.650000`
-- raw_score: `45.230000`
-- anchored_score: `58.650000`
-- delta_vs_anchor_60: `-1.350000`
-- delta_vs_anchor_raw: `-2.080000`
-- decision_score_basis: `calibrated_anchor_score`
-- anchor_version: `anchor_v2_20260411`
-- anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
+- 结论标签: `只适合筛着跟`
+- 决策分（最终用于判定）: `58.650000`
+- 原始评分（未锚点映射）: `45.230000`
+- 锚点校准分: `58.650000`
+- 相对60分基线差值: `-1.350000`
+- 相对锚点原始分差值: `-2.080000`
+- 判定口径: `calibrated_anchor_score`
+- 锚点版本: `anchor_v2_20260411`
+- 锚点账户: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 936 笔交易，覆盖 30 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态：全周期=下行，近30天=数据不足，近7天=数据不足。
 - 主要板块主题： geopolitics, us_politics, crypto.
 
 ## 4. 跟单优势
 - 不可复制 token 快交易（BUY）比例较低。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：april, netanyahu, out, iranian, regime, fall.
+- 可执行白名单主题：april, out, netanyahu, iranian, fall, regime.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：march, iran, enter, forces, ceasefire, public.
-- 软黑名单主题（需更严格触发）：video, mrbeast, views, above, fdv, one.
+- 硬黑名单主题（应避免）：march, iran, forces, enter, ceasefire, public.
+- 软黑名单主题（需更严格触发）：views, video, mrbeast, above, one, fdv.
 
 ## 6. 板块与关键词过滤
-### 所属板块
+### 主要板块标签
 - geopolitics
 - us_politics
 - crypto
 
-### 白名单关键词
+### 白名单关键词（优先筛选）
 - april
-- netanyahu
 - out
+- netanyahu
 - iranian
-- regime
 - fall
+- regime
 - change
 - russia
 - ukraine
@@ -58,70 +58,70 @@
 - dip
 - leadership
 
-### 硬黑名单关键词
+### 硬黑名单关键词（原则上禁跟）
 - march
 - iran
-- enter
 - forces
+- enter
 - ceasefire
 - public
 - trump
 - announces
 - end
 - p2p
+- sale
 - protocol
-- committed
 
-### 软黑名单关键词
+### 软黑名单关键词（严格触发才可跟）
+- views
 - video
 - mrbeast
-- views
 - above
-- fdv
 - one
+- fdv
 
 ## 7. 账户概览
-- analysis_window: `2026-03-11 18:53:59 UTC -> 2026-04-10 04:56:45 UTC`
-- trade_rows_used: `936`
-- total_buy_usdc: `207013.620953`
-- total_sell_usdc: `75717.961038`
-- traded_markets_count_api: `1925`
-- position_value_api: `47985.914300`
+- 分析时间窗口: `2026-03-11 18:53:59 UTC -> 2026-04-10 04:56:45 UTC`
+- 有效交易记录数: `936`
+- 买入总金额（USDC）: `207013.620953`
+- 卖出总金额（USDC）: `75717.961038`
+- 官方累计交易市场数: `1925`
+- 官方当前持仓估值: `47985.914300`
 
 ## 8. 核心指标
-- dual_side_buy_usdc_ratio: `39.07%`
-- dual_side_buy_usdc_ratio_1h: `2.33%`
-- token_fast_20m_buy_usdc_ratio: `4.27%`
-- noncopyable_token_fast_buy_ratio: `3.61%`
-- noncopyable_token_fast_sell_ratio: `12.82%`
-- noncopyable_token_fast_token_ratio: `9.33%`
-- event_rebalance_20m_event_ratio: `9.09%`
-- exclusive_concurrent_leg_ratio: `0.00%`
-- nested_concurrent_leg_ratio: `33.19%`
-- weighted_multi_market_risk_ratio: `11.74%`
-- deployable_event_equivalent: `22.000000`
-- deployable_event_density: `0.747827`
-- active_trading_days: `30.000000`
-- trade_count: `936.000000`
-- avg_trades_per_active_day: `31.200000`
+- 双边买入金额占比: `39.07%`
+- 1小时内双边买入占比: `2.33%`
+- 20分钟快交易买入占比: `4.27%`
+- 不可复制快交易买入占比: `3.61%`
+- 不可复制快交易卖出占比: `12.82%`
+- 不可复制快交易Token覆盖占比: `9.33%`
+- 20分钟事件再平衡事件占比: `9.09%`
+- 互斥并发腿占比: `0.00%`
+- 递进并发梯占比: `33.19%`
+- 加权多子市场结构风险比: `11.74%`
+- 可利用事件等价值: `22.000000`
+- 可利用事件密度: `0.747827`
+- 活跃交易天数: `30.000000`
+- 交易总笔数: `936.000000`
+- 活跃日均交易笔数: `31.200000`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- 全周期曲线形态: `下行`
+- 全周期曲线得分: `-10`
+- 近30天曲线形态: `数据不足`
+- 近30天曲线得分: `0`
+- 近7天曲线形态: `数据不足`
+- 近7天曲线得分: `0`
+- 收益曲线综合标签: `长期与近期均偏弱`
 
 ## 10. 评分拆解
-- copyability_score: `18.990000`
-- deployability_score: `20`
-- multi_market_structure_score: `14.570000`
-- pnl_curve_stability_score: `-8.330000`
-- risk_penalty_adjustment: `0`
-- concentration_penalty: `0.000000`
-- low_frequency_cap: `n/a`
+- 可复制性得分: `18.990000`
+- 可部署性得分: `20`
+- 多子市场结构得分: `14.570000`
+- 收益曲线稳定性得分: `-8.330000`
+- 风险惩罚项: `0`
+- 集中度惩罚项: `0.000000`
+- 低频封顶分: `n/a`
 
 ## 11. 数据质量与假设
 - (none)

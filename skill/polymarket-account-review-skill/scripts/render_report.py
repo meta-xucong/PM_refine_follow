@@ -90,6 +90,19 @@ def behavior_points_zh(items: list[str]) -> list[str]:
     }
     out: list[str] = []
     for item in items:
+        if item.startswith("PnL curve shapes:"):
+            rest = item.split(":", 1)[1].strip()
+            pairs = {}
+            for part in rest.split(","):
+                if "=" not in part:
+                    continue
+                k, v = part.split("=", 1)
+                pairs[k.strip()] = v.strip().strip(".;")
+            all_shape = shape_zh(pairs.get("all-time", "unknown"))
+            d30_shape = shape_zh(pairs.get("30d", "unknown"))
+            d7_shape = shape_zh(pairs.get("7d", "unknown"))
+            out.append(f"收益曲线形态：全周期={all_shape}，近30天={d30_shape}，近7天={d7_shape}。")
+            continue
         x = item
         for k, v in mapping.items():
             x = x.replace(k, v)

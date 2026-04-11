@@ -8,7 +8,7 @@
 - Source local name: `account_26`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: win, draw, end, chelsea, barcelona. Soft blacklist themes: golden, knights, morocco, ecuador, vit. Whitelist themes: france. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: win, end, draw, chelsea, barcelona. Soft blacklist themes: knights, golden, morocco, ecuador, ria. Whitelist themes: france. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -38,8 +38,8 @@ Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommende
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
-- Hard blacklist themes to avoid: win, draw, end, chelsea, barcelona, sabres.
-- Soft blacklist themes requiring stricter triggers: golden, knights, morocco, ecuador, vit, ria.
+- Hard blacklist themes to avoid: win, end, draw, chelsea, barcelona, sabres.
+- Soft blacklist themes requiring stricter triggers: knights, golden, morocco, ecuador, ria, vit.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -51,8 +51,8 @@ Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommende
 
 ### Hard Blacklist Keywords
 - win
-- draw
 - end
+- draw
 - chelsea
 - barcelona
 - sabres
@@ -64,12 +64,12 @@ Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommende
 - bruins
 
 ### Soft Blacklist Keywords
-- golden
 - knights
+- golden
 - morocco
 - ecuador
-- vit
 - ria
+- vit
 - athletic
 
 ## 7. Account Overview

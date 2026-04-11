@@ -2703,8 +2703,8 @@
     ],
     "hard_blacklist_keywords": [
       "win",
-      "draw",
       "end",
+      "draw",
       "chelsea",
       "barcelona",
       "sabres",
@@ -2716,12 +2716,12 @@
       "bruins"
     ],
     "soft_blacklist_keywords": [
-      "golden",
       "knights",
+      "golden",
       "morocco",
       "ecuador",
-      "vit",
       "ria",
+      "vit",
       "athletic"
     ],
     "whitelist_keyword_count": 1,
@@ -2746,15 +2746,15 @@
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
-      "Hard blacklist themes to avoid: win, draw, end, chelsea, barcelona, sabres.",
-      "Soft blacklist themes requiring stricter triggers: golden, knights, morocco, ecuador, vit, ria."
+      "Hard blacklist themes to avoid: win, end, draw, chelsea, barcelona, sabres.",
+      "Soft blacklist themes requiring stricter triggers: knights, golden, morocco, ecuador, ria, vit."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): win, draw, end, chelsea, barcelona. Soft blacklist themes (copy only with strict trigger): golden, knights, morocco, ecuador, vit. Whitelist themes (higher priority for selective following): france. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): win, end, draw, chelsea, barcelona. Soft blacklist themes (copy only with strict trigger): knights, golden, morocco, ecuador, ria. Whitelist themes (higher priority for selective following): france. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "Severe risk gate + low calibrated score -> not_recommended"
   ],
-  "generated_at_utc": "2026-04-11T14:05:19.597795+00:00"
+  "generated_at_utc": "2026-04-11T14:31:10.200384+00:00"
 }

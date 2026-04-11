@@ -572,11 +572,11 @@
       "premier",
       "next",
       "presidential",
-      "english",
       "relegated",
-      "forest",
       "season",
+      "forest",
       "nottm",
+      "english",
       "denmark",
       "frederiksen",
       "elections"
@@ -592,17 +592,17 @@
       "freedom",
       "april",
       "russia",
-      "ceasefire",
-      "ukraine"
+      "ukraine",
+      "ceasefire"
     ],
     "soft_blacklist_keywords": [
       "chamber",
       "representatives",
       "third",
       "colombian",
+      "danish",
       "general",
       "folketing",
-      "danish",
       "second",
       "popular"
     ],
@@ -622,20 +622,20 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: league, premier, next, presidential, english, relegated."
+      "Operational whitelist themes: league, premier, next, presidential, relegated, season."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "Hard blacklist themes to avoid: win, election, seats, parliamentary, most, movement.",
-      "Soft blacklist themes requiring stricter triggers: chamber, representatives, third, colombian, general, folketing."
+      "Soft blacklist themes requiring stricter triggers: chamber, representatives, third, colombian, danish, general."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, election, seats, parliamentary, most. Soft blacklist themes (copy only with strict trigger): chamber, representatives, third, colombian, general. Whitelist themes (higher priority for selective following): league, premier, next, presidential, english. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, election, seats, parliamentary, most. Soft blacklist themes (copy only with strict trigger): chamber, representatives, third, colombian, danish. Whitelist themes (higher priority for selective following): league, premier, next, presidential, relegated. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened"
   ],
-  "generated_at_utc": "2026-04-11T14:06:06.307825+00:00"
+  "generated_at_utc": "2026-04-11T14:32:05.343100+00:00"
 }

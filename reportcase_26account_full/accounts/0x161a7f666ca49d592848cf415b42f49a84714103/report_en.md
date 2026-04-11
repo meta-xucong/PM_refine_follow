@@ -8,7 +8,7 @@
 - Source local name: `account_1`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: spread, state, cavaliers, hawks, kings. Soft blacklist themes: win, ducks, rebels, green, missouri. Whitelist themes: open, zhejiang, flames, beijing, nanjing. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: spread, state, cavaliers, hawks, kings. Soft blacklist themes: win, ducks, rebels, green, missouri. Whitelist themes: open, zhejiang, flames, beijing, king. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -32,7 +32,7 @@ Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: open, zhejiang, flames, beijing, nanjing, monkey.
+- Operational whitelist themes: open, zhejiang, flames, beijing, king, nanjing.
 
 ## 5. Copy-Trading Risks
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
@@ -50,12 +50,12 @@ Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copy
 - zhejiang
 - flames
 - beijing
+- king
 - nanjing
 - monkey
-- king
 - flying
-- northeast
 - jilin
+- northeast
 - adelaide
 - phoenix
 
@@ -82,10 +82,10 @@ Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copy
 - bison
 - gators
 - redhawks
-- unlv
 - runnin
+- unlv
 - austin
-- stephen
+- lumberjacks
 
 ## 7. Account Overview
 - analysis_window: `2026-03-11 18:33:09 UTC -> 2026-04-10 18:24:37 UTC`

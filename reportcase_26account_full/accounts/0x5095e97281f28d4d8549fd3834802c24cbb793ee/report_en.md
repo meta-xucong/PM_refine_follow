@@ -8,7 +8,7 @@
 - Source local name: `account_14`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: office, weekend, box, opening, greater. Soft blacklist themes: reminders, him, come, not, here. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: weekend, box, office, opening, greater. Soft blacklist themes: reminders, him, come, not, ready. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -37,8 +37,8 @@ Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copy
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: office, weekend, box, opening, greater, between.
-- Soft blacklist themes requiring stricter triggers: reminders, him, come, not, here, ready.
+- Hard blacklist themes to avoid: weekend, box, office, opening, greater, between.
+- Soft blacklist themes requiring stricter triggers: reminders, him, come, not, ready, here.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -48,26 +48,26 @@ Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copy
 - (none)
 
 ### Hard Blacklist Keywords
-- office
 - weekend
 - box
+- office
 - opening
 - greater
 - between
-- mary
-- hail
 - project
+- hail
+- mary
 - less
 - hoppers
-- movie
+- super
 
 ### Soft Blacklist Keywords
 - reminders
 - him
 - come
 - not
-- here
 - ready
+- here
 
 ## 7. Account Overview
 - analysis_window: `2026-03-12 14:07:57 UTC -> 2026-04-10 18:13:37 UTC`

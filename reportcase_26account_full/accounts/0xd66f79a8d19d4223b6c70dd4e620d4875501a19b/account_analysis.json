@@ -844,8 +844,8 @@
       "draw"
     ],
     "soft_blacklist_keywords": [
-      "villa",
-      "aston"
+      "aston",
+      "villa"
     ],
     "whitelist_keyword_count": 1,
     "hard_blacklist_keyword_count": 36,
@@ -868,14 +868,14 @@
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "Hard blacklist themes to avoid: win, united, madrid, real, manchester, liverpool.",
-      "Soft blacklist themes requiring stricter triggers: villa, aston."
+      "Soft blacklist themes requiring stricter triggers: aston, villa."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, united, madrid, real, manchester. Soft blacklist themes (copy only with strict trigger): villa, aston. Whitelist themes (higher priority for selective following): march. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, united, madrid, real, manchester. Soft blacklist themes (copy only with strict trigger): aston, villa. Whitelist themes (higher priority for selective following): march. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T14:06:27.743551+00:00"
+  "generated_at_utc": "2026-04-11T14:32:29.934375+00:00"
 }

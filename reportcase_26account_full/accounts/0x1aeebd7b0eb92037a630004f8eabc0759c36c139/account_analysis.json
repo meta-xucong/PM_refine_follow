@@ -619,8 +619,8 @@
       "entertainment"
     ],
     "whitelist_keywords": [
-      "best",
       "awards",
+      "best",
       "academy",
       "actress",
       "buckley",
@@ -636,9 +636,9 @@
       "reach",
       "eurovision",
       "carabao",
-      "madrid",
       "real",
-      "masters"
+      "madrid",
+      "scheffler"
     ],
     "soft_blacklist_keywords": [
       "finland",
@@ -660,7 +660,7 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: best, awards, academy, actress, buckley, jessie."
+      "Operational whitelist themes: awards, best, academy, actress, buckley, jessie."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
@@ -670,9 +670,9 @@
       "Soft blacklist themes requiring stricter triggers: finland, televote, frankenstein."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, entertainment. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, league, arsenal, champions, cup. Soft blacklist themes (copy only with strict trigger): finland, televote, frankenstein. Whitelist themes (higher priority for selective following): best, awards, academy, actress, buckley. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, entertainment. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, league, arsenal, champions, cup. Soft blacklist themes (copy only with strict trigger): finland, televote, frankenstein. Whitelist themes (higher priority for selective following): awards, best, academy, actress, buckley. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T14:05:16.553508+00:00"
+  "generated_at_utc": "2026-04-11T14:31:06.273850+00:00"
 }

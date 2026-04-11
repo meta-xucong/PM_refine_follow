@@ -8,7 +8,7 @@
 - Source local name: `account_11`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: march, iran, enter, forces, ceasefire. Soft blacklist themes: video, mrbeast, views, above, fdv. Whitelist themes: april, netanyahu, out, iranian, regime. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: march, iran, forces, enter, ceasefire. Soft blacklist themes: views, video, mrbeast, above, one. Whitelist themes: april, out, netanyahu, iranian, fall. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -30,13 +30,13 @@ Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copy
 - Low non-copyable token-fast BUY ratio.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: april, netanyahu, out, iranian, regime, fall.
+- Operational whitelist themes: april, out, netanyahu, iranian, fall, regime.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: march, iran, enter, forces, ceasefire, public.
-- Soft blacklist themes requiring stricter triggers: video, mrbeast, views, above, fdv, one.
+- Hard blacklist themes to avoid: march, iran, forces, enter, ceasefire, public.
+- Soft blacklist themes requiring stricter triggers: views, video, mrbeast, above, one, fdv.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -46,11 +46,11 @@ Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copy
 
 ### Whitelist Keywords
 - april
-- netanyahu
 - out
+- netanyahu
 - iranian
-- regime
 - fall
+- regime
 - change
 - russia
 - ukraine
@@ -61,24 +61,24 @@ Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copy
 ### Hard Blacklist Keywords
 - march
 - iran
-- enter
 - forces
+- enter
 - ceasefire
 - public
 - trump
 - announces
 - end
 - p2p
+- sale
 - protocol
-- committed
 
 ### Soft Blacklist Keywords
+- views
 - video
 - mrbeast
-- views
 - above
-- fdv
 - one
+- fdv
 
 ## 7. Account Overview
 - analysis_window: `2026-03-11 18:53:59 UTC -> 2026-04-10 04:56:45 UTC`

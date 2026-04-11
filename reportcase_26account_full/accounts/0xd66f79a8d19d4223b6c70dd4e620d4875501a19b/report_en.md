@@ -8,7 +8,7 @@
 - Source local name: `account_17`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, united, madrid, real, manchester. Soft blacklist themes: villa, aston. Whitelist themes: march. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, united, madrid, real, manchester. Soft blacklist themes: aston, villa. Whitelist themes: march. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -37,7 +37,7 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - Hard blacklist themes to avoid: win, united, madrid, real, manchester, liverpool.
-- Soft blacklist themes requiring stricter triggers: villa, aston.
+- Soft blacklist themes requiring stricter triggers: aston, villa.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -62,8 +62,8 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - draw
 
 ### Soft Blacklist Keywords
-- villa
 - aston
+- villa
 
 ## 7. Account Overview
 - analysis_window: `2026-03-11 18:49:19 UTC -> 2026-04-09 19:05:39 UTC`

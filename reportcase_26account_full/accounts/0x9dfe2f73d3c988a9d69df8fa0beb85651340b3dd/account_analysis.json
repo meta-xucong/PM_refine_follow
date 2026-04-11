@@ -569,11 +569,11 @@
     ],
     "whitelist_keywords": [
       "april",
-      "netanyahu",
       "out",
+      "netanyahu",
       "iranian",
-      "regime",
       "fall",
+      "regime",
       "change",
       "russia",
       "ukraine",
@@ -584,24 +584,24 @@
     "hard_blacklist_keywords": [
       "march",
       "iran",
-      "enter",
       "forces",
+      "enter",
       "ceasefire",
       "public",
       "trump",
       "announces",
       "end",
       "p2p",
-      "protocol",
-      "committed"
+      "sale",
+      "protocol"
     ],
     "soft_blacklist_keywords": [
+      "views",
       "video",
       "mrbeast",
-      "views",
       "above",
-      "fdv",
-      "one"
+      "one",
+      "fdv"
     ],
     "whitelist_keyword_count": 14,
     "hard_blacklist_keyword_count": 26,
@@ -617,16 +617,16 @@
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: april, netanyahu, out, iranian, regime, fall."
+      "Operational whitelist themes: april, out, netanyahu, iranian, fall, regime."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: march, iran, enter, forces, ceasefire, public.",
-      "Soft blacklist themes requiring stricter triggers: video, mrbeast, views, above, fdv, one."
+      "Hard blacklist themes to avoid: march, iran, forces, enter, ceasefire, public.",
+      "Soft blacklist themes requiring stricter triggers: views, video, mrbeast, above, one, fdv."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): march, iran, enter, forces, ceasefire. Soft blacklist themes (copy only with strict trigger): video, mrbeast, views, above, fdv. Whitelist themes (higher priority for selective following): april, netanyahu, out, iranian, regime. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 58.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): march, iran, forces, enter, ceasefire. Soft blacklist themes (copy only with strict trigger): views, video, mrbeast, above, one. Whitelist themes (higher priority for selective following): april, out, netanyahu, iranian, fall. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T14:06:10.496152+00:00"
+  "generated_at_utc": "2026-04-11T14:32:09.118314+00:00"
 }

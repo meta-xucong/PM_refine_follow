@@ -1654,8 +1654,8 @@
       "esports",
       "season",
       "regular",
-      "valorant",
       "vcl",
+      "valorant",
       "counter-strike"
     ],
     "hard_blacklist_keywords": [
@@ -1682,8 +1682,8 @@
       "suns",
       "make",
       "phoenix",
-      "cloud",
       "dawning",
+      "cloud",
       "anish"
     ],
     "whitelist_keyword_count": 105,
@@ -1719,5 +1719,5 @@
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "Severe risk gate + low calibrated score -> not_recommended"
   ],
-  "generated_at_utc": "2026-04-11T14:06:17.380218+00:00"
+  "generated_at_utc": "2026-04-11T14:32:16.636319+00:00"
 }

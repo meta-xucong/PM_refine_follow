@@ -39,7 +39,7 @@ Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommende
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - Hard blacklist themes to avoid: set, spread, handicap, moneyline, open, miami.
-- Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, one.
+- Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, charleston.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -55,8 +55,8 @@ Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommende
 - minnesota
 - penguins
 - brighton
-- hove
 - albion
+- hove
 - calcio
 
 ### Hard Blacklist Keywords
@@ -79,9 +79,9 @@ Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommende
 - red
 - city
 - real
+- charleston
 - one
 - credit
-- charleston
 - leading
 - new
 - york

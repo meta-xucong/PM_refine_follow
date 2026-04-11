@@ -8,7 +8,7 @@
 - Source local name: `account_15`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: march, iran, april, israel, election. Soft blacklist themes: china, trump. Whitelist themes: military, against, announces, end, operations. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: march, iran, april, israel, election. Soft blacklist themes: china, trump. Whitelist themes: military, against, announces, operations, end. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -30,7 +30,7 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - Low non-copyable token-fast BUY ratio.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: military, against, announces, end, operations, cuba.
+- Operational whitelist themes: military, against, announces, operations, end, cuba.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
@@ -48,15 +48,15 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - military
 - against
 - announces
-- end
 - operations
+- end
 - cuba
+- island
 - kharg
 - iranian
 - longer
-- island
 - control
-- out
+- az-canel
 
 ### Hard Blacklist Keywords
 - march
@@ -67,9 +67,9 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - ceasefire
 - paris
 - municipal
-- second
-- round
+- sophia
 - chikirou
+- round
 - advance
 
 ### Soft Blacklist Keywords

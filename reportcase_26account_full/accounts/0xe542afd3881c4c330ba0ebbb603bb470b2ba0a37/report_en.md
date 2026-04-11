@@ -8,7 +8,7 @@
 - Source local name: `account_8`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: win, league, nba, cup, world. Soft blacklist themes: nfl, championship, kansas, chiefs, madrid. Whitelist themes: barcelona, vandewinkel, colsanitas, bouzkova, marie. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: win, league, nba, cup, world. Soft blacklist themes: nfl, championship, kansas, chiefs, madrid. Whitelist themes: barcelona, bouzkova, marie, colsanitas, vandewinkel. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -31,7 +31,7 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: barcelona, vandewinkel, colsanitas, bouzkova, marie, copa.
+- Operational whitelist themes: barcelona, bouzkova, marie, colsanitas, vandewinkel, copa.
 
 ## 5. Copy-Trading Risks
 - Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.
@@ -49,14 +49,14 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 
 ### Whitelist Keywords
 - barcelona
-- vandewinkel
-- colsanitas
 - bouzkova
 - marie
+- colsanitas
+- vandewinkel
 - copa
 - hanne
-- rybakina
 - elena
+- rybakina
 - bahrain
 - lakers
 - ufc

@@ -8,7 +8,7 @@
 - Source local name: `account_7`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, election, seats, parliamentary, most. Soft blacklist themes: chamber, representatives, third, colombian, general. Whitelist themes: league, premier, next, presidential, english. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, election, seats, parliamentary, most. Soft blacklist themes: chamber, representatives, third, colombian, danish. Whitelist themes: league, premier, next, presidential, relegated. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -32,14 +32,14 @@ Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: league, premier, next, presidential, english, relegated.
+- Operational whitelist themes: league, premier, next, presidential, relegated, season.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - Hard blacklist themes to avoid: win, election, seats, parliamentary, most, movement.
-- Soft blacklist themes requiring stricter triggers: chamber, representatives, third, colombian, general, folketing.
+- Soft blacklist themes requiring stricter triggers: chamber, representatives, third, colombian, danish, general.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -52,11 +52,11 @@ Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copy
 - premier
 - next
 - presidential
-- english
 - relegated
-- forest
 - season
+- forest
 - nottm
+- english
 - denmark
 - frederiksen
 - elections
@@ -72,17 +72,17 @@ Calibrated decision score is 68.52 (anchor-referenced), decision: selective_copy
 - freedom
 - april
 - russia
-- ceasefire
 - ukraine
+- ceasefire
 
 ### Soft Blacklist Keywords
 - chamber
 - representatives
 - third
 - colombian
+- danish
 - general
 - folketing
-- danish
 - second
 - popular
 

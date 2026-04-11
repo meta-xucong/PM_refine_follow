@@ -8,7 +8,7 @@
 - Source local name: `account_13`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, ceasefire, april, june, spacex. Whitelist themes: end, forces, day, december, market. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, ceasefire, april, june, ipo. Whitelist themes: end, forces, day, december, close. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,12 +33,12 @@ Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: end, forces, day, december, market, between.
+- Operational whitelist themes: end, forces, day, december, close, cap.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: iran, ceasefire, april, june, spacex, ipo.
+- Hard blacklist themes to avoid: iran, ceasefire, april, june, ipo, spacex.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -51,22 +51,22 @@ Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copy
 - forces
 - day
 - december
-- market
-- between
 - close
 - cap
+- between
+- market
 - out
-- offering
 - initial
 - public
+- offering
 
 ### Hard Blacklist Keywords
 - iran
 - ceasefire
 - april
 - june
-- spacex
 - ipo
+- spacex
 
 ### Soft Blacklist Keywords
 - (none)

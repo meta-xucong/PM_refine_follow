@@ -56,7 +56,7 @@ Calibrated decision score is 41.22 (anchor-referenced), decision: selective_copy
 - senators
 - sharks
 - golden
-- tulsa
+- hurricane
 
 ### Hard Blacklist Keywords
 - spread

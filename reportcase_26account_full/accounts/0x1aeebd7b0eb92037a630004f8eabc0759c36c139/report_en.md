@@ -8,7 +8,7 @@
 - Source local name: `account_19`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, entertainment. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, league, arsenal, champions, cup. Soft blacklist themes: finland, televote, frankenstein. Whitelist themes: best, awards, academy, actress, buckley. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, entertainment. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: win, league, arsenal, champions, cup. Soft blacklist themes: finland, televote, frankenstein. Whitelist themes: awards, best, academy, actress, buckley. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -31,7 +31,7 @@ Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: best, awards, academy, actress, buckley, jessie.
+- Operational whitelist themes: awards, best, academy, actress, buckley, jessie.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
@@ -46,8 +46,8 @@ Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copy
 - entertainment
 
 ### Whitelist Keywords
-- best
 - awards
+- best
 - academy
 - actress
 - buckley
@@ -63,9 +63,9 @@ Calibrated decision score is 56.34 (anchor-referenced), decision: selective_copy
 - reach
 - eurovision
 - carabao
-- madrid
 - real
-- masters
+- madrid
+- scheffler
 
 ### Soft Blacklist Keywords
 - finland

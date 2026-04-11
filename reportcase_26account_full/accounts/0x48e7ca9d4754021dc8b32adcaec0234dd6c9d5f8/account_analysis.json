@@ -164,10 +164,10 @@
     ],
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
-      "movie",
       "jumanji",
       "top",
-      "grossing"
+      "grossing",
+      "movie"
     ],
     "soft_blacklist_keywords": [],
     "whitelist_keyword_count": 0,
@@ -190,10 +190,10 @@
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: movie, jumanji, top, grossing."
+      "Hard blacklist themes to avoid: jumanji, top, grossing, movie."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): movie, jumanji, top, grossing. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): jumanji, top, grossing, movie. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T14:05:30.648205+00:00"
+  "generated_at_utc": "2026-04-11T14:31:21.406662+00:00"
 }

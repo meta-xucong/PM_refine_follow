@@ -569,11 +569,11 @@
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
       "day",
+      "between",
+      "get",
       "million",
       "views",
       "video",
-      "between",
-      "get",
       "mrbeast",
       "next",
       "iran",
@@ -612,11 +612,11 @@
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
-      "Hard blacklist themes to avoid: day, million, views, video, between, get.",
+      "Hard blacklist themes to avoid: day, between, get, million, views, video.",
       "Soft blacklist themes requiring stricter triggers: league, champions, win, uefa, chelsea, reach."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): day, million, views, video, between. Soft blacklist themes (copy only with strict trigger): league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): day, between, get, million, views. Soft blacklist themes (copy only with strict trigger): league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T14:06:31.001886+00:00"
+  "generated_at_utc": "2026-04-11T14:32:34.416122+00:00"
 }

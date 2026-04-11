@@ -2079,8 +2079,8 @@
       "ceasefire",
       "madrid",
       "real",
-      "bayern",
       "nchen",
+      "bayern",
       "sloviansk",
       "bilytske",
       "lyman",
@@ -2129,7 +2129,7 @@
     "strength_points": [
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: ceasefire, madrid, real, bayern, nchen, sloviansk."
+      "Operational whitelist themes: ceasefire, madrid, real, nchen, bayern, sloviansk."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
@@ -2138,7 +2138,7 @@
       "Soft blacklist themes requiring stricter triggers: win, military, united, manchester, barcelona, league."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): russia, march, capture, april, iran. Soft blacklist themes (copy only with strict trigger): win, military, united, manchester, barcelona. Whitelist themes (higher priority for selective following): ceasefire, madrid, real, bayern, nchen. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): russia, march, capture, april, iran. Soft blacklist themes (copy only with strict trigger): win, military, united, manchester, barcelona. Whitelist themes (higher priority for selective following): ceasefire, madrid, real, nchen, bayern. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T14:06:02.686622+00:00"
+  "generated_at_utc": "2026-04-11T14:32:00.743952+00:00"
 }

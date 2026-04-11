@@ -417,20 +417,20 @@
       "election",
       "presidential",
       "brazilian",
-      "vio",
       "bolsonaro",
-      "world",
+      "vio",
       "iran",
       "cup",
+      "world",
       "fifa",
-      "abelardo",
-      "colombian"
+      "colombian",
+      "espriella"
     ],
     "soft_blacklist_keywords": [
       "peruvian",
-      "rafael",
       "aliaga",
-      "pez"
+      "pez",
+      "rafael"
     ],
     "whitelist_keyword_count": 0,
     "hard_blacklist_keyword_count": 39,
@@ -450,13 +450,13 @@
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "Hard blacklist themes to avoid: win, election, presidential, brazilian, vio, bolsonaro.",
-      "Soft blacklist themes requiring stricter triggers: peruvian, rafael, aliaga, pez."
+      "Hard blacklist themes to avoid: win, election, presidential, brazilian, bolsonaro, vio.",
+      "Soft blacklist themes requiring stricter triggers: peruvian, aliaga, pez, rafael."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): win, election, presidential, brazilian, vio. Soft blacklist themes (copy only with strict trigger): peruvian, rafael, aliaga, pez. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): win, election, presidential, brazilian, bolsonaro. Soft blacklist themes (copy only with strict trigger): peruvian, aliaga, pez, rafael. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T14:06:39.725912+00:00"
+  "generated_at_utc": "2026-04-11T14:32:44.988052+00:00"
 }

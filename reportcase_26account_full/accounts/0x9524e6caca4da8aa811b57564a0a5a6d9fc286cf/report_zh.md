@@ -8,22 +8,22 @@
 - 本地名称: `account_7`
 
 ## 1. 执行结论
-校准后决策分 68.52（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、election、seats、parliamentary、most。软黑名单主题（谨慎跟）：chamber、representatives、third、colombian、general。白名单主题（优先筛选）：league、premier、next、presidential、english。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 68.52（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、election、seats、parliamentary、most。软黑名单主题（谨慎跟）：chamber、representatives、third、colombian、danish。白名单主题（优先筛选）：league、premier、next、presidential、relegated。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
-- decision: `只适合筛着跟`
-- final_score（决策分）: `68.520000`
-- raw_score: `60.410000`
-- anchored_score: `68.520000`
-- delta_vs_anchor_60: `8.520000`
-- delta_vs_anchor_raw: `13.100000`
-- decision_score_basis: `calibrated_anchor_score`
-- anchor_version: `anchor_v2_20260411`
-- anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
+- 结论标签: `只适合筛着跟`
+- 决策分（最终用于判定）: `68.520000`
+- 原始评分（未锚点映射）: `60.410000`
+- 锚点校准分: `68.520000`
+- 相对60分基线差值: `8.520000`
+- 相对锚点原始分差值: `13.100000`
+- 判定口径: `calibrated_anchor_score`
+- 锚点版本: `anchor_v2_20260411`
+- 锚点账户: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 418 笔交易，覆盖 24 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态：全周期=平滑上行，近30天=数据不足，近7天=数据不足。
 - 主要板块主题： sports, us_politics, geopolitics.
 
 ## 4. 跟单优势
@@ -32,36 +32,36 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：league, premier, next, presidential, english, relegated.
+- 可执行白名单主题：league, premier, next, presidential, relegated, season.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 硬黑名单主题（应避免）：win, election, seats, parliamentary, most, movement.
-- 软黑名单主题（需更严格触发）：chamber, representatives, third, colombian, general, folketing.
+- 软黑名单主题（需更严格触发）：chamber, representatives, third, colombian, danish, general.
 
 ## 6. 板块与关键词过滤
-### 所属板块
+### 主要板块标签
 - sports
 - us_politics
 - geopolitics
 
-### 白名单关键词
+### 白名单关键词（优先筛选）
 - league
 - premier
 - next
 - presidential
-- english
 - relegated
-- forest
 - season
+- forest
 - nottm
+- english
 - denmark
 - frederiksen
 - elections
 
-### 硬黑名单关键词
+### 硬黑名单关键词（原则上禁跟）
 - win
 - election
 - seats
@@ -72,62 +72,62 @@
 - freedom
 - april
 - russia
-- ceasefire
 - ukraine
+- ceasefire
 
-### 软黑名单关键词
+### 软黑名单关键词（严格触发才可跟）
 - chamber
 - representatives
 - third
 - colombian
+- danish
 - general
 - folketing
-- danish
 - second
 - popular
 
 ## 7. 账户概览
-- analysis_window: `2026-03-11 22:49:13 UTC -> 2026-04-10 16:59:51 UTC`
-- trade_rows_used: `418`
-- total_buy_usdc: `33418.598454`
-- total_sell_usdc: `21605.810535`
-- traded_markets_count_api: `401`
-- position_value_api: `49111.486100`
+- 分析时间窗口: `2026-03-11 22:49:13 UTC -> 2026-04-10 16:59:51 UTC`
+- 有效交易记录数: `418`
+- 买入总金额（USDC）: `33418.598454`
+- 卖出总金额（USDC）: `21605.810535`
+- 官方累计交易市场数: `401`
+- 官方当前持仓估值: `49111.486100`
 
 ## 8. 核心指标
-- dual_side_buy_usdc_ratio: `57.97%`
-- dual_side_buy_usdc_ratio_1h: `53.73%`
-- token_fast_20m_buy_usdc_ratio: `23.94%`
-- noncopyable_token_fast_buy_ratio: `5.24%`
-- noncopyable_token_fast_sell_ratio: `10.64%`
-- noncopyable_token_fast_token_ratio: `2.13%`
-- event_rebalance_20m_event_ratio: `0.00%`
-- exclusive_concurrent_leg_ratio: `0.00%`
-- nested_concurrent_leg_ratio: `0.00%`
-- weighted_multi_market_risk_ratio: `1.42%`
-- deployable_event_equivalent: `26.500000`
-- deployable_event_density: `0.890535`
-- active_trading_days: `24.000000`
-- trade_count: `418.000000`
-- avg_trades_per_active_day: `17.416667`
+- 双边买入金额占比: `57.97%`
+- 1小时内双边买入占比: `53.73%`
+- 20分钟快交易买入占比: `23.94%`
+- 不可复制快交易买入占比: `5.24%`
+- 不可复制快交易卖出占比: `10.64%`
+- 不可复制快交易Token覆盖占比: `2.13%`
+- 20分钟事件再平衡事件占比: `0.00%`
+- 互斥并发腿占比: `0.00%`
+- 递进并发梯占比: `0.00%`
+- 加权多子市场结构风险比: `1.42%`
+- 可利用事件等价值: `26.500000`
+- 可利用事件密度: `0.890535`
+- 活跃交易天数: `24.000000`
+- 交易总笔数: `418.000000`
+- 活跃日均交易笔数: `17.416667`
 
 ## 9. 收益曲线评估
-- all_time_shape: `平滑上行`
-- all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- 全周期曲线形态: `平滑上行`
+- 全周期曲线得分: `12`
+- 近30天曲线形态: `数据不足`
+- 近30天曲线得分: `0`
+- 近7天曲线形态: `数据不足`
+- 近7天曲线得分: `0`
+- 收益曲线综合标签: `长期与近期均偏弱`
 
 ## 10. 评分拆解
-- copyability_score: `19.420000`
-- deployability_score: `20`
-- multi_market_structure_score: `20`
-- pnl_curve_stability_score: `9.990000`
-- risk_penalty_adjustment: `-9.000000`
-- concentration_penalty: `0.000000`
-- low_frequency_cap: `n/a`
+- 可复制性得分: `19.420000`
+- 可部署性得分: `20`
+- 多子市场结构得分: `20`
+- 收益曲线稳定性得分: `9.990000`
+- 风险惩罚项: `-9.000000`
+- 集中度惩罚项: `0.000000`
+- 低频封顶分: `n/a`
 
 ## 11. 数据质量与假设
 - 触发风险门槛，禁止宽跟模式，需严格黑名单筛选

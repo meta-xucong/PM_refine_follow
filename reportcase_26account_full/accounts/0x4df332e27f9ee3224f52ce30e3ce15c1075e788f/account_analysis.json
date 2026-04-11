@@ -5051,16 +5051,16 @@
       "sports"
     ],
     "whitelist_keywords": [
-      "rajasthan",
       "royals",
+      "rajasthan",
       "giants",
       "lucknow",
       "sunrisers",
       "hyderabad",
       "madrid",
-      "atl",
-      "tico",
       "club",
+      "tico",
+      "atl",
       "bucharest",
       "daniel"
     ],
@@ -5081,14 +5081,14 @@
     "soft_blacklist_keywords": [
       "titans",
       "gujarat",
-      "grand",
       "prix",
+      "grand",
       "city",
       "manchester",
       "ludvig",
       "aberg",
-      "bod",
       "glimt",
+      "bod",
       "zverev",
       "women"
     ],
@@ -5106,7 +5106,7 @@
       "Low non-copyable token-fast BUY ratio.",
       "Nested concurrent behavior remains relatively contained.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: rajasthan, royals, giants, lucknow, sunrisers, hyderabad."
+      "Operational whitelist themes: royals, rajasthan, giants, lucknow, sunrisers, hyderabad."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
@@ -5116,10 +5116,10 @@
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
       "Hard blacklist themes to avoid: spread, pistons, rockets, knicks, warriors, kings.",
-      "Soft blacklist themes requiring stricter triggers: titans, gujarat, grand, prix, city, manchester."
+      "Soft blacklist themes requiring stricter triggers: titans, gujarat, prix, grand, city, manchester."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): spread, pistons, rockets, knicks, warriors. Soft blacklist themes (copy only with strict trigger): titans, gujarat, grand, prix, city. Whitelist themes (higher priority for selective following): rajasthan, royals, giants, lucknow, sunrisers. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): spread, pistons, rockets, knicks, warriors. Soft blacklist themes (copy only with strict trigger): titans, gujarat, prix, grand, city. Whitelist themes (higher priority for selective following): royals, rajasthan, giants, lucknow, sunrisers. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
@@ -5127,5 +5127,5 @@
     "Calibrated score below 32 -> not_recommended floor",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T14:05:34.573662+00:00"
+  "generated_at_utc": "2026-04-11T14:31:25.208430+00:00"
 }

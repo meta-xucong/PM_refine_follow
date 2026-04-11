@@ -8,22 +8,22 @@
 - 本地名称: `account_8`
 
 ## 1. 执行结论
-校准后决策分 39.64（锚点口径），结论：不值得跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：win、league、nba、cup、world。软黑名单主题（谨慎跟）：nfl、championship、kansas、chiefs、madrid。白名单主题（优先筛选）：barcelona、vandewinkel、colsanitas、bouzkova、marie。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 39.64（锚点口径），结论：不值得跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：win、league、nba、cup、world。软黑名单主题（谨慎跟）：nfl、championship、kansas、chiefs、madrid。白名单主题（优先筛选）：barcelona、bouzkova、marie、colsanitas、vandewinkel。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
-- decision: `不值得跟`
-- final_score（决策分）: `39.640000`
-- raw_score: `15.990000`
-- anchored_score: `39.640000`
-- delta_vs_anchor_60: `-20.360000`
-- delta_vs_anchor_raw: `-31.320000`
-- decision_score_basis: `calibrated_anchor_score`
-- anchor_version: `anchor_v2_20260411`
-- anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
+- 结论标签: `不值得跟`
+- 决策分（最终用于判定）: `39.640000`
+- 原始评分（未锚点映射）: `15.990000`
+- 锚点校准分: `39.640000`
+- 相对60分基线差值: `-20.360000`
+- 相对锚点原始分差值: `-31.320000`
+- 判定口径: `calibrated_anchor_score`
+- 锚点版本: `anchor_v2_20260411`
+- 锚点账户: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 22151 笔交易，覆盖 31 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态：全周期=平滑上行，近30天=数据不足，近7天=数据不足。
 - 主要板块主题： sports, us_politics, geopolitics.
 
 ## 4. 跟单优势
@@ -31,7 +31,7 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：barcelona, vandewinkel, colsanitas, bouzkova, marie, copa.
+- 可执行白名单主题：barcelona, bouzkova, marie, colsanitas, vandewinkel, copa.
 
 ## 5. 跟单风险
 - 不可复制的 token 快交易（BUY）比例偏高，收益更依赖执行优势。
@@ -42,26 +42,26 @@
 - 软黑名单主题（需更严格触发）：nfl, championship, kansas, chiefs, madrid, real.
 
 ## 6. 板块与关键词过滤
-### 所属板块
+### 主要板块标签
 - sports
 - us_politics
 - geopolitics
 
-### 白名单关键词
+### 白名单关键词（优先筛选）
 - barcelona
-- vandewinkel
-- colsanitas
 - bouzkova
 - marie
+- colsanitas
+- vandewinkel
 - copa
 - hanne
-- rybakina
 - elena
+- rybakina
 - bahrain
 - lakers
 - ufc
 
-### 硬黑名单关键词
+### 硬黑名单关键词（原则上禁跟）
 - win
 - league
 - nba
@@ -75,7 +75,7 @@
 - chelsea
 - fifa
 
-### 软黑名单关键词
+### 软黑名单关键词（严格触发才可跟）
 - nfl
 - championship
 - kansas
@@ -90,47 +90,47 @@
 - japan
 
 ## 7. 账户概览
-- analysis_window: `2026-03-11 18:44:05 UTC -> 2026-04-10 18:26:17 UTC`
-- trade_rows_used: `22151`
-- total_buy_usdc: `266478.891238`
-- total_sell_usdc: `263625.779700`
-- traded_markets_count_api: `5011`
-- position_value_api: `111557.571200`
+- 分析时间窗口: `2026-03-11 18:44:05 UTC -> 2026-04-10 18:26:17 UTC`
+- 有效交易记录数: `22151`
+- 买入总金额（USDC）: `266478.891238`
+- 卖出总金额（USDC）: `263625.779700`
+- 官方累计交易市场数: `5011`
+- 官方当前持仓估值: `111557.571200`
 
 ## 8. 核心指标
-- dual_side_buy_usdc_ratio: `8.60%`
-- dual_side_buy_usdc_ratio_1h: `4.03%`
-- token_fast_20m_buy_usdc_ratio: `30.16%`
-- noncopyable_token_fast_buy_ratio: `21.17%`
-- noncopyable_token_fast_sell_ratio: `24.95%`
-- noncopyable_token_fast_token_ratio: `10.56%`
-- event_rebalance_20m_event_ratio: `16.50%`
-- exclusive_concurrent_leg_ratio: `56.52%`
-- nested_concurrent_leg_ratio: `86.32%`
-- weighted_multi_market_risk_ratio: `12.71%`
-- deployable_event_equivalent: `119.000000`
-- deployable_event_density: `3.968302`
-- active_trading_days: `31.000000`
-- trade_count: `22151.000000`
-- avg_trades_per_active_day: `714.548387`
+- 双边买入金额占比: `8.60%`
+- 1小时内双边买入占比: `4.03%`
+- 20分钟快交易买入占比: `30.16%`
+- 不可复制快交易买入占比: `21.17%`
+- 不可复制快交易卖出占比: `24.95%`
+- 不可复制快交易Token覆盖占比: `10.56%`
+- 20分钟事件再平衡事件占比: `16.50%`
+- 互斥并发腿占比: `56.52%`
+- 递进并发梯占比: `86.32%`
+- 加权多子市场结构风险比: `12.71%`
+- 可利用事件等价值: `119.000000`
+- 可利用事件密度: `3.968302`
+- 活跃交易天数: `31.000000`
+- 交易总笔数: `22151.000000`
+- 活跃日均交易笔数: `714.548387`
 
 ## 9. 收益曲线评估
-- all_time_shape: `平滑上行`
-- all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- 全周期曲线形态: `平滑上行`
+- 全周期曲线得分: `12`
+- 近30天曲线形态: `数据不足`
+- 近30天曲线得分: `0`
+- 近7天曲线形态: `数据不足`
+- 近7天曲线得分: `0`
+- 收益曲线综合标签: `长期与近期均偏弱`
 
 ## 10. 评分拆解
-- copyability_score: `0`
-- deployability_score: `20`
-- multi_market_structure_score: `0`
-- pnl_curve_stability_score: `9.990000`
-- risk_penalty_adjustment: `-14.000000`
-- concentration_penalty: `0.000000`
-- low_frequency_cap: `n/a`
+- 可复制性得分: `0`
+- 可部署性得分: `20`
+- 多子市场结构得分: `0`
+- 收益曲线稳定性得分: `9.990000`
+- 风险惩罚项: `-14.000000`
+- 集中度惩罚项: `0.000000`
+- 低频封顶分: `n/a`
 
 ## 11. 数据质量与假设
 - 触发风险门槛，禁止宽跟模式，需严格黑名单筛选

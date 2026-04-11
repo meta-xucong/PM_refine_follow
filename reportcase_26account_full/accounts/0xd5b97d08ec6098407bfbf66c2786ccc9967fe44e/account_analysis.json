@@ -611,22 +611,22 @@
       "forces",
       "day",
       "december",
-      "market",
-      "between",
       "close",
       "cap",
+      "between",
+      "market",
       "out",
-      "offering",
       "initial",
-      "public"
+      "public",
+      "offering"
     ],
     "hard_blacklist_keywords": [
       "iran",
       "ceasefire",
       "april",
       "june",
-      "spacex",
-      "ipo"
+      "ipo",
+      "spacex"
     ],
     "soft_blacklist_keywords": [],
     "whitelist_keyword_count": 89,
@@ -646,15 +646,15 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: end, forces, day, december, market, between."
+      "Operational whitelist themes: end, forces, day, december, close, cap."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: iran, ceasefire, april, june, spacex, ipo."
+      "Hard blacklist themes to avoid: iran, ceasefire, april, june, ipo, spacex."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, ceasefire, april, june, spacex. Whitelist themes (higher priority for selective following): end, forces, day, december, market. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, ceasefire, april, june, ipo. Whitelist themes (higher priority for selective following): end, forces, day, december, close. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T14:06:24.326312+00:00"
+  "generated_at_utc": "2026-04-11T14:32:25.811323+00:00"
 }

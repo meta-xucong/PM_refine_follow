@@ -31151,8 +31151,8 @@
       "minnesota",
       "penguins",
       "brighton",
-      "hove",
       "albion",
+      "hove",
       "calcio"
     ],
     "hard_blacklist_keywords": [
@@ -31175,9 +31175,9 @@
       "red",
       "city",
       "real",
+      "charleston",
       "one",
       "credit",
-      "charleston",
       "leading",
       "new",
       "york",
@@ -31206,7 +31206,7 @@
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "Hard blacklist themes to avoid: set, spread, handicap, moneyline, open, miami.",
-      "Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, one."
+      "Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, charleston."
     ]
   },
   "narrative_conclusion": "Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): set, spread, handicap, moneyline, open. Soft blacklist themes (copy only with strict trigger): madrid, halftime, red, city, real. Whitelist themes (higher priority for selective following): win, liverpool, club, sharks, end. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
@@ -31216,5 +31216,5 @@
     "Severe risk gate + low calibrated score -> not_recommended",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T14:05:49.025415+00:00"
+  "generated_at_utc": "2026-04-11T14:31:39.331046+00:00"
 }

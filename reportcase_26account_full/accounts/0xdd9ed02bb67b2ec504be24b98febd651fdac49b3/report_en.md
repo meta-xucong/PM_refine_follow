@@ -8,7 +8,7 @@
 - Source local name: `account_10`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: win, election, presidential, brazilian, vio. Soft blacklist themes: peruvian, rafael, aliaga, pez. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: win, election, presidential, brazilian, bolsonaro. Soft blacklist themes: peruvian, aliaga, pez, rafael. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -34,8 +34,8 @@ Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copy
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - High nested concurrent-ladder ratio, implying heavier structure management.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
-- Hard blacklist themes to avoid: win, election, presidential, brazilian, vio, bolsonaro.
-- Soft blacklist themes requiring stricter triggers: peruvian, rafael, aliaga, pez.
+- Hard blacklist themes to avoid: win, election, presidential, brazilian, bolsonaro, vio.
+- Soft blacklist themes requiring stricter triggers: peruvian, aliaga, pez, rafael.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -51,20 +51,20 @@ Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copy
 - election
 - presidential
 - brazilian
-- vio
 - bolsonaro
-- world
+- vio
 - iran
 - cup
+- world
 - fifa
-- abelardo
 - colombian
+- espriella
 
 ### Soft Blacklist Keywords
 - peruvian
-- rafael
 - aliaga
 - pez
+- rafael
 
 ## 7. Account Overview
 - analysis_window: `2026-03-13 04:33:45 UTC -> 2026-04-10 18:15:13 UTC`

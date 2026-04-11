@@ -18874,12 +18874,12 @@
       "zhejiang",
       "flames",
       "beijing",
+      "king",
       "nanjing",
       "monkey",
-      "king",
       "flying",
-      "northeast",
       "jilin",
+      "northeast",
       "adelaide",
       "phoenix"
     ],
@@ -18906,10 +18906,10 @@
       "bison",
       "gators",
       "redhawks",
-      "unlv",
       "runnin",
+      "unlv",
       "austin",
-      "stephen"
+      "lumberjacks"
     ],
     "whitelist_keyword_count": 247,
     "hard_blacklist_keyword_count": 272,
@@ -18927,7 +18927,7 @@
       "Nested concurrent behavior remains relatively contained.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: open, zhejiang, flames, beijing, nanjing, monkey."
+      "Operational whitelist themes: open, zhejiang, flames, beijing, king, nanjing."
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
@@ -18937,9 +18937,9 @@
       "Soft blacklist themes requiring stricter triggers: win, ducks, rebels, green, missouri, bison."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): spread, state, cavaliers, hawks, kings. Soft blacklist themes (copy only with strict trigger): win, ducks, rebels, green, missouri. Whitelist themes (higher priority for selective following): open, zhejiang, flames, beijing, nanjing. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 50.56 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): spread, state, cavaliers, hawks, kings. Soft blacklist themes (copy only with strict trigger): win, ducks, rebels, green, missouri. Whitelist themes (higher priority for selective following): open, zhejiang, flames, beijing, king. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T14:05:13.392271+00:00"
+  "generated_at_utc": "2026-04-11T14:31:01.345540+00:00"
 }

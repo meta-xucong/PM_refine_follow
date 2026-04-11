@@ -56,8 +56,8 @@ Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommende
 - esports
 - season
 - regular
-- valorant
 - vcl
+- valorant
 - counter-strike
 
 ### Hard Blacklist Keywords
@@ -84,8 +84,8 @@ Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommende
 - suns
 - make
 - phoenix
-- cloud
 - dawning
+- cloud
 - anish
 
 ## 7. Account Overview

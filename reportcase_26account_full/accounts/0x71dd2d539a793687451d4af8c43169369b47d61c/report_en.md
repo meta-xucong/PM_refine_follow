@@ -8,7 +8,7 @@
 - Source local name: `account_3`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Soft blacklist themes: chuck, warsh, federal, schumer, confirm. Whitelist themes: change, rates, fed, interest, meeting. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Soft blacklist themes: warsh, reserve, confirm, chuck, chair. Whitelist themes: rates, meeting, interest, there, fed. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,23 +33,23 @@ Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: change, rates, fed, interest, meeting, there.
+- Operational whitelist themes: rates, meeting, interest, there, fed, change.
 
 ## 5. Copy-Trading Risks
 - Frequency/deployability constraints limit practical copy capacity.
-- Soft blacklist themes requiring stricter triggers: chuck, warsh, federal, schumer, confirm, chair.
+- Soft blacklist themes requiring stricter triggers: warsh, reserve, confirm, chuck, chair, federal.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
 - macro
 
 ### Whitelist Keywords
-- change
 - rates
-- fed
-- interest
 - meeting
+- interest
 - there
+- fed
+- change
 - april
 - march
 
@@ -57,15 +57,15 @@ Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copy
 - (none)
 
 ### Soft Blacklist Keywords
-- chuck
 - warsh
-- federal
-- schumer
-- confirm
-- chair
 - reserve
+- confirm
+- chuck
+- chair
+- federal
 - vote
 - kevin
+- schumer
 
 ## 7. Account Overview
 - analysis_window: `2026-03-13 02:43:13 UTC -> 2026-04-03 13:23:21 UTC`

@@ -8,7 +8,7 @@
 - Source local name: `account_16`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: israel, ends, may, conflict, iran. Soft blacklist themes: next, ter, hungary, minister, magyar. Whitelist themes: invade, april, ceasefire, win, against. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: israel, ends, may, conflict, iran. Soft blacklist themes: next, ter, hungary, magyar, prime. Whitelist themes: invade, april, ceasefire, win, military. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -32,12 +32,12 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: invade, april, ceasefire, win, against, military.
+- Operational whitelist themes: invade, april, ceasefire, win, military, against.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
-- Hard blacklist themes to avoid: israel, ends, may, conflict, iran, israeli.
-- Soft blacklist themes requiring stricter triggers: next, ter, hungary, minister, magyar, prime.
+- Hard blacklist themes to avoid: israel, ends, may, conflict, iran, march.
+- Soft blacklist themes requiring stricter triggers: next, ter, hungary, magyar, prime, minister.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -50,14 +50,14 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - april
 - ceasefire
 - win
-- against
 - military
+- against
 - action
 - election
-- through
 - continues
-- parliamentary
+- through
 - hungarian
+- parliamentary
 
 ### Hard Blacklist Keywords
 - israel
@@ -65,23 +65,23 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - may
 - conflict
 - iran
-- israeli
 - march
-- parliament
 - dissolved
+- israeli
+- parliament
 
 ### Soft Blacklist Keywords
 - next
 - ter
 - hungary
-- minister
 - magyar
 - prime
-- tournament
+- minister
 - fabiano
 - caruana
 - fide
 - candidates
+- tournament
 
 ## 7. Account Overview
 - analysis_window: `2026-03-14 13:13:21 UTC -> 2026-04-10 17:17:59 UTC`

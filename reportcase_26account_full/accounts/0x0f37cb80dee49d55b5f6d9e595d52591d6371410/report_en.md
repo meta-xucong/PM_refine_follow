@@ -8,7 +8,7 @@
 - Source local name: `account_23`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: iran, forces, enter, april. Whitelist themes: highest, temperature, march, below, denver. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: iran, enter, forces, april. Whitelist themes: highest, temperature, below, march, denver. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,11 +33,11 @@ Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: highest, temperature, march, below, denver, ceasefire.
+- Operational whitelist themes: highest, temperature, below, march, denver, ceasefire.
 
 ## 5. Copy-Trading Risks
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: iran, forces, enter, april.
+- Hard blacklist themes to avoid: iran, enter, forces, april.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -48,8 +48,8 @@ Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copy
 ### Whitelist Keywords
 - highest
 - temperature
-- march
 - below
+- march
 - denver
 - ceasefire
 - london
@@ -57,8 +57,8 @@ Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copy
 
 ### Hard Blacklist Keywords
 - iran
-- forces
 - enter
+- forces
 - april
 
 ### Soft Blacklist Keywords

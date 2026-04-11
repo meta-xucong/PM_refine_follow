@@ -8,7 +8,7 @@
 - Source local name: `account_24`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: win, bucks, candidates, fide, sindarov. Soft blacklist themes: end, draw, galatasaray, liverpool, am-11. Whitelist themes: tico, atl, madrid, club, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: win, bucks, candidates, fide, javokhir. Soft blacklist themes: end, draw, liverpool, galatasaray, am-11. Whitelist themes: club, atl, madrid, tico, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -30,13 +30,13 @@ Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: tico, atl, madrid, club, pm-5, pm-6.
+- Operational whitelist themes: club, atl, madrid, tico, pm-5, pm-6.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.
-- Hard blacklist themes to avoid: win, bucks, candidates, fide, sindarov, javokhir.
-- Soft blacklist themes requiring stricter triggers: end, draw, galatasaray, liverpool, am-11, pm-12.
+- Hard blacklist themes to avoid: win, bucks, candidates, fide, javokhir, sindarov.
+- Soft blacklist themes requiring stricter triggers: end, draw, liverpool, galatasaray, am-11, pm-12.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -45,10 +45,10 @@ Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copy
 - geopolitics
 
 ### Whitelist Keywords
-- tico
+- club
 - atl
 - madrid
-- club
+- tico
 - pm-5
 - pm-6
 - ethereum
@@ -63,8 +63,8 @@ Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copy
 - bucks
 - candidates
 - fide
-- sindarov
 - javokhir
+- sindarov
 - tournament
 - hawks
 - march
@@ -75,8 +75,8 @@ Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copy
 ### Soft Blacklist Keywords
 - end
 - draw
-- galatasaray
 - liverpool
+- galatasaray
 - am-11
 - pm-12
 - am-8
