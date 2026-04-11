@@ -1,0 +1,12 @@
+﻿# Python caches
+__pycache__/
+*.pyc
+
+# Generated analysis outputs (do not commit)
+output*/
+output_*/
+
+# Anchor build intermediates (keep only baseline_anchor.json)
+baseline/anchor_activity_*.csv
+baseline/anchor_api_summary.json
+baseline/anchor_raw_analysis.json

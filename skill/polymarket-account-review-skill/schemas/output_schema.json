@@ -1,0 +1,85 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PolymarketAccountScreeningOutput",
+  "type": "object",
+  "required": [
+    "account_address",
+    "raw_score",
+    "anchored_score",
+    "final_score",
+    "decision",
+    "score_breakdown",
+    "metrics",
+    "pnl_curve",
+    "keyword_profile"
+  ],
+  "properties": {
+    "account_address": { "type": "string", "pattern": "^0x[a-fA-F0-9]{40}$" },
+    "raw_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "anchored_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "delta_vs_anchor_60": { "type": "number" },
+    "final_score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "decision": {
+      "type": "string",
+      "enum": ["relative_copyable", "selective_copying_only", "not_recommended"]
+    },
+    "score_breakdown": {
+      "type": "object",
+      "required": [
+        "copyability_score",
+        "deployability_score",
+        "multi_market_structure_score",
+        "pnl_curve_stability_score",
+        "risk_penalty_adjustment",
+        "concentration_penalty",
+        "low_frequency_cap"
+      ],
+      "properties": {
+        "copyability_score": { "type": "number" },
+        "deployability_score": { "type": "number" },
+        "multi_market_structure_score": { "type": "number" },
+        "pnl_curve_stability_score": { "type": "number" },
+        "risk_penalty_adjustment": { "type": "number" },
+        "concentration_penalty": { "type": "number" },
+        "low_frequency_cap": { "type": ["number", "null"] },
+        "raw_before_cap": { "type": "number" }
+      },
+      "additionalProperties": true
+    },
+    "metrics": { "type": "object", "additionalProperties": true },
+    "pnl_curve": {
+      "type": "object",
+      "properties": {
+        "all_time": { "type": "object", "additionalProperties": true },
+        "d30": { "type": "object", "additionalProperties": true },
+        "d7": { "type": "object", "additionalProperties": true },
+        "summary_tag": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "keyword_profile": {
+      "type": "object",
+      "properties": {
+        "sector_tags": { "type": "array", "items": { "type": "string" } },
+        "whitelist_keywords": { "type": "array", "items": { "type": "string" } },
+        "hard_blacklist_keywords": { "type": "array", "items": { "type": "string" } },
+        "soft_blacklist_keywords": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "narrative_conclusion": { "type": "string" },
+    "anchor_context": {
+      "type": "object",
+      "properties": {
+        "anchor_enabled": { "type": "boolean" },
+        "anchor_version": { "type": ["string", "null"] },
+        "anchor_account": { "type": ["string", "null"] },
+        "anchor_target_score": { "type": ["number", "null"] },
+        "anchor_offset": { "type": ["number", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "assumptions": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}
