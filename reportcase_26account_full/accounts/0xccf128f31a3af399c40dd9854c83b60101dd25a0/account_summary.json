@@ -1,0 +1,81 @@
+{
+  "account_address": "0xccf128f31a3af399c40dd9854c83b60101dd25a0",
+  "fetched_at_utc": "2026-04-11T09:25:39.824414+00:00",
+  "sources": {
+    "value": "/value",
+    "traded": "/traded",
+    "positions": "/positions",
+    "closed_positions": "/closed-positions",
+    "accounting_snapshot": "/v1/accounting/snapshot"
+  },
+  "summary": {
+    "positions_value": 66994.5651,
+    "traded_markets": 1972,
+    "open_positions_count": 317,
+    "open_positions_cash_pnl_sum": -6559.2266,
+    "open_positions_realized_pnl_sum": 0.0,
+    "closed_positions_count": 50,
+    "closed_positions_realized_pnl_total": 40050.427827,
+    "closed_positions_realized_pnl_30d": 0,
+    "closed_positions_realized_pnl_7d": 0
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "flat",
+      "score": 1,
+      "points_count": 2,
+      "total_return": -971.896777,
+      "trend_slope": -971.896777,
+      "max_drawdown": 971.896777,
+      "daily_volatility": 0.0
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak",
+    "daily_points": [
+      {
+        "date": "2026-01-23",
+        "daily_realized_pnl": 41022.324604,
+        "cumulative_realized_pnl": 41022.324604
+      },
+      {
+        "date": "2026-01-24",
+        "daily_realized_pnl": -971.896777,
+        "cumulative_realized_pnl": 40050.427827
+      }
+    ]
+  },
+  "snapshot": {
+    "equity": {
+      "cashBalance": "53533.443119",
+      "positionsValue": "66994.563000",
+      "equity": "120528.006119",
+      "valuationTime": "2026-04-11T09:25:38Z"
+    },
+    "positions_rows": 318,
+    "raw_files": [
+      "equity.csv",
+      "positions.csv"
+    ]
+  },
+  "snapshot_error": null
+}

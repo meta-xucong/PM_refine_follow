@@ -1,0 +1,199 @@
+{
+  "account_address": "0x48e7ca9d4754021dc8b32adcaec0234dd6c9d5f8",
+  "account_label": "Corrupt-Apartment",
+  "account_name_meta": {
+    "pseudonym": "Corrupt-Apartment",
+    "name": "Zippy",
+    "account_name": "account_20"
+  },
+  "analysis_window": "2026-03-11 18:31:33 UTC -> 2026-04-10 15:30:39 UTC",
+  "trade_rows_used": 674,
+  "total_buy_usdc": 7037.874812,
+  "total_sell_usdc": 3969.088767,
+  "api_summary": {
+    "positions_value": 6580.3705,
+    "traded_markets": 362
+  },
+  "metrics": {
+    "dual_side_condition_count_ratio": 0.1,
+    "dual_side_buy_usdc_ratio": 0.389672,
+    "dual_side_buy_usdc_ratio_1h": 0.0,
+    "token_fast_20m_count": 0,
+    "token_fast_20m_buy_usdc_ratio": 0.0,
+    "token_fast_20m_sell_usdc_ratio": 0.0,
+    "noncopyable_token_fast_buy_ratio": 0.0,
+    "noncopyable_token_fast_sell_ratio": 0.0,
+    "noncopyable_token_fast_token_ratio": 0.0,
+    "event_rebalance_20m_count": 3,
+    "event_rebalance_20m_buy_ratio": 0.02916,
+    "event_rebalance_20m_sell_ratio": 0.014867,
+    "event_rebalance_20m_event_ratio": 0.5,
+    "exclusive_multi_market_buy_ratio": 0.0,
+    "nested_deadline_multi_market_buy_ratio": 0.0,
+    "independent_multi_market_buy_ratio": 1.0,
+    "unknown_multi_market_buy_ratio": 0.0,
+    "exclusive_concurrent_leg_ratio": 0.0,
+    "nested_concurrent_leg_ratio": 0.0,
+    "exclusive_overlap_time_ratio": 0.0,
+    "nested_overlap_time_ratio": 0.0,
+    "weighted_multi_market_risk_ratio": 0.15,
+    "exclusive_sequential_switch_count": 0,
+    "nested_sequential_roll_count": 0,
+    "clean_event_count": 0,
+    "semiclean_event_count": 1,
+    "dirty_event_count": 1,
+    "deployable_event_equivalent": 0.5,
+    "deployable_event_density": 0.016737,
+    "top1_event_buy_ratio": 1.0,
+    "top3_event_buy_ratio": 1.0,
+    "median_holding_time_sec": 1040429.0,
+    "weighted_median_holding_time_sec": 1565375,
+    "sell_usdc_ratio_within_20m": 0.0,
+    "sell_usdc_ratio_within_1h": 0.0,
+    "trade_count": 674.0,
+    "active_trading_days": 30.0,
+    "window_days": 30.874375,
+    "active_day_ratio": 0.97168,
+    "avg_trades_per_active_day": 22.466667
+  },
+  "event_records": [
+    {
+      "eventSlug": "highest-grossing-movie-in-2026",
+      "relation_type": "independent",
+      "event_subtype": "independent_multi_market",
+      "classification": "dirty",
+      "distinct_conditions": 12,
+      "event_buy_usdc": 7037.874812,
+      "concurrent_buy_usdc": 5417.220349,
+      "concurrent_ratio": 0.769724,
+      "overlap_time_ratio": 0.913641,
+      "max_concurrent_legs": 3,
+      "sequential_switch_count": 1
+    },
+    {
+      "eventSlug": "which-movie-has-biggest-opening-weekend-in-2026",
+      "relation_type": "independent",
+      "event_subtype": "independent_multi_market",
+      "classification": "semiclean",
+      "distinct_conditions": 2,
+      "event_buy_usdc": 0,
+      "concurrent_buy_usdc": 0.0,
+      "concurrent_ratio": 0.0,
+      "overlap_time_ratio": 0.0,
+      "max_concurrent_legs": 1,
+      "sequential_switch_count": 0
+    }
+  ],
+  "token_fast_candidates_count": 0,
+  "noncopyable_token_fast_count": 0,
+  "score_breakdown": {
+    "copyability_score": 23.55,
+    "deployability_score": 4.98,
+    "multi_market_structure_score": 17.5,
+    "pnl_curve_stability_score": 9.99,
+    "pnl_confidence": 0.45,
+    "pnl_windows_available": 1,
+    "risk_penalty_adjustment": 0,
+    "concentration_penalty": 15.0,
+    "low_frequency_cap": 48,
+    "active_trading_days": 30.0,
+    "trade_count": 674.0,
+    "active_day_ratio": 0.97168,
+    "avg_trades_per_active_day": 22.466667,
+    "raw_before_cap": 41.02,
+    "pnl_tag": "long_and_recent_weak",
+    "decision_score_basis": "calibrated_anchor_score",
+    "anchor_offset": 12.69,
+    "anchor_target_score": 60.0,
+    "anchor_calibration_scale": 0.65,
+    "anchor_enabled": true,
+    "caution_risk_gate_triggered": false,
+    "severe_risk_gate_triggered": false
+  },
+  "raw_score": 41.02,
+  "anchored_score": 55.91,
+  "delta_vs_anchor_60": -4.09,
+  "delta_vs_anchor_raw": -6.29,
+  "final_score": 55.91,
+  "decision": "selective_copying_only",
+  "anchor_context": {
+    "anchor_enabled": true,
+    "anchor_version": "anchor_v2_20260411",
+    "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
+    "anchor_target_score": 60.0,
+    "anchor_offset": 12.69,
+    "anchor_raw_base_score": 47.31,
+    "anchor_calibration_scale": 0.65
+  },
+  "pnl_curve": {
+    "all_time": {
+      "window": "all_time",
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 20,
+      "total_return": 1067.501771,
+      "trend_slope": 60.619604,
+      "max_drawdown": 212.529326,
+      "daily_volatility": 171.24247
+    },
+    "d30": {
+      "window": "d30",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "d7": {
+      "window": "d7",
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 0,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
+    },
+    "summary_tag": "long_and_recent_weak"
+  },
+  "keyword_profile": {
+    "sector_tags": [
+      "entertainment"
+    ],
+    "whitelist_keywords": [],
+    "hard_blacklist_keywords": [
+      "grossing",
+      "top",
+      "movie",
+      "jumanji"
+    ],
+    "soft_blacklist_keywords": [],
+    "whitelist_keyword_count": 0,
+    "hard_blacklist_keyword_count": 4,
+    "soft_blacklist_keyword_count": 0
+  },
+  "behavior_summary": {
+    "behavior_points": [
+      "Observed 674 trades across 30 active trading days in the analysis window.",
+      "Low-frequency cap is active at 48, reflecting constrained copy capacity.",
+      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "Dominant sector themes: entertainment."
+    ],
+    "strength_points": [
+      "Low non-copyable token-fast BUY ratio.",
+      "Nested concurrent behavior remains relatively contained.",
+      "Weighted multi-market structure risk is controlled.",
+      "All-time PnL profile is smooth-up, supporting strategy consistency."
+    ],
+    "risk_points": [
+      "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
+      "Frequency/deployability constraints limit practical copy capacity.",
+      "Hard blacklist themes to avoid: grossing, top, movie, jumanji."
+    ]
+  },
+  "narrative_conclusion": "Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): grossing, top, movie, jumanji. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "assumptions": [],
+  "generated_at_utc": "2026-04-11T13:43:46.545396+00:00"
+}

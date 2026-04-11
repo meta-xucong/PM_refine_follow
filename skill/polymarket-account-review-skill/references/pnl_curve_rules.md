@@ -62,7 +62,7 @@ All-time window:
 - `flat`: `0..+1`
 - `down`: `-2`
 
-Implementation scales the summed 3-window score by `1.35` and clamps to `[-22, +22]` to increase PnL impact vs pure structure-only scoring.
+Implementation uses confidence scaling by available windows (`1.0 / 0.75 / 0.45 / 0.0`), then scales by `1.85`, and clamps to `[-28, +28]` so curve quality has material ranking impact.
 
 ## 5) Interpretation Tags
 

@@ -1,42 +1,44 @@
-# Tuning Table (2026-04-11)
+# Tuning Table (2026-04-11, Finalized Skill Behavior)
 
-Purpose: make skill scores closer to manual descriptive judgment, especially on:
-- low-frequency over-scoring
-- over-optimistic PnL contribution with sparse recent windows
-- nested concurrent risk under-penalization
+Purpose: align scripted outputs with descriptive manual review style while keeping a stable anchor baseline.
 
-## Parameter Changes
+## Major Adjustments
 
-| Area | Before | After | Why |
-|---|---:|---:|---|
-| `copyability` nested penalty coef | 12 | 18 | strengthen penalty on nested concurrent-heavy accounts |
-| `structure` nested penalty coef | 14 | 22 | reduce chance that nested ladders still rank near top |
-| hard exclusion: `noncopyable_token_fast_sell_ratio` | >0.35 | >0.70 | avoid false hard-reject when only sell-side exits are fast |
-| risk penalty: `nested_conc > 0.55` | none | -4 | treat high nested concurrency as meaningful risk even without rebalance |
-| risk penalty: `nested_conc > 0.75` | none | -3 extra | extra penalty for extreme ladder-style overlap |
-| risk penalty: `noncopy_sell` | >0.35 => -5 | >0.45 => -4; >0.65 => -3 | smoother sell-side penalty curve |
-| low-freq cap tier1 (`active/trade`) | `<4 / <40` | same | keep strict floor |
-| low-freq cap tier2 (`active/trade`) | `<8 / <100` | same | medium strict |
-| low-freq cap tier3 (`active/trade`) | `<12 / <180` + cap 66 | from `<10 / <90` + cap 68 | stronger cap for moderate-low activity |
-| PnL confidence factor | none | by available windows: `1.0 / 0.75 / 0.45 / 0.0` | prevent all-time-only PnL from over-inflating score |
-| PnL formula | `(sum)*1.35` | `(sum)*1.35*confidence` | reliability-aware scoring |
+| Area | Previous behavior | Final behavior |
+|---|---|---|
+| Anchor baseline raw level | anchor raw could drift too low | rebuilt anchor with current formula; baseline raw around high-40s and anchored to 60 |
+| Decision policy | `<60` often directly `not_recommended` | risk-gated policy: most `40+` accounts default to `selective_copying_only`; only very low / severe-risk cases become `not_recommended` |
+| Hard exclusion | one-shot force reject | split into `caution_risk_gate` and `severe_risk_gate` with layered downgrade logic |
+| PnL impact | underweighted in mixed windows | confidence-weighted and upscaled (`*1.85`) so curve quality affects rank materially |
+| Frequency impact | some low-activity accounts remained too high | stronger risk penalties and stricter low-frequency caps (`48/56/64`) |
+| Blacklist extraction | conservative hard/soft trigger | weighted dirty-ratio + dirty-event boost, generating stronger hard/soft blacklist themes |
+| Report readability | metric-heavy blocks first | identity + conclusion + behavior/strength/risk + keyword filters first, then metrics |
 
-## Backtest Snapshot (same dataset)
+## Decision Mapping (Implementation)
 
-- Previous run: `analysis_reports_20260411_revised_v2`
-  - decisions: `selective_copying_only=4`, `not_recommended=23`
-- Tuned run: `analysis_reports_20260411_tuned`
-  - decisions: `selective_copying_only=1`, `not_recommended=26`
+1. Base mapping on calibrated `final_score`:
+- `>=78` and clean risk gate -> `relative_copyable`
+- `40..77.99` -> `selective_copying_only`
+- `<40` -> `not_recommended`
 
-Notable score moves:
-- `0xd5b97...`: `73.51 -> 52.04` (nested concurrent risk now fully reflected)
-- `0x52f518...`: `61.89 -> 33.69` (extreme nested concurrent ratio no longer passes)
-- `0x0f37cb...`: `68.00 -> 58.00` (low-frequency + sparse PnL windows reduce inflated score)
+2. Risk-gate adjustments:
+- caution gate downgrades broad-copy eligibility
+- severe gate + low score forces `not_recommended`
+- floor safeguard: very low calibrated score always `not_recommended`
 
-## Notes
+## Anchor Freeze
 
-- This tuning intentionally prefers recall of risky accounts over higher pass rate.
-- If needed, a softer variant can be produced by:
-  - raising tier3 low-freq cap `66 -> 70`
-  - relaxing nested penalties (`18/22 -> 15/18`)
-  - keeping PnL confidence scaling unchanged.
+- Anchor account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
+- Baseline file: `baseline/baseline_anchor.json`
+- Current anchor version: `anchor_v2_20260411`
+- Rebuild only when explicitly requested (`--rebuild-anchor`)
+
+## Expected Output Shape
+
+- Per-account reports (EN + ZH) emphasize:
+  - account identity,
+  - executive conclusion,
+  - behavior interpretation,
+  - copy strengths/risks,
+  - whitelist/hard-blacklist/soft-blacklist themes.
+- Batch summary includes account names, raw score, calibrated decision score, decision label, and report links.

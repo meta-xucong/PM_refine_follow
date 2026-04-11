@@ -40,9 +40,14 @@ Anchor file:
 
 Mechanism:
 - score model first computes `raw_score` from V2.2 rules
-- then computes anchor reference score: `anchored_score = clamp(raw_score + score_offset, 0, 100)`
-- `final_score` (decision basis) uses `raw_score`; `anchored_score` is cross-batch benchmark reference
-- hard exclusion rules still override decision outcome
+- then applies baseline calibration around frozen anchor:
+  - `anchored_score = clamp(60 + (raw_score - anchor_raw_base_score) * calibration_scale, 0, 100)`
+- `final_score` (decision basis) uses calibrated `anchored_score`
+- decision uses risk-gated mapping (not single hard-force reject):
+  - `>=78` and clean risk gate: `relative_copyable`
+  - `40..77.99`: mostly `selective_copying_only`
+  - `<40`: `not_recommended`
+  - severe-risk gate + low score still forces `not_recommended`
 
 Auto behavior:
 - if anchor file exists: reuse it directly
@@ -103,9 +108,11 @@ Before finishing:
 - ensure all discovered accounts are analyzed exactly once
 - ensure each account has both `report_en.md` and `report_zh.md`
 - ensure anchor baseline exists and is attached to scoring
-- ensure summary table is sorted by `final_score` (raw decision score, descending)
+- ensure summary table is sorted by `final_score` (calibrated decision score, descending)
+- ensure report order is human-readable: identity -> conclusion -> behavior -> strengths/risks -> keyword filters -> metrics
 - ensure percentage metrics are `[0,1]` in JSON and `%` in report
 - ensure low-frequency caps and concentration penalties are applied
+- ensure strengthened hard/soft blacklist keywords are generated for selective follow filtering
 - ensure missing data assumptions are explicitly listed
 
 ## Schema + Templates
@@ -114,3 +121,8 @@ Before finishing:
 - Output schema: [`schemas/output_schema.json`](schemas/output_schema.json)
 - English template: [`templates/report_template.md`](templates/report_template.md)
 - Chinese template: [`templates/report_template_zh.md`](templates/report_template_zh.md)
+
+## Chinese Skill Docs
+
+- Chinese workflow guide: [`zh/SKILL_zh.md`](zh/SKILL_zh.md)
+- Chinese scoring summary: [`zh/references_scoring_zh.md`](zh/references_scoring_zh.md)

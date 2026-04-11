@@ -1294,24 +1294,31 @@ score_offset   = 60 - anchor_raw_base_score
 
 ## 19. 2026-04-11 Scoring Stabilization Addendum (Implementation Binding)
 
-This addendum is binding for automated skill execution and resolves the drift observed between descriptive review and scripted scoring.
+This addendum is binding for automated skill execution and resolves drift between descriptive review and scripted scoring.
 
-1. Anchor usage is reference-first:
+1. Anchor usage remains reference-first:
 - keep frozen anchor file and anchored score (`anchored_score`) for cross-run comparability.
-- decision thresholding uses `raw_score` (after caps/penalties), not anchor-shifted score.
+- decision thresholding is based on calibrated `anchored_score`.
+- `60` is a baseline reference, not automatic "recommended".
 
-2. Low-frequency constraints are strengthened:
-- caps now also depend on `active_trading_days` and `trade_count`.
+2. Risk-gated decision policy (replacing one-shot hard force):
+- `>=78` and clean risk gate -> `relative_copyable`.
+- `40..77.99` -> default `selective_copying_only`.
+- `<40` -> default `not_recommended`.
+- severe-risk gate + low score still forces `not_recommended`.
+
+3. Low-frequency constraints are strengthened:
+- caps depend on `deployable_event_equivalent`, `deployable_event_density`, `active_trading_days`, and `trade_count`.
 - low activity can reduce score even when structure metrics look clean.
 
-3. PnL curve influence is strengthened:
-- three-window PnL score is scaled to avoid underweighting versus structure terms.
+4. PnL curve influence is strengthened:
+- three-window PnL score is confidence-weighted and upscaled versus earlier version.
 - accounts with weak long/mid/short curve quality should be visibly pushed down.
 
-4. Nested concurrent handling is de-noised:
-- only material overlaps (time + notional) are treated as true concurrent ladders.
-- short/tiny transitional overlap should not be auto-escalated to dirty.
+5. Keyword filtering is strengthened for selective-copy mode:
+- hard and soft blacklists are generated using weighted dirty ratios and event-level dirty boosts.
+- most 40+ accounts should be operated via whitelist copy + blacklist blocking, not broad copying.
 
-5. API retrieval follows two-layer policy:
+6. API retrieval follows two-layer policy:
 - layer 1: prefetch account summary in data pull stage.
 - layer 2: if missing/incomplete, analysis stage performs one live fallback query.

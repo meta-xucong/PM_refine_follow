@@ -83,10 +83,43 @@ def load_trades(csv_path: str) -> list[dict[str, Any]]:
                     "asset": (raw.get("asset") or "").strip(),
                     "account_address": (raw.get("account_address") or "").lower().strip(),
                     "account_name": (raw.get("account_name") or "").strip(),
+                    "name": (raw.get("name") or "").strip(),
+                    "pseudonym": (raw.get("pseudonym") or "").strip(),
                 }
             )
     rows.sort(key=lambda x: x["timestamp"])
     return rows
+
+
+def pick_display_name(rows: list[dict[str, Any]], account: str) -> tuple[str, dict[str, str | None]]:
+    def norm(v: Any) -> str:
+        return str(v or "").strip()
+
+    def is_generic(v: str) -> bool:
+        return bool(re.fullmatch(r"account_\d+", v.lower()))
+
+    pseudonyms = [norm(r.get("pseudonym")) for r in rows if norm(r.get("pseudonym"))]
+    names = [norm(r.get("name")) for r in rows if norm(r.get("name"))]
+    account_names = [norm(r.get("account_name")) for r in rows if norm(r.get("account_name"))]
+
+    first_pseudonym = pseudonyms[0] if pseudonyms else None
+    first_name = names[0] if names else None
+    first_account_name = account_names[0] if account_names else None
+
+    for candidate in [first_pseudonym, first_name, first_account_name]:
+        if candidate and not is_generic(candidate):
+            return candidate, {
+                "pseudonym": first_pseudonym,
+                "name": first_name,
+                "account_name": first_account_name,
+            }
+
+    fallback = first_account_name or first_name or first_pseudonym or account
+    return fallback, {
+        "pseudonym": first_pseudonym,
+        "name": first_name,
+        "account_name": first_account_name,
+    }
 
 
 def filter_account(rows: list[dict[str, Any]], account: str | None) -> tuple[list[dict[str, Any]], str, list[str]]:
@@ -622,6 +655,8 @@ def keyword_profile(rows: list[dict[str, Any]], event_records: list[dict[str, An
 
     kw_stats: dict[str, dict[str, float]] = defaultdict(lambda: {"clean": 0.0, "semiclean": 0.0, "dirty": 0.0, "count": 0.0})
     sector_score: Counter[str] = Counter()
+    dirty_boost: Counter[str] = Counter()
+    semiclean_boost: Counter[str] = Counter()
 
     for event_slug, title in titles_by_event.items():
         cls = class_by_event.get(event_slug, "clean")
@@ -636,33 +671,74 @@ def keyword_profile(rows: list[dict[str, Any]], event_records: list[dict[str, An
             if tokens & kws:
                 sector_score[sector] += buy_usdc
 
+    for e in event_records:
+        event_slug = e.get("eventSlug") or ""
+        title = titles_by_event.get(event_slug, "")
+        if not title:
+            continue
+        weight = to_float(e.get("event_buy_usdc"), event_buy_by_slug.get(event_slug, 0.0))
+        if weight <= 0:
+            continue
+        tokens = set(tokenize(title))
+        cls = str(e.get("classification") or "clean")
+        if cls == "dirty":
+            for kw in tokens:
+                dirty_boost[kw] += weight
+        elif cls == "semiclean":
+            for kw in tokens:
+                semiclean_boost[kw] += weight * 0.5
+
+    total_event_buy = sum(max(0.0, x) for x in event_buy_by_slug.values())
+    kw_min_notional = max(20.0, total_event_buy * 0.015)
     whitelist: list[tuple[str, float]] = []
     hard_blacklist: list[tuple[str, float]] = []
     soft_blacklist: list[tuple[str, float]] = []
 
     for kw, s in kw_stats.items():
         total = s["clean"] + s["semiclean"] + s["dirty"]
-        if total <= 0 or s["count"] < 2:
+        if total <= 0:
             continue
-        clean_ratio = s["clean"] / total
-        dirty_ratio = s["dirty"] / total
 
-        if clean_ratio >= 0.7 and dirty_ratio <= 0.2:
+        if s["count"] < 2 and total < kw_min_notional:
+            continue
+
+        clean_like_ratio = (s["clean"] + 0.30 * s["semiclean"]) / total
+        dirty_like_ratio = (s["dirty"] + 0.60 * s["semiclean"]) / total
+        dirty_ratio = s["dirty"] / total
+        importance_ratio = total / max(total_event_buy, 1e-9)
+
+        if clean_like_ratio >= 0.68 and dirty_like_ratio <= 0.22:
             whitelist.append((kw, total))
-        elif dirty_ratio >= 0.7:
+        elif dirty_like_ratio >= 0.62 or (dirty_ratio >= 0.50 and importance_ratio >= 0.04):
             hard_blacklist.append((kw, total))
-        elif dirty_ratio >= 0.4:
+        elif dirty_like_ratio >= 0.38:
             soft_blacklist.append((kw, total))
 
-    whitelist.sort(key=lambda x: x[1], reverse=True)
-    hard_blacklist.sort(key=lambda x: x[1], reverse=True)
-    soft_blacklist.sort(key=lambda x: x[1], reverse=True)
+    for kw, boost in dirty_boost.items():
+        if boost >= kw_min_notional * 0.8:
+            hard_blacklist.append((kw, boost))
+    for kw, boost in semiclean_boost.items():
+        if boost >= kw_min_notional:
+            soft_blacklist.append((kw, boost))
+
+    def collapse(items: list[tuple[str, float]]) -> list[tuple[str, float]]:
+        merged: dict[str, float] = {}
+        for kw, score in items:
+            merged[kw] = max(score, merged.get(kw, 0.0))
+        return sorted(merged.items(), key=lambda x: x[1], reverse=True)
+
+    whitelist = collapse(whitelist)
+    hard_blacklist = collapse(hard_blacklist)
+    soft_blacklist = [x for x in collapse(soft_blacklist) if x[0] not in {k for k, _ in hard_blacklist}]
 
     return {
         "sector_tags": [k for k, _ in sector_score.most_common(3)],
         "whitelist_keywords": [k for k, _ in whitelist[:12]],
         "hard_blacklist_keywords": [k for k, _ in hard_blacklist[:12]],
         "soft_blacklist_keywords": [k for k, _ in soft_blacklist[:12]],
+        "whitelist_keyword_count": len(whitelist),
+        "hard_blacklist_keyword_count": len(hard_blacklist),
+        "soft_blacklist_keyword_count": len(soft_blacklist),
     }
 
 
@@ -771,23 +847,26 @@ def compute_scores(
     avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
 
     copyability = 35.0
-    copyability -= dual_side * 30
-    copyability -= noncopy_buy * 34
-    copyability -= excl_conc * 42
-    copyability -= nested_conc * 18
-    copyability -= weighted_risk * 18
-    if noncopy_sell > 0.30:
-        copyability -= (noncopy_sell - 0.30) * 10
+    copyability -= dual_side * 24
+    copyability -= noncopy_buy * 28
+    copyability -= excl_conc * 30
+    copyability -= nested_conc * 12
+    copyability -= weighted_risk * 14
+    if noncopy_sell > 0.35:
+        copyability -= (noncopy_sell - 0.35) * 8
+    if noncopy_token > 0.30:
+        copyability -= (noncopy_token - 0.30) * 6
     copyability = clamp(copyability, 0, 35)
 
-    deployability = min(11.0, deployable * 1.5) + min(6.0, density * 24.0)
-    deployability += min(3.0, active_days * 0.3)
-    deployability += min(2.0, max(0.0, avg_trades_per_active_day - 1.0) * 0.25)
+    deployability = min(11.0, deployable * 1.6) + min(6.2, density * 23.0)
+    deployability += min(1.8, active_days * 0.22)
+    deployability += min(1.0, max(0.0, avg_trades_per_active_day - 1.0) * 0.15)
+    deployability += min(1.0, active_day_ratio * 2.0)
     deployability = clamp(deployability, 0, 20)
 
     structure = 20.0
-    structure -= excl_conc * 40
-    structure -= nested_conc * 22
+    structure -= excl_conc * 30
+    structure -= nested_conc * 16
     structure -= min(4.0, (metrics.get("exclusive_sequential_switch_count") or 0) * 0.18)
     structure -= min(3.0, (metrics.get("nested_sequential_roll_count") or 0) * 0.12)
     structure -= (metrics.get("unknown_multi_market_buy_ratio") or 0.0) * 8
@@ -822,40 +901,44 @@ def compute_scores(
     )
     pnl_confidence = {3: 1.0, 2: 0.75, 1: 0.45}.get(available_windows, 0.0)
     pnl_score_raw = float(pnl_all + pnl_30 + pnl_7)
-    pnl_score = clamp(pnl_score_raw * 1.35 * pnl_confidence, -22, 22)
+    pnl_score = clamp(pnl_score_raw * 1.85 * pnl_confidence, -28, 28)
 
     risk_penalty = 0.0
     if excl_conc > 0.45:
-        risk_penalty -= 10
-    if nested_conc > 0.60 and event_rebalance_ratio >= 0.20:
         risk_penalty -= 8
+    if nested_conc > 0.60 and event_rebalance_ratio >= 0.20:
+        risk_penalty -= 7
     if nested_conc > 0.55:
-        risk_penalty -= 4
+        risk_penalty -= 3
     if nested_conc > 0.75:
         risk_penalty -= 3
     if weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35):
-        risk_penalty -= 8
+        risk_penalty -= 7
     if noncopy_buy > 0.30:
-        risk_penalty -= 6
-    if noncopy_sell > 0.45:
-        risk_penalty -= 4
-    if noncopy_sell > 0.65:
-        risk_penalty -= 3
-    if noncopy_token > 0.40:
-        risk_penalty -= 3
-    if dual_side > 0.45:
-        risk_penalty -= 6
-    if dual_side_1h > 0.25:
         risk_penalty -= 5
+    if noncopy_sell > 0.55:
+        risk_penalty -= 3
+    if noncopy_sell > 0.75:
+        risk_penalty -= 2
+    if noncopy_token > 0.40:
+        risk_penalty -= 2
+    if dual_side > 0.45:
+        risk_penalty -= 5
+    if dual_side_1h > 0.25:
+        risk_penalty -= 4
     if trade_count < 40 or active_days < 5:
-        risk_penalty -= 6
+        risk_penalty -= 10
     elif trade_count < 70 or active_days < 8:
+        risk_penalty -= 6
+    elif trade_count < 120 or active_days < 10:
         risk_penalty -= 3
     if active_day_ratio < 0.20:
-        risk_penalty -= 4
+        risk_penalty -= 6
     elif active_day_ratio < 0.30:
+        risk_penalty -= 3
+    if avg_trades_per_active_day < 1.4:
         risk_penalty -= 2
-    risk_penalty = clamp(risk_penalty, -30, 0)
+    risk_penalty = clamp(risk_penalty, -34, 0)
 
     concentration_penalty = 0.0
     if (metrics.get("top1_event_buy_ratio") or 0) > 0.50 and deployable < 5:
@@ -870,16 +953,25 @@ def compute_scores(
 
     low_freq_cap = None
     if deployable < 3 or density < 0.10 or active_days < 4 or trade_count < 40:
-        low_freq_cap = 50
+        low_freq_cap = 48
     elif deployable < 5 or density < 0.17 or active_days < 8 or trade_count < 100:
-        low_freq_cap = 58
+        low_freq_cap = 56
     elif deployable < 8 or density < 0.26 or active_days < 12 or trade_count < 180:
-        low_freq_cap = 66
+        low_freq_cap = 64
 
     raw_score = min(raw_before_cap, low_freq_cap) if low_freq_cap is not None else raw_before_cap
     raw_score = round(clamp(raw_score, 0, 100), 2)
 
-    hard_exclusion = (
+    severe_risk_gate = (
+        excl_conc > 0.62
+        or (nested_conc > 0.75 and event_rebalance_ratio >= 0.25)
+        or (weighted_risk > 0.75 and (excl_conc > 0.35 or nested_conc > 0.50))
+        or noncopy_buy > 0.50
+        or noncopy_sell > 0.82
+        or dual_side > 0.62
+        or dual_side_1h > 0.38
+    )
+    caution_risk_gate = (
         excl_conc > 0.45
         or (nested_conc > 0.60 and event_rebalance_ratio >= 0.20)
         or (weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35))
@@ -888,14 +980,17 @@ def compute_scores(
         or dual_side > 0.45
         or dual_side_1h > 0.25
     )
-    if hard_exclusion:
-        assumptions.append("Hard exclusion triggered; decision forced to not_recommended")
+    if caution_risk_gate:
+        assumptions.append("Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering")
+    if severe_risk_gate:
+        assumptions.append("Severe risk gate triggered; score threshold for not_recommended is tightened")
 
     anchor_offset = 0.0
     anchor_target = 60.0
     anchor_version = "none"
     anchor_account = None
     anchor_raw_base = None
+    calibration_scale = 0.65
     anchor_enabled = False
     if anchor_cfg:
         anchor_enabled = True
@@ -904,16 +999,33 @@ def compute_scores(
         anchor_version = str(anchor_cfg.get("anchor_version") or "anchor_v1")
         anchor_account = anchor_cfg.get("anchor_account")
         anchor_raw_base = anchor_cfg.get("raw_base_score")
+        calibration_scale = float(anchor_cfg.get("calibration_scale") or calibration_scale)
 
-    anchored_score = round(clamp(raw_score + anchor_offset, 0, 100), 2)
-    final_score = raw_score
+    if anchor_enabled and anchor_raw_base is not None:
+        anchored_score = round(
+            clamp(anchor_target + (raw_score - float(anchor_raw_base)) * calibration_scale, 0, 100),
+            2,
+        )
+    else:
+        anchored_score = round(clamp(raw_score + anchor_offset, 0, 100), 2)
+    final_score = anchored_score
 
-    if final_score >= 75 and not hard_exclusion:
+    if final_score >= 78 and not caution_risk_gate and pnl_score >= 2 and (low_freq_cap is None or low_freq_cap >= 64):
         decision = "relative_copyable"
-    elif final_score >= 60 and not hard_exclusion:
+    elif final_score >= 40:
         decision = "selective_copying_only"
     else:
         decision = "not_recommended"
+
+    if caution_risk_gate and decision == "relative_copyable":
+        decision = "selective_copying_only"
+        assumptions.append("Broad-copy eligibility downgraded by risk gate; keep selective-copying only")
+    if severe_risk_gate and final_score < 55:
+        decision = "not_recommended"
+        assumptions.append("Severe risk gate + low calibrated score -> not_recommended")
+    if final_score < 32:
+        decision = "not_recommended"
+        assumptions.append("Calibrated score below 32 -> not_recommended floor")
 
     breakdown = {
         "copyability_score": round(copyability, 2),
@@ -931,10 +1043,13 @@ def compute_scores(
         "avg_trades_per_active_day": round(avg_trades_per_active_day, 6),
         "raw_before_cap": round(raw_before_cap, 2),
         "pnl_tag": pnl_tag,
-        "decision_score_basis": "raw_score",
+        "decision_score_basis": "calibrated_anchor_score",
         "anchor_offset": round(anchor_offset, 6),
         "anchor_target_score": anchor_target,
+        "anchor_calibration_scale": round(calibration_scale, 6),
         "anchor_enabled": anchor_enabled,
+        "caution_risk_gate_triggered": caution_risk_gate,
+        "severe_risk_gate_triggered": severe_risk_gate,
     }
 
     anchor_context = {
@@ -944,17 +1059,31 @@ def compute_scores(
         "anchor_target_score": anchor_target,
         "anchor_offset": round(anchor_offset, 6),
         "anchor_raw_base_score": anchor_raw_base,
+        "anchor_calibration_scale": round(calibration_scale, 6),
     }
     return breakdown, raw_score, anchored_score, decision, assumptions, anchor_context
 
 
-def build_narrative(final_score: float, decision: str, metrics: dict[str, Any], pnl_tag: str) -> str:
-    lines = [f"Final score is {final_score:.2f}, decision: {decision}."]
+def build_narrative(
+    final_score: float,
+    decision: str,
+    metrics: dict[str, Any],
+    pnl_tag: str,
+    keyword_profile: dict[str, Any] | None = None,
+    score_breakdown: dict[str, Any] | None = None,
+) -> str:
+    kw = keyword_profile or {}
+    score = score_breakdown or {}
+    lines = [f"Calibrated decision score is {final_score:.2f} (anchor-referenced), decision: {decision}."]
+
+    sector_tags = kw.get("sector_tags") or []
+    if sector_tags:
+        lines.append("Primary sector exposure: " + ", ".join(sector_tags) + ".")
 
     risks = []
-    if (metrics.get("exclusive_concurrent_leg_ratio") or 0) > 0.2:
+    if (metrics.get("exclusive_concurrent_leg_ratio") or 0) > 0.20:
         risks.append("high exclusive concurrent-leg behavior")
-    if (metrics.get("nested_concurrent_leg_ratio") or 0) > 0.25:
+    if (metrics.get("nested_concurrent_leg_ratio") or 0) > 0.30:
         risks.append("elevated nested concurrent ladder behavior")
     if (metrics.get("noncopyable_token_fast_buy_ratio") or 0) > 0.15:
         risks.append("non-copyable token-fast exposure")
@@ -974,15 +1103,126 @@ def build_narrative(final_score: float, decision: str, metrics: dict[str, Any], 
     if risks:
         lines.append("Key risks: " + ", ".join(risks) + ".")
 
+    hard_black = (kw.get("hard_blacklist_keywords") or [])[:5]
+    soft_black = (kw.get("soft_blacklist_keywords") or [])[:5]
+    white = (kw.get("whitelist_keywords") or [])[:5]
+    if hard_black:
+        lines.append("Hard blacklist themes (avoid copying): " + ", ".join(hard_black) + ".")
+    if soft_black:
+        lines.append("Soft blacklist themes (copy only with strict trigger): " + ", ".join(soft_black) + ".")
+    if white:
+        lines.append("Whitelist themes (higher priority for selective following): " + ", ".join(white) + ".")
+
     lines.append(f"PnL curve tag: {pnl_tag}.")
+
+    if score.get("caution_risk_gate_triggered"):
+        lines.append("Risk gate is active, so broad-copy mode is disabled.")
+    if score.get("severe_risk_gate_triggered"):
+        lines.append("Severe-risk gate is active; low-score scenarios are forced to not_recommended.")
+
     if decision == "relative_copyable":
-        lines.append("This account can be considered for broader copying with account-level blacklist filtering.")
+        lines.append("This account can be copied more broadly, while still enforcing keyword blacklists.")
     elif decision == "selective_copying_only":
-        lines.append("This account is usable only with strict event filtering and blacklist constraints.")
+        lines.append("This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.")
     else:
-        lines.append("This account is not recommended as a primary copy-trading source under V2.2 rules.")
+        lines.append("This account should not be a main copy-trading source; only consider rare, manually screened setups.")
 
     return " ".join(lines)
+
+
+def build_behavior_summary(data: dict[str, Any], keyword_profile: dict[str, Any] | None = None) -> dict[str, list[str]]:
+    m = data.get("metrics", {})
+    p = data.get("pnl_curve", {})
+    score = data.get("score_breakdown", {})
+    kw = keyword_profile or {}
+
+    strengths: list[str] = []
+    risks: list[str] = []
+    behavior: list[str] = []
+
+    trade_count = m.get("trade_count") or 0
+    active_days = m.get("active_trading_days") or 0
+    behavior.append(
+        f"Observed {int(trade_count)} trades across {int(active_days)} active trading days in the analysis window."
+    )
+    if score.get("low_frequency_cap") is not None:
+        behavior.append(
+            f"Low-frequency cap is active at {score.get('low_frequency_cap')}, reflecting constrained copy capacity."
+        )
+
+    dual_side = m.get("dual_side_buy_usdc_ratio") or 0
+    noncopy = m.get("noncopyable_token_fast_buy_ratio") or 0
+    nested = m.get("nested_concurrent_leg_ratio") or 0
+    exclusive = m.get("exclusive_concurrent_leg_ratio") or 0
+    weighted = m.get("weighted_multi_market_risk_ratio") or 0
+
+    if dual_side < 0.10:
+        strengths.append("Low dual-side condition exposure, indicating cleaner directional expression.")
+    elif dual_side > 0.30:
+        risks.append("High dual-side condition activity, which is often difficult to mirror in copy-trading.")
+
+    if noncopy < 0.10:
+        strengths.append("Low non-copyable token-fast BUY ratio.")
+    elif noncopy > 0.20:
+        risks.append("Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.")
+
+    if exclusive > 0.25:
+        risks.append("Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).")
+    if nested > 0.45:
+        risks.append("High nested concurrent-ladder ratio, implying heavier structure management.")
+    elif nested < 0.20:
+        strengths.append("Nested concurrent behavior remains relatively contained.")
+
+    if weighted < 0.20:
+        strengths.append("Weighted multi-market structure risk is controlled.")
+    elif weighted > 0.40:
+        risks.append("Weighted multi-market risk is elevated.")
+
+    if score.get("caution_risk_gate_triggered"):
+        risks.append("Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.")
+    if score.get("severe_risk_gate_triggered"):
+        risks.append("Severe-risk gate is triggered; poor setups are automatically classified as not recommended.")
+
+    deployable = m.get("deployable_event_equivalent") or 0
+    density = m.get("deployable_event_density") or 0
+    if deployable >= 10 and density >= 0.35:
+        strengths.append("Topic supply is broad enough for selective deployment.")
+    if (score.get("low_frequency_cap") is not None) or (active_days < 8):
+        risks.append("Frequency/deployability constraints limit practical copy capacity.")
+
+    all_shape = (p.get("all_time") or {}).get("shape", "unknown")
+    d30_shape = (p.get("d30") or {}).get("shape", "unknown")
+    d7_shape = (p.get("d7") or {}).get("shape", "unknown")
+    behavior.append(f"PnL curve shapes: all-time={all_shape}, 30d={d30_shape}, 7d={d7_shape}.")
+    if all_shape == "smooth_up":
+        strengths.append("All-time PnL profile is smooth-up, supporting strategy consistency.")
+    elif all_shape in {"down", "flat"}:
+        risks.append("All-time PnL profile is not strongly upward, reducing confidence in persistent edge.")
+    if d30_shape == "smooth_up":
+        strengths.append("Recent 30-day PnL remains constructive.")
+    elif d30_shape == "down":
+        risks.append("Recent 30-day PnL is down, which weakens near-term copy confidence.")
+    if d7_shape == "down":
+        risks.append("Latest 7-day PnL momentum is negative and needs tighter entry filters.")
+
+    sectors = kw.get("sector_tags") or []
+    if sectors:
+        behavior.append("Dominant sector themes: " + ", ".join(sectors) + ".")
+    white = (kw.get("whitelist_keywords") or [])[:6]
+    hard_black = (kw.get("hard_blacklist_keywords") or [])[:6]
+    soft_black = (kw.get("soft_blacklist_keywords") or [])[:6]
+    if white:
+        strengths.append("Operational whitelist themes: " + ", ".join(white) + ".")
+    if hard_black:
+        risks.append("Hard blacklist themes to avoid: " + ", ".join(hard_black) + ".")
+    if soft_black:
+        risks.append("Soft blacklist themes requiring stricter triggers: " + ", ".join(soft_black) + ".")
+
+    return {
+        "behavior_points": behavior,
+        "strength_points": strengths or ["No strong structural edge identified beyond baseline risk controls."],
+        "risk_points": risks or ["No major structural red flags in current window; continue monitoring for drift."],
+    }
 
 def normalize_metric_values(metrics: dict[str, Any]) -> dict[str, Any]:
     out: dict[str, Any] = {}
@@ -1063,7 +1303,24 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         api_rollup["positions_value"] = api_summary["summary"].get("positions_value")
         api_rollup["traded_markets"] = api_summary["summary"].get("traded_markets")
 
-    narrative = build_narrative(float(raw_score), decision, metrics, pnl_section.get("summary_tag", "unknown"))
+    decision_score = float(anchored_score)
+    narrative = build_narrative(
+        decision_score,
+        decision,
+        metrics,
+        pnl_section.get("summary_tag", "unknown"),
+        keyword_profile=kw_profile,
+        score_breakdown=breakdown,
+    )
+    behavior_summary = build_behavior_summary(
+        {
+            "metrics": metrics,
+            "pnl_curve": pnl_section,
+            "score_breakdown": breakdown,
+        },
+        keyword_profile=kw_profile,
+    )
+    display_name, name_meta = pick_display_name(rows, account)
     anchor_raw_base = (anchor_context.get("anchor_raw_base_score") if isinstance(anchor_context, dict) else None)
     delta_vs_anchor_raw = None
     try:
@@ -1074,7 +1331,8 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
 
     return {
         "account_address": account,
-        "account_label": rows[0].get("account_name") or account,
+        "account_label": display_name,
+        "account_name_meta": name_meta,
         "analysis_window": analysis_window,
         "trade_rows_used": len(rows),
         "total_buy_usdc": round(total_buy_usdc, 6),
@@ -1089,11 +1347,12 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         "anchored_score": anchored_score,
         "delta_vs_anchor_60": round(anchored_score - 60.0, 2),
         "delta_vs_anchor_raw": delta_vs_anchor_raw,
-        "final_score": raw_score,
+        "final_score": anchored_score,
         "decision": decision,
         "anchor_context": anchor_context,
         "pnl_curve": pnl_section,
         "keyword_profile": kw_profile,
+        "behavior_summary": behavior_summary,
         "narrative_conclusion": narrative,
         "assumptions": assumptions,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),

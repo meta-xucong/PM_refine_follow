@@ -65,13 +65,22 @@ def has_account_rows(csv_path: Path, account: str) -> bool:
     return False
 
 
-def request_json(url: str, timeout: int = 30) -> Any:
+def request_json(url: str, timeout: int = 30, retries: int = 4) -> Any:
     req = urllib.request.Request(
         url,
         headers={"User-Agent": "polymarket-anchor-builder/1.0", "Accept": "application/json"},
     )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read().decode("utf-8"))
+    last_err: Exception | None = None
+    for attempt in range(retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except Exception as exc:
+            last_err = exc
+            if attempt >= retries:
+                break
+            time.sleep(1.5 * (attempt + 1))
+    raise RuntimeError(f"request_json failed after retries: {url}") from last_err
 
 
 def fetch_chunk(user: str, start_ts: int, end_ts: int, limit: int, offset: int = 0) -> list[dict[str, Any]]:
@@ -256,16 +265,18 @@ def main() -> None:
     raw_base_score = float(raw_analysis.get("raw_score") or raw_analysis.get("final_score") or 0.0)
     target_score = 60.0
     score_offset = round(target_score - raw_base_score, 6)
+    calibration_scale = 0.65
 
     fp = build_account_fingerprint(csv_for_anchor, account)
 
     baseline = {
-        "anchor_version": "anchor_v1",
+        "anchor_version": "anchor_v2_20260411",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "anchor_account": account,
         "target_anchor_score": target_score,
         "raw_base_score": round(raw_base_score, 6),
         "score_offset": score_offset,
+        "calibration_scale": calibration_scale,
         "source_mode": source_mode,
         "source_csv": str(csv_for_anchor),
         "window_days": int(args.window_days),

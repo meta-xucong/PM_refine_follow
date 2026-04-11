@@ -131,8 +131,8 @@ def write_summary_md(path: Path, rows: list[dict[str, Any]], output_dir: Path) -
             f"- 锚点: {(rows[0].get('anchor_account') or 'none')} | 版本: {(rows[0].get('anchor_version') or 'none')}"
         )
     lines.append("")
-    lines.append("|排名|账户|DecisionScore|AnchoredRef|Δvs60|结论|活跃天数|交易数|可利用事件等价值|加权结构风险|双边买入比率|EN 报告|中文报告|")
-    lines.append("|---|---|---:|---:|---:|---|---:|---:|---:|---:|---:|---|---|")
+    lines.append("|排名|账号名称|账户地址|RawScore|DecisionScore|Δvs60|结论|活跃天数|交易数|可利用事件等价值|加权结构风险|双边买入比率|EN 报告|中文报告|")
+    lines.append("|---|---|---|---:|---:|---:|---|---:|---:|---:|---:|---:|---|---|")
 
     for row in rows:
         en_rel = row.get("report_en", "")
@@ -140,11 +140,12 @@ def write_summary_md(path: Path, rows: list[dict[str, Any]], output_dir: Path) -
         en_md = f"[EN]({en_rel})" if en_rel else "-"
         zh_md = f"[中文]({zh_rel})" if zh_rel else "-"
         lines.append(
-            "|{rank}|{account}|{raw:.2f}|{anchored:.2f}|{delta:+.2f}|{decision}|{active_days:.0f}|{trades:.0f}|{deploy:.2f}|{risk:.2%}|{dual:.2%}|{en}|{zh}|".format(
+            "|{rank}|{label}|{account}|{raw:.2f}|{decision_score:.2f}|{delta:+.2f}|{decision}|{active_days:.0f}|{trades:.0f}|{deploy:.2f}|{risk:.2%}|{dual:.2%}|{en}|{zh}|".format(
                 rank=row.get("rank", ""),
+                label=row.get("account_label", ""),
                 account=row.get("account_address", ""),
                 raw=float(row.get("raw_score") or 0.0),
-                anchored=float(row.get("anchored_score") or row.get("final_score") or 0.0),
+                decision_score=float(row.get("final_score") or row.get("anchored_score") or 0.0),
                 delta=float(row.get("delta_vs_anchor_60") or 0.0),
                 decision=row.get("decision_zh", row.get("decision", "")),
                 active_days=float(row.get("active_trading_days") or 0.0),
