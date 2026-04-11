@@ -1,14 +1,14 @@
-# Dry-Legislature
+# Mamaozinho
 
 ## Account Identity (Manual Verification First)
-- Display name: `Dry-Legislature`
+- Display name: `Mamaozinho`
 - Account address: `0xdd9ed02bb67b2ec504be24b98febd651fdac49b3`
 - Source pseudonym: `Dry-Legislature`
 - Source profile name: `Mamaozinho`
 - Source local name: `account_10`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: win, presidential, election, brazilian, vio. Soft blacklist themes: aliaga, peruvian, pez, rafael. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: win, election, presidential, brazilian, vio. Soft blacklist themes: peruvian, rafael, aliaga, pez. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -34,8 +34,8 @@ Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copy
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - High nested concurrent-ladder ratio, implying heavier structure management.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
-- Hard blacklist themes to avoid: win, presidential, election, brazilian, vio, bolsonaro.
-- Soft blacklist themes requiring stricter triggers: aliaga, peruvian, pez, rafael.
+- Hard blacklist themes to avoid: win, election, presidential, brazilian, vio, bolsonaro.
+- Soft blacklist themes requiring stricter triggers: peruvian, rafael, aliaga, pez.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -48,8 +48,8 @@ Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copy
 
 ### Hard Blacklist Keywords
 - win
-- presidential
 - election
+- presidential
 - brazilian
 - vio
 - bolsonaro
@@ -57,14 +57,14 @@ Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copy
 - iran
 - cup
 - fifa
-- espriella
+- abelardo
 - colombian
 
 ### Soft Blacklist Keywords
-- aliaga
 - peruvian
-- pez
 - rafael
+- aliaga
+- pez
 
 ## 7. Account Overview
 - analysis_window: `2026-03-13 04:33:45 UTC -> 2026-04-10 18:15:13 UTC`

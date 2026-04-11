@@ -1,14 +1,14 @@
-# Aware-Veteran
+# Xplayer
 
 ## Account Identity (Manual Verification First)
-- Display name: `Aware-Veteran`
+- Display name: `Xplayer`
 - Account address: `0xda0f4e3f79a50b8601b3cb9d421f48ce11bbf0e7`
 - Source pseudonym: `Aware-Veteran`
 - Source profile name: `Xplayer`
 - Source local name: `account_9`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk. Hard blacklist themes: day, views, between, get, mrbeast. Soft blacklist themes: league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk. Hard blacklist themes: day, million, views, video, between. Soft blacklist themes: league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,7 +33,7 @@ Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copy
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
-- Hard blacklist themes to avoid: day, views, between, get, mrbeast, video.
+- Hard blacklist themes to avoid: day, million, views, video, between, get.
 - Soft blacklist themes requiring stricter triggers: league, champions, win, uefa, chelsea, reach.
 
 ## 6. Sector and Keyword Filters
@@ -46,17 +46,17 @@ Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copy
 
 ### Hard Blacklist Keywords
 - day
+- million
 - views
+- video
 - between
 - get
 - mrbeast
-- video
-- million
 - next
 - iran
 - ceasefire
 - april
-- one
+- launch
 
 ### Soft Blacklist Keywords
 - league

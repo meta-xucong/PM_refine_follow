@@ -1,14 +1,14 @@
-# Trained-Sniffle
+# Optimus
 
 ## Account Identity (Manual Verification First)
-- Display name: `Trained-Sniffle`
+- Display name: `Optimus`
 - Account address: `0xd5b97d08ec6098407bfbf66c2786ccc9967fe44e`
 - Source pseudonym: `Trained-Sniffle`
 - Source profile name: `Optimus.`
 - Source local name: `account_13`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, ceasefire, april, june, spacex. Whitelist themes: end, forces, day, december, close. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, ceasefire, april, june, spacex. Whitelist themes: end, forces, day, december, market. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,7 +33,7 @@ Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: end, forces, day, december, close, between.
+- Operational whitelist themes: end, forces, day, december, market, between.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
@@ -51,13 +51,13 @@ Calibrated decision score is 70.51 (anchor-referenced), decision: selective_copy
 - forces
 - day
 - december
-- close
-- between
 - market
+- between
+- close
 - cap
 - out
-- initial
 - offering
+- initial
 - public
 
 ### Hard Blacklist Keywords

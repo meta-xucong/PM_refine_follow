@@ -1,14 +1,14 @@
-# Aware-Veteran
+# Xplayer
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Aware-Veteran`
+- 展示名称: `Xplayer`
 - 账户地址: `0xda0f4e3f79a50b8601b3cb9d421f48ce11bbf0e7`
 - 平台昵称: `Aware-Veteran`
 - 平台名称: `Xplayer`
 - 本地名称: `account_9`
 
 ## 1. 执行结论
-校准后决策分 63.50（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：day、views、between、get、mrbeast。软黑名单主题（谨慎跟）：league、champions、win、uefa、chelsea。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 63.50（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：day、million、views、video、between。软黑名单主题（谨慎跟）：league、champions、win、uefa、chelsea。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -33,7 +33,7 @@
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
-- 硬黑名单主题（应避免）：day, views, between, get, mrbeast, video.
+- 硬黑名单主题（应避免）：day, million, views, video, between, get.
 - 软黑名单主题（需更严格触发）：league, champions, win, uefa, chelsea, reach.
 
 ## 6. 板块与关键词过滤
@@ -46,17 +46,17 @@
 
 ### 硬黑名单关键词
 - day
+- million
 - views
+- video
 - between
 - get
 - mrbeast
-- video
-- million
 - next
 - iran
 - ceasefire
 - april
-- one
+- launch
 
 ### 软黑名单关键词
 - league

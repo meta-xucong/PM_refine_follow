@@ -1,6 +1,6 @@
 {
   "account_address": "0x71dd2d539a793687451d4af8c43169369b47d61c",
-  "account_label": "Knotty-Mud",
+  "account_label": "GoldmanSachs",
   "account_name_meta": {
     "pseudonym": "Knotty-Mud",
     "name": "GoldmanSachs",
@@ -215,26 +215,26 @@
       "macro"
     ],
     "whitelist_keywords": [
-      "fed",
       "change",
       "rates",
-      "meeting",
+      "fed",
       "interest",
+      "meeting",
       "there",
       "april",
       "march"
     ],
     "hard_blacklist_keywords": [],
     "soft_blacklist_keywords": [
+      "chuck",
+      "warsh",
+      "federal",
+      "schumer",
+      "confirm",
       "chair",
       "reserve",
-      "warsh",
-      "chuck",
-      "federal",
-      "kevin",
       "vote",
-      "confirm",
-      "schumer"
+      "kevin"
     ],
     "whitelist_keyword_count": 8,
     "hard_blacklist_keyword_count": 0,
@@ -253,14 +253,14 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: fed, change, rates, meeting, interest, there."
+      "Operational whitelist themes: change, rates, fed, interest, meeting, there."
     ],
     "risk_points": [
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Soft blacklist themes requiring stricter triggers: chair, reserve, warsh, chuck, federal, kevin."
+      "Soft blacklist themes requiring stricter triggers: chuck, warsh, federal, schumer, confirm, chair."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Soft blacklist themes (copy only with strict trigger): chair, reserve, warsh, chuck, federal. Whitelist themes (higher priority for selective following): fed, change, rates, meeting, interest. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 60.45 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Soft blacklist themes (copy only with strict trigger): chuck, warsh, federal, schumer, confirm. Whitelist themes (higher priority for selective following): change, rates, fed, interest, meeting. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:44:13.240179+00:00"
+  "generated_at_utc": "2026-04-11T14:05:59.302456+00:00"
 }

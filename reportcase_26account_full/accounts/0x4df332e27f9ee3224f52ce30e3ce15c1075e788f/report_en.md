@@ -1,14 +1,14 @@
-# Far-Precipitation
+# SunlineTicker
 
 ## Account Identity (Manual Verification First)
-- Display name: `Far-Precipitation`
+- Display name: `SunlineTicker`
 - Account address: `0x4df332e27f9ee3224f52ce30e3ce15c1075e788f`
 - Source pseudonym: `Far-Precipitation`
 - Source profile name: `SunlineTicker`
 - Source local name: `account_4`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk, dual-side condition buying. Hard blacklist themes: spread, pistons, rockets, knicks, warriors. Soft blacklist themes: gujarat, titans, grand, prix, city. Whitelist themes: rajasthan, royals, lucknow, giants, sunrisers. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk, dual-side condition buying. Hard blacklist themes: spread, pistons, rockets, knicks, warriors. Soft blacklist themes: titans, gujarat, grand, prix, city. Whitelist themes: rajasthan, royals, giants, lucknow, sunrisers. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -30,7 +30,7 @@ Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommende
 - Low non-copyable token-fast BUY ratio.
 - Nested concurrent behavior remains relatively contained.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: rajasthan, royals, lucknow, giants, sunrisers, hyderabad.
+- Operational whitelist themes: rajasthan, royals, giants, lucknow, sunrisers, hyderabad.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
@@ -40,7 +40,7 @@ Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommende
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
 - Hard blacklist themes to avoid: spread, pistons, rockets, knicks, warriors, kings.
-- Soft blacklist themes requiring stricter triggers: gujarat, titans, grand, prix, city, manchester.
+- Soft blacklist themes requiring stricter triggers: titans, gujarat, grand, prix, city, manchester.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -49,14 +49,14 @@ Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommende
 ### Whitelist Keywords
 - rajasthan
 - royals
-- lucknow
 - giants
+- lucknow
 - sunrisers
 - hyderabad
 - madrid
-- club
 - atl
 - tico
+- club
 - bucharest
 - daniel
 
@@ -75,16 +75,16 @@ Calibrated decision score is 29.25 (anchor-referenced), decision: not_recommende
 - spurs
 
 ### Soft Blacklist Keywords
-- gujarat
 - titans
+- gujarat
 - grand
 - prix
 - city
 - manchester
-- aberg
 - ludvig
-- glimt
+- aberg
 - bod
+- glimt
 - zverev
 - women
 

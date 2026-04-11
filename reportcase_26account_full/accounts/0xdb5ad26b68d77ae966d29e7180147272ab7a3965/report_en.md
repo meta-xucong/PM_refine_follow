@@ -1,7 +1,7 @@
-# Intelligent-Length
+# 0xDB5
 
 ## Account Identity (Manual Verification First)
-- Display name: `Intelligent-Length`
+- Display name: `0xDB5`
 - Account address: `0xdb5ad26b68d77ae966d29e7180147272ab7a3965`
 - Source pseudonym: `Intelligent-Length`
 - Source profile name: `0xDB5`

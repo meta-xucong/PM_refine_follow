@@ -1,14 +1,14 @@
-# High-Alarm
+# leCommissaire
 
 ## 账户身份（优先人工核对）
-- 展示名称: `High-Alarm`
+- 展示名称: `leCommissaire`
 - 账户地址: `0x9238743eeba8bbfe9e85ac7ba2e1e3d77877b73e`
 - 平台昵称: `High-Alarm`
 - 平台名称: `leCommissaire`
 - 本地名称: `account_12`
 
 ## 1. 执行结论
-校准后决策分 50.36（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：russia、march、capture、april、iran。软黑名单主题（谨慎跟）：win、military、united、manchester、barcelona。白名单主题（优先筛选）：ceasefire、madrid、real、nchen、bayern。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 50.36（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：russia、march、capture、april、iran。软黑名单主题（谨慎跟）：win、military、united、manchester、barcelona。白名单主题（优先筛选）：ceasefire、madrid、real、bayern、nchen。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -29,7 +29,7 @@
 ## 4. 跟单优势
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：ceasefire, madrid, real, nchen, bayern, sloviansk.
+- 可执行白名单主题：ceasefire, madrid, real, bayern, nchen, sloviansk.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
@@ -47,8 +47,8 @@
 - ceasefire
 - madrid
 - real
-- nchen
 - bayern
+- nchen
 - sloviansk
 - bilytske
 - lyman
@@ -80,8 +80,8 @@
 - league
 - champions
 - arsenal
-- uefa
 - reach
+- uefa
 - sporting
 
 ## 7. 账户概览

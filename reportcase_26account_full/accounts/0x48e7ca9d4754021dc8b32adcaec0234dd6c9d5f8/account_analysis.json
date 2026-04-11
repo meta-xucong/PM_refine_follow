@@ -1,6 +1,6 @@
 {
   "account_address": "0x48e7ca9d4754021dc8b32adcaec0234dd6c9d5f8",
-  "account_label": "Corrupt-Apartment",
+  "account_label": "Zippy",
   "account_name_meta": {
     "pseudonym": "Corrupt-Apartment",
     "name": "Zippy",
@@ -164,10 +164,10 @@
     ],
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
-      "grossing",
-      "top",
       "movie",
-      "jumanji"
+      "jumanji",
+      "top",
+      "grossing"
     ],
     "soft_blacklist_keywords": [],
     "whitelist_keyword_count": 0,
@@ -190,10 +190,10 @@
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: grossing, top, movie, jumanji."
+      "Hard blacklist themes to avoid: movie, jumanji, top, grossing."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): grossing, top, movie, jumanji. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): movie, jumanji, top, grossing. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:43:46.545396+00:00"
+  "generated_at_utc": "2026-04-11T14:05:30.648205+00:00"
 }

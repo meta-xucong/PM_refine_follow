@@ -1,7 +1,7 @@
-# Distant-Prairie
+# cyc0lin4
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Distant-Prairie`
+- 展示名称: `cyc0lin4`
 - 账户地址: `0xbf2c878cd5d6043697b32067be141647deeb097c`
 - 平台昵称: `Distant-Prairie`
 - 平台名称: `cyc0lin4`

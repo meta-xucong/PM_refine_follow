@@ -1,7 +1,7 @@
-# Gloomy-Date
+# AshleySchaeffer
 
 ## Account Identity (Manual Verification First)
-- Display name: `Gloomy-Date`
+- Display name: `AshleySchaeffer`
 - Account address: `0x30ceffb3ac4ea49881e271d5a69883b60e0dfdce`
 - Source pseudonym: `Gloomy-Date`
 - Source profile name: `AshleySchaeffer`
@@ -58,8 +58,8 @@ Calibrated decision score is 39.28 (anchor-referenced), decision: not_recommende
 - sabres
 - hurricanes
 - united
-- jackets
 - blue
+- jackets
 - red
 - bruins
 

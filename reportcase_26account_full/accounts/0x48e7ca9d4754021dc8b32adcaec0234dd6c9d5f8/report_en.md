@@ -1,14 +1,14 @@
-# Corrupt-Apartment
+# Zippy
 
 ## Account Identity (Manual Verification First)
-- Display name: `Corrupt-Apartment`
+- Display name: `Zippy`
 - Account address: `0x48e7ca9d4754021dc8b32adcaec0234dd6c9d5f8`
 - Source pseudonym: `Corrupt-Apartment`
 - Source profile name: `Zippy`
 - Source local name: `account_20`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: grossing, top, movie, jumanji. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: movie, jumanji, top, grossing. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -36,7 +36,7 @@ Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copy
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: grossing, top, movie, jumanji.
+- Hard blacklist themes to avoid: movie, jumanji, top, grossing.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -46,10 +46,10 @@ Calibrated decision score is 55.91 (anchor-referenced), decision: selective_copy
 - (none)
 
 ### Hard Blacklist Keywords
-- grossing
-- top
 - movie
 - jumanji
+- top
+- grossing
 
 ### Soft Blacklist Keywords
 - (none)

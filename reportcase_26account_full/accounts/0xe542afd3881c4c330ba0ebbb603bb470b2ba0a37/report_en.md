@@ -1,14 +1,14 @@
-# Lonely-Bog
+# leegunner
 
 ## Account Identity (Manual Verification First)
-- Display name: `Lonely-Bog`
+- Display name: `leegunner`
 - Account address: `0xe542afd3881c4c330ba0ebbb603bb470b2ba0a37`
 - Source pseudonym: `Lonely-Bog`
 - Source profile name: `leegunner`
 - Source local name: `account_8`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: win, league, nba, cup, world. Soft blacklist themes: nfl, championship, chiefs, kansas, madrid. Whitelist themes: barcelona, copa, vandewinkel, bouzkova, colsanitas. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: win, league, nba, cup, world. Soft blacklist themes: nfl, championship, kansas, chiefs, madrid. Whitelist themes: barcelona, vandewinkel, colsanitas, bouzkova, marie. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -31,7 +31,7 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: barcelona, copa, vandewinkel, bouzkova, colsanitas, marie.
+- Operational whitelist themes: barcelona, vandewinkel, colsanitas, bouzkova, marie, copa.
 
 ## 5. Copy-Trading Risks
 - Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.
@@ -39,7 +39,7 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 - High nested concurrent-ladder ratio, implying heavier structure management.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Hard blacklist themes to avoid: win, league, nba, cup, world, finals.
-- Soft blacklist themes requiring stricter triggers: nfl, championship, chiefs, kansas, madrid, real.
+- Soft blacklist themes requiring stricter triggers: nfl, championship, kansas, chiefs, madrid, real.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -49,14 +49,14 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 
 ### Whitelist Keywords
 - barcelona
-- copa
 - vandewinkel
-- bouzkova
 - colsanitas
+- bouzkova
 - marie
+- copa
 - hanne
-- elena
 - rybakina
+- elena
 - bahrain
 - lakers
 - ufc
@@ -78,8 +78,8 @@ Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommende
 ### Soft Blacklist Keywords
 - nfl
 - championship
-- chiefs
 - kansas
+- chiefs
 - madrid
 - real
 - manchester

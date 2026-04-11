@@ -1,14 +1,14 @@
-# Corrupt-Apartment
+# Zippy
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Corrupt-Apartment`
+- 展示名称: `Zippy`
 - 账户地址: `0x48e7ca9d4754021dc8b32adcaec0234dd6c9d5f8`
 - 平台昵称: `Corrupt-Apartment`
 - 平台名称: `Zippy`
 - 本地名称: `account_20`
 
 ## 1. 执行结论
-校准后决策分 55.91（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：grossing、top、movie、jumanji。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 55.91（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：movie、jumanji、top、grossing。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -36,7 +36,7 @@
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 交易频次/可利用度约束限制了实盘跟单容量。
-- 硬黑名单主题（应避免）：grossing, top, movie, jumanji.
+- 硬黑名单主题（应避免）：movie, jumanji, top, grossing.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -46,10 +46,10 @@
 - (none)
 
 ### 硬黑名单关键词
-- grossing
-- top
 - movie
 - jumanji
+- top
+- grossing
 
 ### 软黑名单关键词
 - (none)

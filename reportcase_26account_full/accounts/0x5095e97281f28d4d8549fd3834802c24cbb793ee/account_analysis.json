@@ -1,6 +1,6 @@
 {
   "account_address": "0x5095e97281f28d4d8549fd3834802c24cbb793ee",
-  "account_label": "Insignificant-Affair",
+  "account_label": "0x5095e97281f28d4d8549fd3834802c24cbb793e",
   "account_name_meta": {
     "pseudonym": "Insignificant-Affair",
     "name": "0x5095e97281f28d4d8549fd3834802c24cbb793e",
@@ -308,25 +308,25 @@
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
       "office",
-      "box",
       "weekend",
+      "box",
       "opening",
       "greater",
       "between",
-      "project",
-      "hail",
       "mary",
+      "hail",
+      "project",
       "less",
       "hoppers",
-      "galaxy"
+      "movie"
     ],
     "soft_blacklist_keywords": [
-      "him",
       "reminders",
-      "ready",
+      "him",
+      "come",
       "not",
       "here",
-      "come"
+      "ready"
     ],
     "whitelist_keyword_count": 0,
     "hard_blacklist_keyword_count": 20,
@@ -349,13 +349,13 @@
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: office, box, weekend, opening, greater, between.",
-      "Soft blacklist themes requiring stricter triggers: him, reminders, ready, not, here, come."
+      "Hard blacklist themes to avoid: office, weekend, box, opening, greater, between.",
+      "Soft blacklist themes requiring stricter triggers: reminders, him, come, not, here, ready."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): office, box, weekend, opening, greater. Soft blacklist themes (copy only with strict trigger): him, reminders, ready, not, here. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): office, weekend, box, opening, greater. Soft blacklist themes (copy only with strict trigger): reminders, him, come, not, here. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T13:43:55.040002+00:00"
+  "generated_at_utc": "2026-04-11T14:05:39.522671+00:00"
 }

@@ -1,14 +1,14 @@
-# Colossal-Latency
+# Germany-007
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Colossal-Latency`
+- 展示名称: `Germany-007`
 - 账户地址: `0x6cff25615924313a189d3bcd5ca99db452cdc3da`
 - 平台昵称: `Colossal-Latency`
 - 平台名称: `Germany-007`
 - 本地名称: `account_24`
 
 ## 1. 执行结论
-校准后决策分 67.72（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、crypto、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、bucks、fide、candidates、javokhir。软黑名单主题（谨慎跟）：draw、end、galatasaray、liverpool、am-11。白名单主题（优先筛选）：atl、tico、madrid、club、pm-5。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 67.72（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、crypto、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、bucks、candidates、fide、sindarov。软黑名单主题（谨慎跟）：end、draw、galatasaray、liverpool、am-11。白名单主题（优先筛选）：tico、atl、madrid、club、pm-5。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -30,13 +30,13 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：atl, tico, madrid, club, pm-5, pm-6.
+- 可执行白名单主题：tico, atl, madrid, club, pm-5, pm-6.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 不可复制的 token 快交易（BUY）比例偏高，收益更依赖执行优势。
-- 硬黑名单主题（应避免）：win, bucks, fide, candidates, javokhir, sindarov.
-- 软黑名单主题（需更严格触发）：draw, end, galatasaray, liverpool, am-11, pm-12.
+- 硬黑名单主题（应避免）：win, bucks, candidates, fide, sindarov, javokhir.
+- 软黑名单主题（需更严格触发）：end, draw, galatasaray, liverpool, am-11, pm-12.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -45,8 +45,8 @@
 - geopolitics
 
 ### 白名单关键词
-- atl
 - tico
+- atl
 - madrid
 - club
 - pm-5
@@ -61,10 +61,10 @@
 ### 硬黑名单关键词
 - win
 - bucks
-- fide
 - candidates
-- javokhir
+- fide
 - sindarov
+- javokhir
 - tournament
 - hawks
 - march
@@ -73,8 +73,8 @@
 - raptors
 
 ### 软黑名单关键词
-- draw
 - end
+- draw
 - galatasaray
 - liverpool
 - am-11

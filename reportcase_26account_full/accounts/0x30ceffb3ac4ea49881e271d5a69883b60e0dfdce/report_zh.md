@@ -1,7 +1,7 @@
-# Gloomy-Date
+# AshleySchaeffer
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Gloomy-Date`
+- 展示名称: `AshleySchaeffer`
 - 账户地址: `0x30ceffb3ac4ea49881e271d5a69883b60e0dfdce`
 - 平台昵称: `Gloomy-Date`
 - 平台名称: `AshleySchaeffer`
@@ -58,8 +58,8 @@
 - sabres
 - hurricanes
 - united
-- jackets
 - blue
+- jackets
 - red
 - bruins
 

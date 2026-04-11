@@ -95,6 +95,10 @@ def pick_display_name(rows: list[dict[str, Any]], account: str) -> tuple[str, di
     def norm(v: Any) -> str:
         return str(v or "").strip()
 
+    def clean_label(v: str) -> str:
+        # Keep human names stable while trimming trailing punctuation artifacts such as "Optimus."
+        return re.sub(r"[.\s]+$", "", v).strip()
+
     def is_generic(v: str) -> bool:
         return bool(re.fullmatch(r"account_\d+", v.lower()))
 
@@ -106,15 +110,16 @@ def pick_display_name(rows: list[dict[str, Any]], account: str) -> tuple[str, di
     first_name = names[0] if names else None
     first_account_name = account_names[0] if account_names else None
 
-    for candidate in [first_pseudonym, first_name, first_account_name]:
-        if candidate and not is_generic(candidate):
-            return candidate, {
+    for candidate in [first_name, first_pseudonym, first_account_name]:
+        cleaned = clean_label(candidate) if candidate else ""
+        if cleaned and not is_generic(cleaned):
+            return cleaned, {
                 "pseudonym": first_pseudonym,
                 "name": first_name,
                 "account_name": first_account_name,
             }
 
-    fallback = first_account_name or first_name or first_pseudonym or account
+    fallback = clean_label(first_name or first_pseudonym or first_account_name or account)
     return fallback, {
         "pseudonym": first_pseudonym,
         "name": first_name,

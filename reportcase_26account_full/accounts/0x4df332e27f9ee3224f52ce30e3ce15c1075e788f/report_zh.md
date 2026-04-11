@@ -1,14 +1,14 @@
-# Far-Precipitation
+# SunlineTicker
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Far-Precipitation`
+- 展示名称: `SunlineTicker`
 - 账户地址: `0x4df332e27f9ee3224f52ce30e3ce15c1075e788f`
 - 平台昵称: `Far-Precipitation`
 - 平台名称: `SunlineTicker`
 - 本地名称: `account_4`
 
 ## 1. 执行结论
-校准后决策分 29.25（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：spread、pistons、rockets、knicks、warriors。软黑名单主题（谨慎跟）：gujarat、titans、grand、prix、city。白名单主题（优先筛选）：rajasthan、royals、lucknow、giants、sunrisers。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 29.25（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：spread、pistons、rockets、knicks、warriors。软黑名单主题（谨慎跟）：titans、gujarat、grand、prix、city。白名单主题（优先筛选）：rajasthan、royals、giants、lucknow、sunrisers。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
@@ -30,7 +30,7 @@
 - 不可复制 token 快交易（BUY）比例较低。
 - 递进型并发行为相对可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：rajasthan, royals, lucknow, giants, sunrisers, hyderabad.
+- 可执行白名单主题：rajasthan, royals, giants, lucknow, sunrisers, hyderabad.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
@@ -40,7 +40,7 @@
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：spread, pistons, rockets, knicks, warriors, kings.
-- 软黑名单主题（需更严格触发）：gujarat, titans, grand, prix, city, manchester.
+- 软黑名单主题（需更严格触发）：titans, gujarat, grand, prix, city, manchester.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -49,14 +49,14 @@
 ### 白名单关键词
 - rajasthan
 - royals
-- lucknow
 - giants
+- lucknow
 - sunrisers
 - hyderabad
 - madrid
-- club
 - atl
 - tico
+- club
 - bucharest
 - daniel
 
@@ -75,16 +75,16 @@
 - spurs
 
 ### 软黑名单关键词
-- gujarat
 - titans
+- gujarat
 - grand
 - prix
 - city
 - manchester
-- aberg
 - ludvig
-- glimt
+- aberg
 - bod
+- glimt
 - zverev
 - women
 

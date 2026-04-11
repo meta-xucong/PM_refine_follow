@@ -1,7 +1,7 @@
-# Dead-Brook
+# Pulser
 
 ## Account Identity (Manual Verification First)
-- Display name: `Dead-Brook`
+- Display name: `Pulser`
 - Account address: `0x6a8328b1ae11569f7b27600073558879885e4c59`
 - Source pseudonym: `Dead-Brook`
 - Source profile name: `Pulser`

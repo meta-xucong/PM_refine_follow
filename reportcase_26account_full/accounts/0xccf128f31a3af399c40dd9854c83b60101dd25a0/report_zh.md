@@ -1,14 +1,14 @@
-# Velvety-Lion
+# reakt2026
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Velvety-Lion`
+- 展示名称: `reakt2026`
 - 账户地址: `0xccf128f31a3af399c40dd9854c83b60101dd25a0`
 - 平台昵称: `Velvety-Lion`
 - 平台名称: `reakt2026`
 - 本地名称: `account_30`
 
 ## 1. 执行结论
-校准后决策分 41.22（锚点口径），结论：只适合筛着跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：spread、pacers、heat、cavaliers、suns。软黑名单主题（谨慎跟）：wildcats。白名单主题（优先筛选）：cornhuskers、nebraska、flyers、bruins、bears。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 41.22（锚点口径），结论：只适合筛着跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：spread、pacers、heat、cavaliers、suns。软黑名单主题（谨慎跟）：wildcats。白名单主题（优先筛选）：nebraska、cornhuskers、flyers、bruins、bears。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -30,14 +30,14 @@
 - 不可复制 token 快交易（BUY）比例较低。
 - 递进型并发行为相对可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：cornhuskers, nebraska, flyers, bruins, bears, auburn.
+- 可执行白名单主题：nebraska, cornhuskers, flyers, bruins, bears, auburn.
 
 ## 5. 跟单风险
 - 存在明显互斥市场并发多腿行为。
 - 加权多子市场风险偏高。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：spread, pacers, heat, cavaliers, suns, trail.
+- 硬黑名单主题（应避免）：spread, pacers, heat, cavaliers, suns, blazers.
 - 软黑名单主题（需更严格触发）：wildcats.
 
 ## 6. 板块与关键词过滤
@@ -45,8 +45,8 @@
 - sports
 
 ### 白名单关键词
-- cornhuskers
 - nebraska
+- cornhuskers
 - flyers
 - bruins
 - bears
@@ -64,8 +64,8 @@
 - heat
 - cavaliers
 - suns
-- trail
 - blazers
+- trail
 - bulls
 - magic
 - pistons

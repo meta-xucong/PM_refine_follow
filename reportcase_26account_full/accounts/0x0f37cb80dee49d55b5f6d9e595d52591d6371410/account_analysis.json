@@ -1,6 +1,6 @@
 {
   "account_address": "0x0f37cb80dee49d55b5f6d9e595d52591d6371410",
-  "account_label": "Superior-Olive",
+  "account_label": "Hans323",
   "account_name_meta": {
     "pseudonym": "Superior-Olive",
     "name": "Hans323",
@@ -297,9 +297,9 @@
     "whitelist_keywords": [
       "highest",
       "temperature",
+      "march",
       "below",
       "denver",
-      "march",
       "ceasefire",
       "london",
       "madrid"
@@ -328,14 +328,14 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: highest, temperature, below, denver, march, ceasefire."
+      "Operational whitelist themes: highest, temperature, march, below, denver, ceasefire."
     ],
     "risk_points": [
       "Frequency/deployability constraints limit practical copy capacity.",
       "Hard blacklist themes to avoid: iran, forces, enter, april."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): iran, forces, enter, april. Whitelist themes (higher priority for selective following): highest, temperature, below, denver, march. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): iran, forces, enter, april. Whitelist themes (higher priority for selective following): highest, temperature, march, below, denver. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:43:21.343031+00:00"
+  "generated_at_utc": "2026-04-11T14:05:09.998330+00:00"
 }

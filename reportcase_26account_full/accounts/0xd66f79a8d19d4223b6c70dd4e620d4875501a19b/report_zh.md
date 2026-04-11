@@ -1,7 +1,7 @@
-# Harmonious-Witchhunt
+# intrepid
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Harmonious-Witchhunt`
+- 展示名称: `intrepid`
 - 账户地址: `0xd66f79a8d19d4223b6c70dd4e620d4875501a19b`
 - 平台昵称: `Harmonious-Witchhunt`
 - 平台名称: `intrepid`
@@ -54,8 +54,8 @@
 - real
 - manchester
 - liverpool
-- nottingham
 - forest
+- nottingham
 - arsenal
 - city
 - newcastle

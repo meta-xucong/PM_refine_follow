@@ -1,6 +1,6 @@
 {
   "account_address": "0xd66f79a8d19d4223b6c70dd4e620d4875501a19b",
-  "account_label": "Harmonious-Witchhunt",
+  "account_label": "intrepid",
   "account_name_meta": {
     "pseudonym": "Harmonious-Witchhunt",
     "name": "intrepid",
@@ -836,8 +836,8 @@
       "real",
       "manchester",
       "liverpool",
-      "nottingham",
       "forest",
+      "nottingham",
       "arsenal",
       "city",
       "newcastle",
@@ -877,5 +877,5 @@
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T13:44:42.198026+00:00"
+  "generated_at_utc": "2026-04-11T14:06:27.743551+00:00"
 }

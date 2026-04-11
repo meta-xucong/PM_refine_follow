@@ -1,14 +1,14 @@
-# Superior-Olive
+# Hans323
 
 ## Account Identity (Manual Verification First)
-- Display name: `Superior-Olive`
+- Display name: `Hans323`
 - Account address: `0x0f37cb80dee49d55b5f6d9e595d52591d6371410`
 - Source pseudonym: `Superior-Olive`
 - Source profile name: `Hans323`
 - Source local name: `account_23`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: iran, forces, enter, april. Whitelist themes: highest, temperature, below, denver, march. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: iran, forces, enter, april. Whitelist themes: highest, temperature, march, below, denver. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -33,7 +33,7 @@ Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: highest, temperature, below, denver, march, ceasefire.
+- Operational whitelist themes: highest, temperature, march, below, denver, ceasefire.
 
 ## 5. Copy-Trading Risks
 - Frequency/deployability constraints limit practical copy capacity.
@@ -48,9 +48,9 @@ Calibrated decision score is 65.65 (anchor-referenced), decision: selective_copy
 ### Whitelist Keywords
 - highest
 - temperature
+- march
 - below
 - denver
-- march
 - ceasefire
 - london
 - madrid

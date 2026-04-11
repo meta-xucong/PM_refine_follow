@@ -1,14 +1,14 @@
-# Imaginary-Gallery
+# torta.tech
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Imaginary-Gallery`
+- 展示名称: `torta.tech`
 - 账户地址: `0x161a7f666ca49d592848cf415b42f49a84714103`
 - 平台昵称: `Imaginary-Gallery`
 - 平台名称: `torta.tech`
 - 本地名称: `account_1`
 
 ## 1. 执行结论
-校准后决策分 50.56（锚点口径），结论：只适合筛着跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：spread、state、cavaliers、hawks、kings。软黑名单主题（谨慎跟）：win、ducks、rebels、green、missouri。白名单主题（优先筛选）：open、zhejiang、flames、beijing、monkey。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 50.56（锚点口径），结论：只适合筛着跟。主要板块暴露：sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：spread、state、cavaliers、hawks、kings。软黑名单主题（谨慎跟）：win、ducks、rebels、green、missouri。白名单主题（优先筛选）：open、zhejiang、flames、beijing、nanjing。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -32,7 +32,7 @@
 - 递进型并发行为相对可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：open, zhejiang, flames, beijing, monkey, nanjing.
+- 可执行白名单主题：open, zhejiang, flames, beijing, nanjing, monkey.
 
 ## 5. 跟单风险
 - 存在明显互斥市场并发多腿行为。
@@ -50,12 +50,12 @@
 - zhejiang
 - flames
 - beijing
-- monkey
 - nanjing
+- monkey
 - king
 - flying
-- jilin
 - northeast
+- jilin
 - adelaide
 - phoenix
 
@@ -85,7 +85,7 @@
 - unlv
 - runnin
 - austin
-- lumberjacks
+- stephen
 
 ## 7. 账户概览
 - analysis_window: `2026-03-11 18:33:09 UTC -> 2026-04-10 18:24:37 UTC`

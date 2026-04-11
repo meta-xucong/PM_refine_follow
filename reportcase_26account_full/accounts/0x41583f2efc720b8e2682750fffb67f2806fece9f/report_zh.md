@@ -1,14 +1,14 @@
-# Pale-Semicolon
+# Toncar16
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Pale-Semicolon`
+- 展示名称: `Toncar16`
 - 账户地址: `0x41583f2efc720b8e2682750fffb67f2806fece9f`
 - 平台昵称: `Pale-Semicolon`
 - 平台名称: `Toncar16`
 - 本地名称: `account_15`
 
 ## 1. 执行结论
-校准后决策分 59.40（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、april、israel、election。软黑名单主题（谨慎跟）：china、trump。白名单主题（优先筛选）：military、against、announces、operations、end。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 59.40（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、april、israel、election。软黑名单主题（谨慎跟）：china、trump。白名单主题（优先筛选）：military、against、announces、end、operations。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -30,7 +30,7 @@
 - 不可复制 token 快交易（BUY）比例较低。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：military, against, announces, operations, end, cuba.
+- 可执行白名单主题：military, against, announces, end, operations, cuba.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
@@ -48,15 +48,15 @@
 - military
 - against
 - announces
-- operations
 - end
+- operations
 - cuba
 - kharg
 - iranian
-- control
 - longer
 - island
-- miguel
+- control
+- out
 
 ### 硬黑名单关键词
 - march
@@ -67,10 +67,10 @@
 - ceasefire
 - paris
 - municipal
-- advance
 - second
+- round
 - chikirou
-- sophia
+- advance
 
 ### 软黑名单关键词
 - china

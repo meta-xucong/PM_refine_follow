@@ -1,14 +1,14 @@
-# Calm-Charger
+# Moond
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Calm-Charger`
+- 展示名称: `Moond`
 - 账户地址: `0x9dfe2f73d3c988a9d69df8fa0beb85651340b3dd`
 - 平台昵称: `Calm-Charger`
 - 平台名称: `Moond`
 - 本地名称: `account_11`
 
 ## 1. 执行结论
-校准后决策分 58.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、enter、forces、ceasefire。软黑名单主题（谨慎跟）：mrbeast、video、views、one、above。白名单主题（优先筛选）：april、out、netanyahu、regime、iranian。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 58.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：march、iran、enter、forces、ceasefire。软黑名单主题（谨慎跟）：video、mrbeast、views、above、fdv。白名单主题（优先筛选）：april、netanyahu、out、iranian、regime。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -30,13 +30,13 @@
 - 不可复制 token 快交易（BUY）比例较低。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：april, out, netanyahu, regime, iranian, fall.
+- 可执行白名单主题：april, netanyahu, out, iranian, regime, fall.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：march, iran, enter, forces, ceasefire, public.
-- 软黑名单主题（需更严格触发）：mrbeast, video, views, one, above, fdv.
+- 软黑名单主题（需更严格触发）：video, mrbeast, views, above, fdv, one.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -46,16 +46,16 @@
 
 ### 白名单关键词
 - april
-- out
 - netanyahu
-- regime
+- out
 - iranian
+- regime
 - fall
 - change
-- ukraine
 - russia
-- dip
+- ukraine
 - bitcoin
+- dip
 - leadership
 
 ### 硬黑名单关键词
@@ -69,16 +69,16 @@
 - announces
 - end
 - p2p
-- sale
+- protocol
 - committed
 
 ### 软黑名单关键词
-- mrbeast
 - video
+- mrbeast
 - views
-- one
 - above
 - fdv
+- one
 
 ## 7. 账户概览
 - analysis_window: `2026-03-11 18:53:59 UTC -> 2026-04-10 04:56:45 UTC`

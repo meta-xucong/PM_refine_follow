@@ -1,14 +1,14 @@
-# Glossy-Statute
+# Nostdam
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Glossy-Statute`
+- 展示名称: `Nostdam`
 - 账户地址: `0xe732156a2d84cdfb4de831d3f11a22899e49898f`
 - 平台昵称: `Glossy-Statute`
 - 平台名称: `Nostdam`
 - 本地名称: `account_21`
 
 ## 1. 执行结论
-校准后决策分 32.80（锚点口径），结论：不值得跟。主要板块暴露：sports、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：oilers、state、carolina、north、spread。软黑名单主题（谨慎跟）：open、bully、volunteers、tennessee。白名单主题（优先筛选）：netanyahu、out、trump、sinners、taylor。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 32.80（锚点口径），结论：不值得跟。主要板块暴露：sports、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：oilers、state、north、carolina、spread。软黑名单主题（谨慎跟）：open、bully、volunteers、tennessee。白名单主题（优先筛选）：out、netanyahu、trump、sinners、swift。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
@@ -29,7 +29,7 @@
 ## 4. 跟单优势
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：netanyahu, out, trump, sinners, taylor, swift.
+- 可执行白名单主题：out, netanyahu, trump, sinners, swift, taylor.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
@@ -37,7 +37,7 @@
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：oilers, state, carolina, north, spread, texas.
+- 硬黑名单主题（应避免）：oilers, state, north, carolina, spread, texas.
 - 软黑名单主题（需更严格触发）：open, bully, volunteers, tennessee.
 
 ## 6. 板块与关键词过滤
@@ -47,28 +47,28 @@
 - us_politics
 
 ### 白名单关键词
-- netanyahu
 - out
+- netanyahu
 - trump
 - sinners
-- taylor
 - swift
+- taylor
 - june
 - khamenei
 - public
 - houston
 - cougars
-- oil
+- hit
 
 ### 硬黑名单关键词
 - oilers
 - state
-- carolina
 - north
+- carolina
 - spread
 - texas
-- wolfpack
 - longhorns
+- wolfpack
 - between
 - panthers
 - blues

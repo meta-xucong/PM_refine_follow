@@ -1,14 +1,14 @@
-# Wide-Prospect
+# Nicksypoo
 
 ## Account Identity (Manual Verification First)
-- Display name: `Wide-Prospect`
+- Display name: `Nicksypoo`
 - Account address: `0xcbb5623096b78505a26524e642c5c9066e585ed9`
 - Source pseudonym: `Wide-Prospect`
 - Source profile name: `Nicksypoo`
 - Source local name: `account_5`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: winner, game, duty, call, gaming. Soft blacklist themes: nba, win, spurs, finals, san. Whitelist themes: bo3, group, team, bo5, league. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: winner, game, duty, call, gaming. Soft blacklist themes: nba, win, spurs, finals, antonio. Whitelist themes: bo3, group, team, bo5, league. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -40,7 +40,7 @@ Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommende
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
 - Hard blacklist themes to avoid: winner, game, duty, call, gaming, lol.
-- Soft blacklist themes requiring stricter triggers: nba, win, spurs, finals, san, antonio.
+- Soft blacklist themes requiring stricter triggers: nba, win, spurs, finals, antonio, san.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -79,14 +79,14 @@ Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommende
 - win
 - spurs
 - finals
-- san
 - antonio
+- san
 - suns
 - make
 - phoenix
 - cloud
 - dawning
-- candidates
+- anish
 
 ## 7. Account Overview
 - analysis_window: `2026-03-12 03:11:55 UTC -> 2026-04-10 12:23:23 UTC`

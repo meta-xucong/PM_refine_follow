@@ -1,14 +1,14 @@
-# Insignificant-Affair
+# 0x5095e97281f28d4d8549fd3834802c24cbb793e
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Insignificant-Affair`
+- 展示名称: `0x5095e97281f28d4d8549fd3834802c24cbb793e`
 - 账户地址: `0x5095e97281f28d4d8549fd3834802c24cbb793ee`
 - 平台昵称: `Insignificant-Affair`
 - 平台名称: `0x5095e97281f28d4d8549fd3834802c24cbb793e`
 - 本地名称: `account_14`
 
 ## 1. 执行结论
-校准后决策分 63.71（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：office、box、weekend、opening、greater。软黑名单主题（谨慎跟）：him、reminders、ready、not、here。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 63.71（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：office、weekend、box、opening、greater。软黑名单主题（谨慎跟）：reminders、him、come、not、here。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -37,8 +37,8 @@
 - 同 condition 双边活动较高，跟单复现难度大。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 交易频次/可利用度约束限制了实盘跟单容量。
-- 硬黑名单主题（应避免）：office, box, weekend, opening, greater, between.
-- 软黑名单主题（需更严格触发）：him, reminders, ready, not, here, come.
+- 硬黑名单主题（应避免）：office, weekend, box, opening, greater, between.
+- 软黑名单主题（需更严格触发）：reminders, him, come, not, here, ready.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -49,25 +49,25 @@
 
 ### 硬黑名单关键词
 - office
-- box
 - weekend
+- box
 - opening
 - greater
 - between
-- project
-- hail
 - mary
+- hail
+- project
 - less
 - hoppers
-- galaxy
+- movie
 
 ### 软黑名单关键词
-- him
 - reminders
-- ready
+- him
+- come
 - not
 - here
-- come
+- ready
 
 ## 7. 账户概览
 - analysis_window: `2026-03-12 14:07:57 UTC -> 2026-04-10 18:13:37 UTC`

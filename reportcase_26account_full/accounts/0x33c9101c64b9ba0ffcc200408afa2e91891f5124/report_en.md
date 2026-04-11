@@ -1,14 +1,14 @@
-# Long-Guitar
+# 0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087
 
 ## Account Identity (Manual Verification First)
-- Display name: `Long-Guitar`
+- Display name: `0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087`
 - Account address: `0x33c9101c64b9ba0ffcc200408afa2e91891f5124`
 - Source pseudonym: `Long-Guitar`
 - Source profile name: `0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087`
 - Source local name: `account_6`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: bitcoin, down, march, nuggets, warriors. Soft blacklist themes: heat, wizards, celtics, bulls, pistons. Whitelist themes: bitcoin, down, march, am-5, am-4. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: down, bitcoin, march, nuggets, warriors. Soft blacklist themes: heat, wizards, celtics, bulls, pistons. Whitelist themes: down, bitcoin, march, am-5, am-4. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -31,12 +31,12 @@ Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: bitcoin, down, march, am-5, am-4, am-3.
+- Operational whitelist themes: down, bitcoin, march, am-5, am-4, am-3.
 
 ## 5. Copy-Trading Risks
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
-- Hard blacklist themes to avoid: bitcoin, down, march, nuggets, warriors, am-5.
+- Hard blacklist themes to avoid: down, bitcoin, march, nuggets, warriors, am-5.
 - Soft blacklist themes requiring stricter triggers: heat, wizards, celtics, bulls, pistons, win.
 
 ## 6. Sector and Keyword Filters
@@ -45,8 +45,8 @@ Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copy
 - sports
 
 ### Whitelist Keywords
-- bitcoin
 - down
+- bitcoin
 - march
 - am-5
 - am-4
@@ -59,8 +59,8 @@ Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copy
 - grizzlies
 
 ### Hard Blacklist Keywords
-- bitcoin
 - down
+- bitcoin
 - march
 - nuggets
 - warriors

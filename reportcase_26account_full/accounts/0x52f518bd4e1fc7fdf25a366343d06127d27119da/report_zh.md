@@ -1,14 +1,14 @@
-# Unhealthy-Standing
+# png1024
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Unhealthy-Standing`
+- 展示名称: `png1024`
 - 账户地址: `0x52f518bd4e1fc7fdf25a366343d06127d27119da`
 - 平台昵称: `Unhealthy-Standing`
 - 平台名称: `png1024`
 - 本地名称: `account_16`
 
 ## 1. 执行结论
-校准后决策分 60.88（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：israel、ends、may、conflict、iran。软黑名单主题（谨慎跟）：next、minister、magyar、prime、hungary。白名单主题（优先筛选）：invade、april、ceasefire、win、military。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 60.88（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：israel、ends、may、conflict、iran。软黑名单主题（谨慎跟）：next、ter、hungary、minister、magyar。白名单主题（优先筛选）：invade、april、ceasefire、win、against。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -32,12 +32,12 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：invade, april, ceasefire, win, military, action.
+- 可执行白名单主题：invade, april, ceasefire, win, against, military.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
-- 硬黑名单主题（应避免）：israel, ends, may, conflict, iran, march.
-- 软黑名单主题（需更严格触发）：next, minister, magyar, prime, hungary, ter.
+- 硬黑名单主题（应避免）：israel, ends, may, conflict, iran, israeli.
+- 软黑名单主题（需更严格触发）：next, ter, hungary, minister, magyar, prime.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -50,14 +50,14 @@
 - april
 - ceasefire
 - win
+- against
 - military
 - action
-- against
 - election
-- continues
 - through
-- hungarian
+- continues
 - parliamentary
+- hungarian
 
 ### 硬黑名单关键词
 - israel
@@ -65,22 +65,22 @@
 - may
 - conflict
 - iran
-- march
-- dissolved
 - israeli
+- march
 - parliament
+- dissolved
 
 ### 软黑名单关键词
 - next
+- ter
+- hungary
 - minister
 - magyar
 - prime
-- hungary
-- ter
-- fabiano
-- fide
-- caruana
 - tournament
+- fabiano
+- caruana
+- fide
 - candidates
 
 ## 7. 账户概览

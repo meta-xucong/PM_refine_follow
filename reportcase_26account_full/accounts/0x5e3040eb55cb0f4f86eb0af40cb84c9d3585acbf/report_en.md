@@ -1,7 +1,7 @@
-# Gargantuan-Heater
+# slimjoe
 
 ## Account Identity (Manual Verification First)
-- Display name: `Gargantuan-Heater`
+- Display name: `slimjoe`
 - Account address: `0x5e3040eb55cb0f4f86eb0af40cb84c9d3585acbf`
 - Source pseudonym: `Gargantuan-Heater`
 - Source profile name: `slimjoe`
@@ -39,7 +39,7 @@ Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommende
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - Hard blacklist themes to avoid: set, spread, handicap, moneyline, open, miami.
-- Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, charleston.
+- Soft blacklist themes requiring stricter triggers: madrid, halftime, red, city, real, one.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -79,9 +79,9 @@ Calibrated decision score is 41.59 (anchor-referenced), decision: not_recommende
 - red
 - city
 - real
-- charleston
-- credit
 - one
+- credit
+- charleston
 - leading
 - new
 - york

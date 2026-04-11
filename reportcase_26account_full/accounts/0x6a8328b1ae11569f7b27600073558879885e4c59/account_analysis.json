@@ -1,6 +1,6 @@
 {
   "account_address": "0x6a8328b1ae11569f7b27600073558879885e4c59",
-  "account_label": "Dead-Brook",
+  "account_label": "Pulser",
   "account_name_meta": {
     "pseudonym": "Dead-Brook",
     "name": "Pulser",
@@ -320,5 +320,5 @@
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T13:44:06.100818+00:00"
+  "generated_at_utc": "2026-04-11T14:05:52.479228+00:00"
 }

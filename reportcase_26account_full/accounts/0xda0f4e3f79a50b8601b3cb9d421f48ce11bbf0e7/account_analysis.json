@@ -1,6 +1,6 @@
 {
   "account_address": "0xda0f4e3f79a50b8601b3cb9d421f48ce11bbf0e7",
-  "account_label": "Aware-Veteran",
+  "account_label": "Xplayer",
   "account_name_meta": {
     "pseudonym": "Aware-Veteran",
     "name": "Xplayer",
@@ -569,17 +569,17 @@
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
       "day",
+      "million",
       "views",
+      "video",
       "between",
       "get",
       "mrbeast",
-      "video",
-      "million",
       "next",
       "iran",
       "ceasefire",
       "april",
-      "one"
+      "launch"
     ],
     "soft_blacklist_keywords": [
       "league",
@@ -612,11 +612,11 @@
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
-      "Hard blacklist themes to avoid: day, views, between, get, mrbeast, video.",
+      "Hard blacklist themes to avoid: day, million, views, video, between, get.",
       "Soft blacklist themes requiring stricter triggers: league, champions, win, uefa, chelsea, reach."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): day, views, between, get, mrbeast. Soft blacklist themes (copy only with strict trigger): league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 63.50 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): day, million, views, video, between. Soft blacklist themes (copy only with strict trigger): league, champions, win, uefa, chelsea. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:44:45.762229+00:00"
+  "generated_at_utc": "2026-04-11T14:06:31.001886+00:00"
 }

@@ -1,14 +1,14 @@
-# Perfumed-Salmon
+# Crock95
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Perfumed-Salmon`
+- 展示名称: `Crock95`
 - 账户地址: `0x9524e6caca4da8aa811b57564a0a5a6d9fc286cf`
 - 平台昵称: `Perfumed-Salmon`
 - 平台名称: `Crock95`
 - 本地名称: `account_7`
 
 ## 1. 执行结论
-校准后决策分 68.52（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、election、seats、parliamentary、most。软黑名单主题（谨慎跟）：chamber、representatives、third、colombian、folketing。白名单主题（优先筛选）：league、premier、next、presidential、nottm。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 68.52（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、election、seats、parliamentary、most。软黑名单主题（谨慎跟）：chamber、representatives、third、colombian、general。白名单主题（优先筛选）：league、premier、next、presidential、english。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -32,14 +32,14 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：league, premier, next, presidential, nottm, english.
+- 可执行白名单主题：league, premier, next, presidential, english, relegated.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 硬黑名单主题（应避免）：win, election, seats, parliamentary, most, movement.
-- 软黑名单主题（需更严格触发）：chamber, representatives, third, colombian, folketing, danish.
+- 软黑名单主题（需更严格触发）：chamber, representatives, third, colombian, general, folketing.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -52,14 +52,14 @@
 - premier
 - next
 - presidential
-- nottm
 - english
-- forest
 - relegated
+- forest
 - season
+- nottm
 - denmark
-- prime
-- minister
+- frederiksen
+- elections
 
 ### 硬黑名单关键词
 - win
@@ -72,17 +72,17 @@
 - freedom
 - april
 - russia
-- ukraine
 - ceasefire
+- ukraine
 
 ### 软黑名单关键词
 - chamber
 - representatives
 - third
 - colombian
+- general
 - folketing
 - danish
-- general
 - second
 - popular
 

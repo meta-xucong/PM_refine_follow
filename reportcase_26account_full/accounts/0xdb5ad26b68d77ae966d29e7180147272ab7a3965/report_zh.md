@@ -1,7 +1,7 @@
-# Intelligent-Length
+# 0xDB5
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Intelligent-Length`
+- 展示名称: `0xDB5`
 - 账户地址: `0xdb5ad26b68d77ae966d29e7180147272ab7a3965`
 - 平台昵称: `Intelligent-Length`
 - 平台名称: `0xDB5`

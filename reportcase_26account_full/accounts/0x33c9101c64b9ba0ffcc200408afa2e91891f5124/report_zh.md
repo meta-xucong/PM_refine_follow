@@ -1,14 +1,14 @@
-# Long-Guitar
+# 0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Long-Guitar`
+- 展示名称: `0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087`
 - 账户地址: `0x33c9101c64b9ba0ffcc200408afa2e91891f5124`
 - 平台昵称: `Long-Guitar`
 - 平台名称: `0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087`
 - 本地名称: `account_6`
 
 ## 1. 执行结论
-校准后决策分 54.51（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：bitcoin、down、march、nuggets、warriors。软黑名单主题（谨慎跟）：heat、wizards、celtics、bulls、pistons。白名单主题（优先筛选）：bitcoin、down、march、am-5、am-4。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 54.51（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：down、bitcoin、march、nuggets、warriors。软黑名单主题（谨慎跟）：heat、wizards、celtics、bulls、pistons。白名单主题（优先筛选）：down、bitcoin、march、am-5、am-4。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -31,12 +31,12 @@
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：bitcoin, down, march, am-5, am-4, am-3.
+- 可执行白名单主题：down, bitcoin, march, am-5, am-4, am-3.
 
 ## 5. 跟单风险
 - 存在明显互斥市场并发多腿行为。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
-- 硬黑名单主题（应避免）：bitcoin, down, march, nuggets, warriors, am-5.
+- 硬黑名单主题（应避免）：down, bitcoin, march, nuggets, warriors, am-5.
 - 软黑名单主题（需更严格触发）：heat, wizards, celtics, bulls, pistons, win.
 
 ## 6. 板块与关键词过滤
@@ -45,8 +45,8 @@
 - sports
 
 ### 白名单关键词
-- bitcoin
 - down
+- bitcoin
 - march
 - am-5
 - am-4
@@ -59,8 +59,8 @@
 - grizzlies
 
 ### 硬黑名单关键词
-- bitcoin
 - down
+- bitcoin
 - march
 - nuggets
 - warriors

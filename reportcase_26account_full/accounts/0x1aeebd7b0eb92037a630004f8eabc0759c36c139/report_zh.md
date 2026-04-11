@@ -8,7 +8,7 @@
 - 本地名称: `account_19`
 
 ## 1. 执行结论
-校准后决策分 56.34（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、entertainment。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、league、arsenal、champions、cup。软黑名单主题（谨慎跟）：finland、televote、frankenstein。白名单主题（优先筛选）：best、academy、awards、actress、jessie。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 56.34（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、entertainment。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、league、arsenal、champions、cup。软黑名单主题（谨慎跟）：finland、televote、frankenstein。白名单主题（优先筛选）：best、awards、academy、actress、buckley。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -31,7 +31,7 @@
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：best, academy, awards, actress, jessie, buckley.
+- 可执行白名单主题：best, awards, academy, actress, buckley, jessie.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
@@ -47,11 +47,11 @@
 
 ### 白名单关键词
 - best
-- academy
 - awards
+- academy
 - actress
-- jessie
 - buckley
+- jessie
 
 ### 硬黑名单关键词
 - win
@@ -65,7 +65,7 @@
 - carabao
 - madrid
 - real
-- scheffler
+- masters
 
 ### 软黑名单关键词
 - finland

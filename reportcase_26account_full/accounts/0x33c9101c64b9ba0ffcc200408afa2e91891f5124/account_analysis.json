@@ -1,6 +1,6 @@
 {
   "account_address": "0x33c9101c64b9ba0ffcc200408afa2e91891f5124",
-  "account_label": "Long-Guitar",
+  "account_label": "0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087",
   "account_name_meta": {
     "pseudonym": "Long-Guitar",
     "name": "0x33c9101c64b9ba0fFCC200408afA2e91891f5124-1768236962087",
@@ -5026,8 +5026,8 @@
       "sports"
     ],
     "whitelist_keywords": [
-      "bitcoin",
       "down",
+      "bitcoin",
       "march",
       "am-5",
       "am-4",
@@ -5040,8 +5040,8 @@
       "grizzlies"
     ],
     "hard_blacklist_keywords": [
-      "bitcoin",
       "down",
+      "bitcoin",
       "march",
       "nuggets",
       "warriors",
@@ -5082,18 +5082,18 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: bitcoin, down, march, am-5, am-4, am-3."
+      "Operational whitelist themes: down, bitcoin, march, am-5, am-4, am-3."
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "Hard blacklist themes to avoid: bitcoin, down, march, nuggets, warriors, am-5.",
+      "Hard blacklist themes to avoid: down, bitcoin, march, nuggets, warriors, am-5.",
       "Soft blacklist themes requiring stricter triggers: heat, wizards, celtics, bulls, pistons, win."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): bitcoin, down, march, nuggets, warriors. Soft blacklist themes (copy only with strict trigger): heat, wizards, celtics, bulls, pistons. Whitelist themes (higher priority for selective following): bitcoin, down, march, am-5, am-4. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 54.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): down, bitcoin, march, nuggets, warriors. Soft blacklist themes (copy only with strict trigger): heat, wizards, celtics, bulls, pistons. Whitelist themes (higher priority for selective following): down, bitcoin, march, am-5, am-4. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T13:43:38.801563+00:00"
+  "generated_at_utc": "2026-04-11T14:05:22.592997+00:00"
 }

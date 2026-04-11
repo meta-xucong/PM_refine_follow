@@ -1,6 +1,6 @@
 {
   "account_address": "0xccf128f31a3af399c40dd9854c83b60101dd25a0",
-  "account_label": "Velvety-Lion",
+  "account_label": "reakt2026",
   "account_name_meta": {
     "pseudonym": "Velvety-Lion",
     "name": "reakt2026",
@@ -3452,8 +3452,8 @@
       "sports"
     ],
     "whitelist_keywords": [
-      "cornhuskers",
       "nebraska",
+      "cornhuskers",
       "flyers",
       "bruins",
       "bears",
@@ -3471,8 +3471,8 @@
       "heat",
       "cavaliers",
       "suns",
-      "trail",
       "blazers",
+      "trail",
       "bulls",
       "magic",
       "pistons",
@@ -3496,21 +3496,21 @@
       "Low non-copyable token-fast BUY ratio.",
       "Nested concurrent behavior remains relatively contained.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: cornhuskers, nebraska, flyers, bruins, bears, auburn."
+      "Operational whitelist themes: nebraska, cornhuskers, flyers, bruins, bears, auburn."
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
       "Weighted multi-market risk is elevated.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: spread, pacers, heat, cavaliers, suns, trail.",
+      "Hard blacklist themes to avoid: spread, pacers, heat, cavaliers, suns, blazers.",
       "Soft blacklist themes requiring stricter triggers: wildcats."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 41.22 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): spread, pacers, heat, cavaliers, suns. Soft blacklist themes (copy only with strict trigger): wildcats. Whitelist themes (higher priority for selective following): cornhuskers, nebraska, flyers, bruins, bears. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 41.22 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): spread, pacers, heat, cavaliers, suns. Soft blacklist themes (copy only with strict trigger): wildcats. Whitelist themes (higher priority for selective following): nebraska, cornhuskers, flyers, bruins, bears. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T13:44:34.851069+00:00"
+  "generated_at_utc": "2026-04-11T14:06:20.911842+00:00"
 }

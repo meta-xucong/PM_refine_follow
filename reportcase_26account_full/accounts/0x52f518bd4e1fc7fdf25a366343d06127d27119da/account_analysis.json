@@ -1,6 +1,6 @@
 {
   "account_address": "0x52f518bd4e1fc7fdf25a366343d06127d27119da",
-  "account_label": "Unhealthy-Standing",
+  "account_label": "png1024",
   "account_name_meta": {
     "pseudonym": "Unhealthy-Standing",
     "name": "png1024",
@@ -390,14 +390,14 @@
       "april",
       "ceasefire",
       "win",
+      "against",
       "military",
       "action",
-      "against",
       "election",
-      "continues",
       "through",
-      "hungarian",
-      "parliamentary"
+      "continues",
+      "parliamentary",
+      "hungarian"
     ],
     "hard_blacklist_keywords": [
       "israel",
@@ -405,22 +405,22 @@
       "may",
       "conflict",
       "iran",
-      "march",
-      "dissolved",
       "israeli",
-      "parliament"
+      "march",
+      "parliament",
+      "dissolved"
     ],
     "soft_blacklist_keywords": [
       "next",
+      "ter",
+      "hungary",
       "minister",
       "magyar",
       "prime",
-      "hungary",
-      "ter",
-      "fabiano",
-      "fide",
-      "caruana",
       "tournament",
+      "fabiano",
+      "caruana",
+      "fide",
       "candidates"
     ],
     "whitelist_keyword_count": 28,
@@ -439,15 +439,15 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: invade, april, ceasefire, win, military, action."
+      "Operational whitelist themes: invade, april, ceasefire, win, against, military."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
-      "Hard blacklist themes to avoid: israel, ends, may, conflict, iran, march.",
-      "Soft blacklist themes requiring stricter triggers: next, minister, magyar, prime, hungary, ter."
+      "Hard blacklist themes to avoid: israel, ends, may, conflict, iran, israeli.",
+      "Soft blacklist themes requiring stricter triggers: next, ter, hungary, minister, magyar, prime."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): israel, ends, may, conflict, iran. Soft blacklist themes (copy only with strict trigger): next, minister, magyar, prime, hungary. Whitelist themes (higher priority for selective following): invade, april, ceasefire, win, military. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): israel, ends, may, conflict, iran. Soft blacklist themes (copy only with strict trigger): next, ter, hungary, minister, magyar. Whitelist themes (higher priority for selective following): invade, april, ceasefire, win, against. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:43:58.568718+00:00"
+  "generated_at_utc": "2026-04-11T14:05:45.103781+00:00"
 }

@@ -1,6 +1,6 @@
 {
   "account_address": "0x41583f2efc720b8e2682750fffb67f2806fece9f",
-  "account_label": "Pale-Semicolon",
+  "account_label": "Toncar16",
   "account_name_meta": {
     "pseudonym": "Pale-Semicolon",
     "name": "Toncar16",
@@ -805,15 +805,15 @@
       "military",
       "against",
       "announces",
-      "operations",
       "end",
+      "operations",
       "cuba",
       "kharg",
       "iranian",
-      "control",
       "longer",
       "island",
-      "miguel"
+      "control",
+      "out"
     ],
     "hard_blacklist_keywords": [
       "march",
@@ -824,10 +824,10 @@
       "ceasefire",
       "paris",
       "municipal",
-      "advance",
       "second",
+      "round",
       "chikirou",
-      "sophia"
+      "advance"
     ],
     "soft_blacklist_keywords": [
       "china",
@@ -847,7 +847,7 @@
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: military, against, announces, operations, end, cuba."
+      "Operational whitelist themes: military, against, announces, end, operations, cuba."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
@@ -856,7 +856,7 @@
       "Soft blacklist themes requiring stricter triggers: china, trump."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): march, iran, april, israel, election. Soft blacklist themes (copy only with strict trigger): china, trump. Whitelist themes (higher priority for selective following): military, against, announces, operations, end. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): march, iran, april, israel, election. Soft blacklist themes (copy only with strict trigger): china, trump. Whitelist themes (higher priority for selective following): military, against, announces, end, operations. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:43:42.487618+00:00"
+  "generated_at_utc": "2026-04-11T14:05:26.541650+00:00"
 }

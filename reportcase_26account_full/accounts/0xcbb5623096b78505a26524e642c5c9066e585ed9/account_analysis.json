@@ -1,6 +1,6 @@
 {
   "account_address": "0xcbb5623096b78505a26524e642c5c9066e585ed9",
-  "account_label": "Wide-Prospect",
+  "account_label": "Nicksypoo",
   "account_name_meta": {
     "pseudonym": "Wide-Prospect",
     "name": "Nicksypoo",
@@ -1677,14 +1677,14 @@
       "win",
       "spurs",
       "finals",
-      "san",
       "antonio",
+      "san",
       "suns",
       "make",
       "phoenix",
       "cloud",
       "dawning",
-      "candidates"
+      "anish"
     ],
     "whitelist_keyword_count": 105,
     "hard_blacklist_keyword_count": 28,
@@ -1710,14 +1710,14 @@
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
       "Hard blacklist themes to avoid: winner, game, duty, call, gaming, lol.",
-      "Soft blacklist themes requiring stricter triggers: nba, win, spurs, finals, san, antonio."
+      "Soft blacklist themes requiring stricter triggers: nba, win, spurs, finals, antonio, san."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): winner, game, duty, call, gaming. Soft blacklist themes (copy only with strict trigger): nba, win, spurs, finals, san. Whitelist themes (higher priority for selective following): bo3, group, team, bo5, league. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 39.47 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): winner, game, duty, call, gaming. Soft blacklist themes (copy only with strict trigger): nba, win, spurs, finals, antonio. Whitelist themes (higher priority for selective following): bo3, group, team, bo5, league. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "Severe risk gate + low calibrated score -> not_recommended"
   ],
-  "generated_at_utc": "2026-04-11T13:44:31.065100+00:00"
+  "generated_at_utc": "2026-04-11T14:06:17.380218+00:00"
 }

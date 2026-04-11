@@ -1,6 +1,6 @@
 {
   "account_address": "0xe732156a2d84cdfb4de831d3f11a22899e49898f",
-  "account_label": "Glossy-Statute",
+  "account_label": "Nostdam",
   "account_name_meta": {
     "pseudonym": "Glossy-Statute",
     "name": "Nostdam",
@@ -2232,28 +2232,28 @@
       "us_politics"
     ],
     "whitelist_keywords": [
-      "netanyahu",
       "out",
+      "netanyahu",
       "trump",
       "sinners",
-      "taylor",
       "swift",
+      "taylor",
       "june",
       "khamenei",
       "public",
       "houston",
       "cougars",
-      "oil"
+      "hit"
     ],
     "hard_blacklist_keywords": [
       "oilers",
       "state",
-      "carolina",
       "north",
+      "carolina",
       "spread",
       "texas",
-      "wolfpack",
       "longhorns",
+      "wolfpack",
       "between",
       "panthers",
       "blues",
@@ -2278,7 +2278,7 @@
     "strength_points": [
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: netanyahu, out, trump, sinners, taylor, swift."
+      "Operational whitelist themes: out, netanyahu, trump, sinners, swift, taylor."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
@@ -2286,15 +2286,15 @@
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: oilers, state, carolina, north, spread, texas.",
+      "Hard blacklist themes to avoid: oilers, state, north, carolina, spread, texas.",
       "Soft blacklist themes requiring stricter triggers: open, bully, volunteers, tennessee."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): oilers, state, carolina, north, spread. Soft blacklist themes (copy only with strict trigger): open, bully, volunteers, tennessee. Whitelist themes (higher priority for selective following): netanyahu, out, trump, sinners, taylor. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): oilers, state, north, carolina, spread. Soft blacklist themes (copy only with strict trigger): open, bully, volunteers, tennessee. Whitelist themes (higher priority for selective following): out, netanyahu, trump, sinners, swift. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
     "Severe risk gate + low calibrated score -> not_recommended"
   ],
-  "generated_at_utc": "2026-04-11T13:45:04.961614+00:00"
+  "generated_at_utc": "2026-04-11T14:06:47.055089+00:00"
 }

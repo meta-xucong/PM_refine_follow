@@ -1,7 +1,7 @@
-# Gargantuan-Heater
+# slimjoe
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Gargantuan-Heater`
+- 展示名称: `slimjoe`
 - 账户地址: `0x5e3040eb55cb0f4f86eb0af40cb84c9d3585acbf`
 - 平台昵称: `Gargantuan-Heater`
 - 平台名称: `slimjoe`
@@ -39,7 +39,7 @@
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 硬黑名单主题（应避免）：set, spread, handicap, moneyline, open, miami.
-- 软黑名单主题（需更严格触发）：madrid, halftime, red, city, real, charleston.
+- 软黑名单主题（需更严格触发）：madrid, halftime, red, city, real, one.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -79,9 +79,9 @@
 - red
 - city
 - real
-- charleston
-- credit
 - one
+- credit
+- charleston
 - leading
 - new
 - york

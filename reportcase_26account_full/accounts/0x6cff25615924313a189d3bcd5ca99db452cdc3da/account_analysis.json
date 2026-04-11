@@ -1,6 +1,6 @@
 {
   "account_address": "0x6cff25615924313a189d3bcd5ca99db452cdc3da",
-  "account_label": "Colossal-Latency",
+  "account_label": "Germany-007",
   "account_name_meta": {
     "pseudonym": "Colossal-Latency",
     "name": "Germany-007",
@@ -5469,8 +5469,8 @@
       "geopolitics"
     ],
     "whitelist_keywords": [
-      "atl",
       "tico",
+      "atl",
       "madrid",
       "club",
       "pm-5",
@@ -5485,10 +5485,10 @@
     "hard_blacklist_keywords": [
       "win",
       "bucks",
-      "fide",
       "candidates",
-      "javokhir",
+      "fide",
       "sindarov",
+      "javokhir",
       "tournament",
       "hawks",
       "march",
@@ -5497,8 +5497,8 @@
       "raptors"
     ],
     "soft_blacklist_keywords": [
-      "draw",
       "end",
+      "draw",
       "galatasaray",
       "liverpool",
       "am-11",
@@ -5521,16 +5521,16 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: atl, tico, madrid, club, pm-5, pm-6."
+      "Operational whitelist themes: tico, atl, madrid, club, pm-5, pm-6."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.",
-      "Hard blacklist themes to avoid: win, bucks, fide, candidates, javokhir, sindarov.",
-      "Soft blacklist themes requiring stricter triggers: draw, end, galatasaray, liverpool, am-11, pm-12."
+      "Hard blacklist themes to avoid: win, bucks, candidates, fide, sindarov, javokhir.",
+      "Soft blacklist themes requiring stricter triggers: end, draw, galatasaray, liverpool, am-11, pm-12."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): win, bucks, fide, candidates, javokhir. Soft blacklist themes (copy only with strict trigger): draw, end, galatasaray, liverpool, am-11. Whitelist themes (higher priority for selective following): atl, tico, madrid, club, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 67.72 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): win, bucks, candidates, fide, sindarov. Soft blacklist themes (copy only with strict trigger): end, draw, galatasaray, liverpool, am-11. Whitelist themes (higher priority for selective following): tico, atl, madrid, club, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T13:44:09.634443+00:00"
+  "generated_at_utc": "2026-04-11T14:05:55.940505+00:00"
 }

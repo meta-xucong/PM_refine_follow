@@ -1,14 +1,14 @@
-# Knotty-Mud
+# GoldmanSachs
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Knotty-Mud`
+- 展示名称: `GoldmanSachs`
 - 账户地址: `0x71dd2d539a793687451d4af8c43169369b47d61c`
 - 平台昵称: `Knotty-Mud`
 - 平台名称: `GoldmanSachs`
 - 本地名称: `account_3`
 
 ## 1. 执行结论
-校准后决策分 60.45（锚点口径），结论：只适合筛着跟。主要板块暴露：macro。优势：加权多子市场风险较低、不可复制快交易比例较低。软黑名单主题（谨慎跟）：chair、reserve、warsh、chuck、federal。白名单主题（优先筛选）：fed、change、rates、meeting、interest。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 60.45（锚点口径），结论：只适合筛着跟。主要板块暴露：macro。优势：加权多子市场风险较低、不可复制快交易比例较低。软黑名单主题（谨慎跟）：chuck、warsh、federal、schumer、confirm。白名单主题（优先筛选）：change、rates、fed、interest、meeting。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -33,22 +33,22 @@
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：fed, change, rates, meeting, interest, there.
+- 可执行白名单主题：change, rates, fed, interest, meeting, there.
 
 ## 5. 跟单风险
 - 交易频次/可利用度约束限制了实盘跟单容量。
-- 软黑名单主题（需更严格触发）：chair, reserve, warsh, chuck, federal, kevin.
+- 软黑名单主题（需更严格触发）：chuck, warsh, federal, schumer, confirm, chair.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
 - macro
 
 ### 白名单关键词
-- fed
 - change
 - rates
-- meeting
+- fed
 - interest
+- meeting
 - there
 - april
 - march
@@ -57,15 +57,15 @@
 - (none)
 
 ### 软黑名单关键词
+- chuck
+- warsh
+- federal
+- schumer
+- confirm
 - chair
 - reserve
-- warsh
-- chuck
-- federal
-- kevin
 - vote
-- confirm
-- schumer
+- kevin
 
 ## 7. 账户概览
 - analysis_window: `2026-03-13 02:43:13 UTC -> 2026-04-03 13:23:21 UTC`

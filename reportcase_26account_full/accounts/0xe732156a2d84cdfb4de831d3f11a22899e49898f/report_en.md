@@ -1,14 +1,14 @@
-# Glossy-Statute
+# Nostdam
 
 ## Account Identity (Manual Verification First)
-- Display name: `Glossy-Statute`
+- Display name: `Nostdam`
 - Account address: `0xe732156a2d84cdfb4de831d3f11a22899e49898f`
 - Source pseudonym: `Glossy-Statute`
 - Source profile name: `Nostdam`
 - Source local name: `account_21`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: oilers, state, carolina, north, spread. Soft blacklist themes: open, bully, volunteers, tennessee. Whitelist themes: netanyahu, out, trump, sinners, taylor. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, geopolitics, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, nested concurrent-ladder risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: oilers, state, north, carolina, spread. Soft blacklist themes: open, bully, volunteers, tennessee. Whitelist themes: out, netanyahu, trump, sinners, swift. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
@@ -29,7 +29,7 @@ Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommende
 ## 4. Copy-Trading Strengths
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: netanyahu, out, trump, sinners, taylor, swift.
+- Operational whitelist themes: out, netanyahu, trump, sinners, swift, taylor.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
@@ -37,7 +37,7 @@ Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommende
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: oilers, state, carolina, north, spread, texas.
+- Hard blacklist themes to avoid: oilers, state, north, carolina, spread, texas.
 - Soft blacklist themes requiring stricter triggers: open, bully, volunteers, tennessee.
 
 ## 6. Sector and Keyword Filters
@@ -47,28 +47,28 @@ Calibrated decision score is 32.80 (anchor-referenced), decision: not_recommende
 - us_politics
 
 ### Whitelist Keywords
-- netanyahu
 - out
+- netanyahu
 - trump
 - sinners
-- taylor
 - swift
+- taylor
 - june
 - khamenei
 - public
 - houston
 - cougars
-- oil
+- hit
 
 ### Hard Blacklist Keywords
 - oilers
 - state
-- carolina
 - north
+- carolina
 - spread
 - texas
-- wolfpack
 - longhorns
+- wolfpack
 - between
 - panthers
 - blues

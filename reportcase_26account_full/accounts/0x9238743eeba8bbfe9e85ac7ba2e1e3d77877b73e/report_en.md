@@ -1,14 +1,14 @@
-# High-Alarm
+# leCommissaire
 
 ## Account Identity (Manual Verification First)
-- Display name: `High-Alarm`
+- Display name: `leCommissaire`
 - Account address: `0x9238743eeba8bbfe9e85ac7ba2e1e3d77877b73e`
 - Source pseudonym: `High-Alarm`
 - Source profile name: `leCommissaire`
 - Source local name: `account_12`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: russia, march, capture, april, iran. Soft blacklist themes: win, military, united, manchester, barcelona. Whitelist themes: ceasefire, madrid, real, nchen, bayern. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: russia, march, capture, april, iran. Soft blacklist themes: win, military, united, manchester, barcelona. Whitelist themes: ceasefire, madrid, real, bayern, nchen. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -29,7 +29,7 @@ Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copy
 ## 4. Copy-Trading Strengths
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: ceasefire, madrid, real, nchen, bayern, sloviansk.
+- Operational whitelist themes: ceasefire, madrid, real, bayern, nchen, sloviansk.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
@@ -47,8 +47,8 @@ Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copy
 - ceasefire
 - madrid
 - real
-- nchen
 - bayern
+- nchen
 - sloviansk
 - bilytske
 - lyman
@@ -80,8 +80,8 @@ Calibrated decision score is 50.36 (anchor-referenced), decision: selective_copy
 - league
 - champions
 - arsenal
-- uefa
 - reach
+- uefa
 - sporting
 
 ## 7. Account Overview

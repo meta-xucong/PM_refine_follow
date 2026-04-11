@@ -1,6 +1,6 @@
 {
   "account_address": "0xe542afd3881c4c330ba0ebbb603bb470b2ba0a37",
-  "account_label": "Lonely-Bog",
+  "account_label": "leegunner",
   "account_name_meta": {
     "pseudonym": "Lonely-Bog",
     "name": "leegunner",
@@ -2740,14 +2740,14 @@
     ],
     "whitelist_keywords": [
       "barcelona",
-      "copa",
       "vandewinkel",
-      "bouzkova",
       "colsanitas",
+      "bouzkova",
       "marie",
+      "copa",
       "hanne",
-      "elena",
       "rybakina",
+      "elena",
       "bahrain",
       "lakers",
       "ufc"
@@ -2769,8 +2769,8 @@
     "soft_blacklist_keywords": [
       "nfl",
       "championship",
-      "chiefs",
       "kansas",
+      "chiefs",
       "madrid",
       "real",
       "manchester",
@@ -2795,7 +2795,7 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: barcelona, copa, vandewinkel, bouzkova, colsanitas, marie."
+      "Operational whitelist themes: barcelona, vandewinkel, colsanitas, bouzkova, marie, copa."
     ],
     "risk_points": [
       "Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.",
@@ -2803,12 +2803,12 @@
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Hard blacklist themes to avoid: win, league, nba, cup, world, finals.",
-      "Soft blacklist themes requiring stricter triggers: nfl, championship, chiefs, kansas, madrid, real."
+      "Soft blacklist themes requiring stricter triggers: nfl, championship, kansas, chiefs, madrid, real."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior, non-copyable token-fast exposure. Hard blacklist themes (avoid copying): win, league, nba, cup, world. Soft blacklist themes (copy only with strict trigger): nfl, championship, chiefs, kansas, madrid. Whitelist themes (higher priority for selective following): barcelona, copa, vandewinkel, bouzkova, colsanitas. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 39.64 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior, non-copyable token-fast exposure. Hard blacklist themes (avoid copying): win, league, nba, cup, world. Soft blacklist themes (copy only with strict trigger): nfl, championship, kansas, chiefs, madrid. Whitelist themes (higher priority for selective following): barcelona, vandewinkel, colsanitas, bouzkova, marie. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T13:45:00.312008+00:00"
+  "generated_at_utc": "2026-04-11T14:06:43.823868+00:00"
 }

@@ -1,14 +1,14 @@
-# Unhealthy-Standing
+# png1024
 
 ## Account Identity (Manual Verification First)
-- Display name: `Unhealthy-Standing`
+- Display name: `png1024`
 - Account address: `0x52f518bd4e1fc7fdf25a366343d06127d27119da`
 - Source pseudonym: `Unhealthy-Standing`
 - Source profile name: `png1024`
 - Source local name: `account_16`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: israel, ends, may, conflict, iran. Soft blacklist themes: next, minister, magyar, prime, hungary. Whitelist themes: invade, april, ceasefire, win, military. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: israel, ends, may, conflict, iran. Soft blacklist themes: next, ter, hungary, minister, magyar. Whitelist themes: invade, april, ceasefire, win, against. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -32,12 +32,12 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: invade, april, ceasefire, win, military, action.
+- Operational whitelist themes: invade, april, ceasefire, win, against, military.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
-- Hard blacklist themes to avoid: israel, ends, may, conflict, iran, march.
-- Soft blacklist themes requiring stricter triggers: next, minister, magyar, prime, hungary, ter.
+- Hard blacklist themes to avoid: israel, ends, may, conflict, iran, israeli.
+- Soft blacklist themes requiring stricter triggers: next, ter, hungary, minister, magyar, prime.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -50,14 +50,14 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - april
 - ceasefire
 - win
+- against
 - military
 - action
-- against
 - election
-- continues
 - through
-- hungarian
+- continues
 - parliamentary
+- hungarian
 
 ### Hard Blacklist Keywords
 - israel
@@ -65,22 +65,22 @@ Calibrated decision score is 60.88 (anchor-referenced), decision: selective_copy
 - may
 - conflict
 - iran
-- march
-- dissolved
 - israeli
+- march
 - parliament
+- dissolved
 
 ### Soft Blacklist Keywords
 - next
+- ter
+- hungary
 - minister
 - magyar
 - prime
-- hungary
-- ter
-- fabiano
-- fide
-- caruana
 - tournament
+- fabiano
+- caruana
+- fide
 - candidates
 
 ## 7. Account Overview

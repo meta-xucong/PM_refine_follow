@@ -1,7 +1,7 @@
-# Dead-Brook
+# Pulser
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Dead-Brook`
+- 展示名称: `Pulser`
 - 账户地址: `0x6a8328b1ae11569f7b27600073558879885e4c59`
 - 平台昵称: `Dead-Brook`
 - 平台名称: `Pulser`

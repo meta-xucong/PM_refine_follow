@@ -1,7 +1,7 @@
-# Harmonious-Witchhunt
+# intrepid
 
 ## Account Identity (Manual Verification First)
-- Display name: `Harmonious-Witchhunt`
+- Display name: `intrepid`
 - Account address: `0xd66f79a8d19d4223b6c70dd4e620d4875501a19b`
 - Source pseudonym: `Harmonious-Witchhunt`
 - Source profile name: `intrepid`
@@ -54,8 +54,8 @@ Calibrated decision score is 59.40 (anchor-referenced), decision: selective_copy
 - real
 - manchester
 - liverpool
-- nottingham
 - forest
+- nottingham
 - arsenal
 - city
 - newcastle

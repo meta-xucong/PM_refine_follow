@@ -1,14 +1,14 @@
-# Insignificant-Affair
+# 0x5095e97281f28d4d8549fd3834802c24cbb793e
 
 ## Account Identity (Manual Verification First)
-- Display name: `Insignificant-Affair`
+- Display name: `0x5095e97281f28d4d8549fd3834802c24cbb793e`
 - Account address: `0x5095e97281f28d4d8549fd3834802c24cbb793ee`
 - Source pseudonym: `Insignificant-Affair`
 - Source profile name: `0x5095e97281f28d4d8549fd3834802c24cbb793e`
 - Source local name: `account_14`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: office, box, weekend, opening, greater. Soft blacklist themes: him, reminders, ready, not, here. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: office, weekend, box, opening, greater. Soft blacklist themes: reminders, him, come, not, here. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
@@ -37,8 +37,8 @@ Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copy
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Frequency/deployability constraints limit practical copy capacity.
-- Hard blacklist themes to avoid: office, box, weekend, opening, greater, between.
-- Soft blacklist themes requiring stricter triggers: him, reminders, ready, not, here, come.
+- Hard blacklist themes to avoid: office, weekend, box, opening, greater, between.
+- Soft blacklist themes requiring stricter triggers: reminders, him, come, not, here, ready.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -49,25 +49,25 @@ Calibrated decision score is 63.71 (anchor-referenced), decision: selective_copy
 
 ### Hard Blacklist Keywords
 - office
-- box
 - weekend
+- box
 - opening
 - greater
 - between
-- project
-- hail
 - mary
+- hail
+- project
 - less
 - hoppers
-- galaxy
+- movie
 
 ### Soft Blacklist Keywords
-- him
 - reminders
-- ready
+- him
+- come
 - not
 - here
-- come
+- ready
 
 ## 7. Account Overview
 - analysis_window: `2026-03-12 14:07:57 UTC -> 2026-04-10 18:13:37 UTC`

@@ -1,14 +1,14 @@
-# Superior-Olive
+# Hans323
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Superior-Olive`
+- 展示名称: `Hans323`
 - 账户地址: `0x0f37cb80dee49d55b5f6d9e595d52591d6371410`
 - 平台昵称: `Superior-Olive`
 - 平台名称: `Hans323`
 - 本地名称: `account_23`
 
 ## 1. 执行结论
-校准后决策分 65.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。硬黑名单主题（禁止跟）：iran、forces、enter、april。白名单主题（优先筛选）：highest、temperature、below、denver、march。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 65.65（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、sports、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。硬黑名单主题（禁止跟）：iran、forces、enter、april。白名单主题（优先筛选）：highest、temperature、march、below、denver。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
@@ -33,7 +33,7 @@
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：highest, temperature, below, denver, march, ceasefire.
+- 可执行白名单主题：highest, temperature, march, below, denver, ceasefire.
 
 ## 5. 跟单风险
 - 交易频次/可利用度约束限制了实盘跟单容量。
@@ -48,9 +48,9 @@
 ### 白名单关键词
 - highest
 - temperature
+- march
 - below
 - denver
-- march
 - ceasefire
 - london
 - madrid

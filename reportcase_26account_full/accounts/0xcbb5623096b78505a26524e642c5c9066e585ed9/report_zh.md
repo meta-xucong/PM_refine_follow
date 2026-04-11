@@ -1,14 +1,14 @@
-# Wide-Prospect
+# Nicksypoo
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Wide-Prospect`
+- 展示名称: `Nicksypoo`
 - 账户地址: `0xcbb5623096b78505a26524e642c5c9066e585ed9`
 - 平台昵称: `Wide-Prospect`
 - 平台名称: `Nicksypoo`
 - 本地名称: `account_5`
 
 ## 1. 执行结论
-校准后决策分 39.47（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：winner、game、duty、call、gaming。软黑名单主题（谨慎跟）：nba、win、spurs、finals、san。白名单主题（优先筛选）：bo3、group、team、bo5、league。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 39.47（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：winner、game、duty、call、gaming。软黑名单主题（谨慎跟）：nba、win、spurs、finals、antonio。白名单主题（优先筛选）：bo3、group、team、bo5、league。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
@@ -40,7 +40,7 @@
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
 - 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：winner, game, duty, call, gaming, lol.
-- 软黑名单主题（需更严格触发）：nba, win, spurs, finals, san, antonio.
+- 软黑名单主题（需更严格触发）：nba, win, spurs, finals, antonio, san.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -79,14 +79,14 @@
 - win
 - spurs
 - finals
-- san
 - antonio
+- san
 - suns
 - make
 - phoenix
 - cloud
 - dawning
-- candidates
+- anish
 
 ## 7. 账户概览
 - analysis_window: `2026-03-12 03:11:55 UTC -> 2026-04-10 12:23:23 UTC`

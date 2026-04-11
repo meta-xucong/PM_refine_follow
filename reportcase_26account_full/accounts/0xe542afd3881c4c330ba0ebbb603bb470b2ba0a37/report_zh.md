@@ -1,14 +1,14 @@
-# Lonely-Bog
+# leegunner
 
 ## 账户身份（优先人工核对）
-- 展示名称: `Lonely-Bog`
+- 展示名称: `leegunner`
 - 账户地址: `0xe542afd3881c4c330ba0ebbb603bb470b2ba0a37`
 - 平台昵称: `Lonely-Bog`
 - 平台名称: `leegunner`
 - 本地名称: `account_8`
 
 ## 1. 执行结论
-校准后决策分 39.64（锚点口径），结论：不值得跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：win、league、nba、cup、world。软黑名单主题（谨慎跟）：nfl、championship、chiefs、kansas、madrid。白名单主题（优先筛选）：barcelona、copa、vandewinkel、bouzkova、colsanitas。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 39.64（锚点口径），结论：不值得跟。主要板块暴露：sports、us_politics、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、递进型并存梯度风险偏高、存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：win、league、nba、cup、world。软黑名单主题（谨慎跟）：nfl、championship、kansas、chiefs、madrid。白名单主题（优先筛选）：barcelona、vandewinkel、colsanitas、bouzkova、marie。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
@@ -31,7 +31,7 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：barcelona, copa, vandewinkel, bouzkova, colsanitas, marie.
+- 可执行白名单主题：barcelona, vandewinkel, colsanitas, bouzkova, marie, copa.
 
 ## 5. 跟单风险
 - 不可复制的 token 快交易（BUY）比例偏高，收益更依赖执行优势。
@@ -39,7 +39,7 @@
 - 递进型并发梯度比例偏高，结构管理负担较重。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 硬黑名单主题（应避免）：win, league, nba, cup, world, finals.
-- 软黑名单主题（需更严格触发）：nfl, championship, chiefs, kansas, madrid, real.
+- 软黑名单主题（需更严格触发）：nfl, championship, kansas, chiefs, madrid, real.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -49,14 +49,14 @@
 
 ### 白名单关键词
 - barcelona
-- copa
 - vandewinkel
-- bouzkova
 - colsanitas
+- bouzkova
 - marie
+- copa
 - hanne
-- elena
 - rybakina
+- elena
 - bahrain
 - lakers
 - ufc
@@ -78,8 +78,8 @@
 ### 软黑名单关键词
 - nfl
 - championship
-- chiefs
 - kansas
+- chiefs
 - madrid
 - real
 - manchester

@@ -1,6 +1,6 @@
 {
   "account_address": "0xdd9ed02bb67b2ec504be24b98febd651fdac49b3",
-  "account_label": "Dry-Legislature",
+  "account_label": "Mamaozinho",
   "account_name_meta": {
     "pseudonym": "Dry-Legislature",
     "name": "Mamaozinho",
@@ -414,8 +414,8 @@
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
       "win",
-      "presidential",
       "election",
+      "presidential",
       "brazilian",
       "vio",
       "bolsonaro",
@@ -423,14 +423,14 @@
       "iran",
       "cup",
       "fifa",
-      "espriella",
+      "abelardo",
       "colombian"
     ],
     "soft_blacklist_keywords": [
-      "aliaga",
       "peruvian",
-      "pez",
-      "rafael"
+      "rafael",
+      "aliaga",
+      "pez"
     ],
     "whitelist_keyword_count": 0,
     "hard_blacklist_keyword_count": 39,
@@ -450,13 +450,13 @@
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "Hard blacklist themes to avoid: win, presidential, election, brazilian, vio, bolsonaro.",
-      "Soft blacklist themes requiring stricter triggers: aliaga, peruvian, pez, rafael."
+      "Hard blacklist themes to avoid: win, election, presidential, brazilian, vio, bolsonaro.",
+      "Soft blacklist themes requiring stricter triggers: peruvian, rafael, aliaga, pez."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): win, presidential, election, brazilian, vio. Soft blacklist themes (copy only with strict trigger): aliaga, peruvian, pez, rafael. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 54.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): win, election, presidential, brazilian, vio. Soft blacklist themes (copy only with strict trigger): peruvian, rafael, aliaga, pez. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T13:44:55.835725+00:00"
+  "generated_at_utc": "2026-04-11T14:06:39.725912+00:00"
 }
