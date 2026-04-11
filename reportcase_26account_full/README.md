@@ -19,3 +19,4 @@ scoring rules (anchor version `anchor_v2_20260411`).
 - Decision score is anchor-calibrated (`final_score` / `anchored_score`).
 - Most `40+` accounts are classified as `selective_copying_only`.
 - Hard and soft blacklist keywords are strengthened for selective follow filtering.
+- Full Chinese parameter dictionary: [`../README_parameter_zh.md`](../README_parameter_zh.md)
