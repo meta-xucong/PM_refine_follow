@@ -8,15 +8,15 @@
 - 本地名称: `account_51`
 
 ## 1. 执行结论
-校准后决策分 64.43（锚点口径），结论：只适合筛着跟。主要板块暴露：macro。优势：加权多子市场风险较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：crude、high、hit、oil、march。软黑名单主题（谨慎跟）：backpack、opensea。白名单主题（优先筛选）：gta、iceman、drake、release、fed。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 42.24（锚点口径），结论：只适合筛着跟。主要板块暴露：macro。优势：加权多子市场风险较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：high、crude、hit、oil、march。软黑名单主题（谨慎跟）：backpack、opensea。白名单主题（优先筛选）：iceman、drake、release、gta、change。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `64.430000`
-- raw_score: `54.120000`
-- anchored_score: `64.430000`
-- delta_vs_anchor_60: `4.430000`
-- delta_vs_anchor_raw: `6.810000`
+- final_score（决策分）: `42.240000`
+- raw_score: `56`
+- anchored_score: `42.240000`
+- delta_vs_anchor_60: `-17.760000`
+- delta_vs_anchor_raw: `-27.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -24,19 +24,19 @@
 ## 3. 行为解读
 - 观察到 365 笔交易，覆盖 22 个活跃交易日（分析窗口内）。
 - 低频封顶已生效，封顶分数为 56, ，表明可跟单容量受限。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=volatile_up, 7d=smooth_up.
 - 主要板块主题： macro.
 
 ## 4. 跟单优势
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：gta, iceman, drake, release, fed, meeting.
+- 可执行白名单主题：iceman, drake, release, gta, change, meeting.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 交易频次/可利用度约束限制了实盘跟单容量。
-- 硬黑名单主题（应避免）：crude, high, hit, oil, march, end.
+- 硬黑名单主题（应避免）：high, crude, hit, oil, march, end.
 - 软黑名单主题（需更严格触发）：backpack, opensea.
 
 ## 6. 板块与关键词过滤
@@ -44,29 +44,29 @@
 - macro
 
 ### 白名单关键词
-- gta
 - iceman
 - drake
 - release
-- fed
-- meeting
-- there
+- gta
 - change
-- interest
+- meeting
 - rates
+- there
+- interest
+- fed
 
 ### 硬黑名单关键词
-- crude
 - high
+- crude
 - hit
 - oil
 - march
 - end
-- one
-- launch
+- day
 - above
 - fdv
-- day
+- launch
+- one
 - april
 
 ### 软黑名单关键词
@@ -78,7 +78,7 @@
 - trade_rows_used: `365`
 - total_buy_usdc: `14040.834616`
 - total_sell_usdc: `17016.936983`
-- traded_markets_count_api: `829`
+- traded_markets_count_api: `834`
 - position_value_api: `0.000000`
 
 ## 8. 核心指标
@@ -101,17 +101,17 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- d30_shape: `高波动上行`
+- d30_score: `2`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `19.420000`
 - deployability_score: `13.380000`
 - multi_market_structure_score: `17.330000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `6.000000`
 - low_frequency_cap: `56`

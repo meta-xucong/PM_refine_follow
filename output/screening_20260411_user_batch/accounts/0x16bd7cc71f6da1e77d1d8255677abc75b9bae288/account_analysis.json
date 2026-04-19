@@ -11,8 +11,8 @@
   "total_buy_usdc": 123794.15868,
   "total_sell_usdc": 21998.063008,
   "api_summary": {
-    "positions_value": 74936.1824,
-    "traded_markets": 488
+    "positions_value": 103319.8356,
+    "traded_markets": 514
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.191176,
@@ -766,9 +766,9 @@
     "copyability_score": 15.12,
     "deployability_score": 20,
     "multi_market_structure_score": 6.5,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -6.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -776,29 +776,29 @@
     "trade_count": 1529.0,
     "active_day_ratio": 0.638412,
     "avg_trades_per_active_day": 80.473684,
-    "raw_before_cap": 45.61,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 63.62,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 45.61,
-  "anchored_score": 58.89,
-  "delta_vs_anchor_60": -1.11,
-  "delta_vs_anchor_raw": -1.7,
-  "final_score": 58.89,
+  "raw_score": 63.62,
+  "anchored_score": 47.2,
+  "delta_vs_anchor_60": -12.8,
+  "delta_vs_anchor_raw": -19.7,
+  "final_score": 47.2,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -806,33 +806,33 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 10,
-      "total_return": 4452.577565,
-      "trend_slope": 266.552899,
-      "max_drawdown": 269.920016,
-      "daily_volatility": 1311.58891
+      "points_count": 105,
+      "total_return": 205204.562435,
+      "trend_slope": 2006.859314,
+      "max_drawdown": 22882.972328,
+      "daily_volatility": 9897.620974
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 11,
+      "total_return": 21480.031963,
+      "trend_slope": 1357.677051,
+      "max_drawdown": 6903.61314,
+      "daily_volatility": 4724.349479
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 3,
+      "total_return": 15117.199063,
+      "trend_slope": 7558.599532,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 4818.888481
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -842,16 +842,16 @@
     ],
     "whitelist_keywords": [
       "israel",
-      "kentucky",
-      "santa",
-      "broncos",
       "wildcats",
+      "broncos",
+      "santa",
       "clara",
+      "kentucky",
       "launch",
       "lebanon",
-      "ground",
-      "offensive",
       "major",
+      "offensive",
+      "ground",
       "flyers"
     ],
     "hard_blacklist_keywords": [
@@ -864,13 +864,13 @@
       "nomination",
       "netanyahu",
       "out",
-      "democratic",
+      "alexandria",
       "ocasio-cortez",
-      "alexandria"
+      "democratic"
     ],
     "soft_blacklist_keywords": [
-      "vance",
       "republican",
+      "vance",
       "duke",
       "blue"
     ],
@@ -881,7 +881,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 1529 trades across 19 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: geopolitics, sports, us_politics."
     ],
     "strength_points": [
@@ -889,16 +889,17 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: israel, kentucky, santa, broncos, wildcats, clara."
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: israel, wildcats, broncos, santa, clara, kentucky."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Hard blacklist themes to avoid: april, win, iran, march, ceasefire, presidential.",
-      "Soft blacklist themes requiring stricter triggers: vance, republican, duke, blue."
+      "Soft blacklist themes requiring stricter triggers: republican, vance, duke, blue."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 58.89 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): april, win, iran, march, ceasefire. Soft blacklist themes (copy only with strict trigger): vance, republican, duke, blue. Whitelist themes (higher priority for selective following): israel, kentucky, santa, broncos, wildcats. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 47.20 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, sports, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): april, win, iran, march, ceasefire. Soft blacklist themes (copy only with strict trigger): republican, vance, duke, blue. Whitelist themes (higher priority for selective following): israel, wildcats, broncos, santa, clara. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:24.554174+00:00"
+  "generated_at_utc": "2026-04-19T16:48:06.401698+00:00"
 }

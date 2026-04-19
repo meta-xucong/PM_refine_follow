@@ -12,7 +12,7 @@
   "total_sell_usdc": 0,
   "api_summary": {
     "positions_value": 0.0,
-    "traded_markets": 428
+    "traded_markets": 429
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.076923,
@@ -558,9 +558,9 @@
     "copyability_score": 13.32,
     "deployability_score": 20,
     "multi_market_structure_score": 3.43,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 24.98,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": -8.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -568,57 +568,57 @@
     "trade_count": 997.0,
     "active_day_ratio": 0.702992,
     "avg_trades_per_active_day": 58.647059,
-    "raw_before_cap": 20.42,
+    "raw_before_cap": 53.72,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 20.42,
-  "anchored_score": 42.52,
-  "delta_vs_anchor_60": -17.48,
-  "delta_vs_anchor_raw": -26.89,
-  "final_score": 42.52,
+  "raw_score": 53.72,
+  "anchored_score": 40.76,
+  "delta_vs_anchor_60": -19.24,
+  "delta_vs_anchor_raw": -29.6,
+  "final_score": 40.76,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 15,
-      "total_return": -9033.847038,
-      "trend_slope": -2382.332281,
-      "max_drawdown": 46093.167179,
-      "daily_volatility": 9678.474965
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 143,
+      "total_return": 858971.543619,
+      "trend_slope": 6128.510995,
+      "max_drawdown": 167879.687323,
+      "daily_volatility": 20066.539201
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 10,
+      "total_return": 39712.346372,
+      "trend_slope": 5923.858394,
+      "max_drawdown": 8518.282845,
+      "daily_volatility": 6024.132128
     },
     "d7": {
       "window": "d7",
       "shape": "insufficient_data",
       "score": 0,
-      "points_count": 0,
+      "points_count": 1,
       "total_return": 0.0,
       "trend_slope": 0.0,
       "max_drawdown": 0.0,
@@ -660,7 +660,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 997 trades across 17 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: sports."
     ],
     "strength_points": [
@@ -668,19 +668,20 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
       "Operational whitelist themes: win, newcastle, united, clippers, hawks, suns."
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
       "Hard blacklist themes to avoid: rockets, pacers, lakers, magic, knicks, warriors."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): rockets, pacers, lakers, magic, knicks. Whitelist themes (higher priority for selective following): win, newcastle, united, clippers, hawks. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 40.76 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): rockets, pacers, lakers, magic, knicks. Whitelist themes (higher priority for selective following): win, newcastle, united, clippers, hawks. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T16:19:57.405046+00:00"
+  "generated_at_utc": "2026-04-19T16:51:45.581286+00:00"
 }

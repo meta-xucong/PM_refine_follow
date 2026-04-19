@@ -8,28 +8,30 @@
 - Source local name: `account_32`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 62.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: iran, march, april, ceasefire, enter. Soft blacklist themes: hezbollah. Whitelist themes: hegseth, defense, pete, secretary, fall. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 53.78 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk, dual-side condition buying. Hard blacklist themes: iran, march, april, ceasefire, enter. Soft blacklist themes: hezbollah. Whitelist themes: defense, pete, secretary, hegseth, fall. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `62.240000`
-- raw_score: `50.750000`
-- anchored_score: `62.240000`
-- delta_vs_anchor_60: `2.240000`
-- delta_vs_anchor_raw: `3.440000`
+- final_score (decision basis): `53.780000`
+- raw_score: `73.750000`
+- anchored_score: `53.780000`
+- delta_vs_anchor_60: `-6.220000`
+- delta_vs_anchor_raw: `-9.570000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 979 trades across 31 active trading days in the analysis window.
-- PnL curve shapes: all-time=volatile_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: geopolitics, us_politics, sports.
 
 ## 4. Copy-Trading Strengths
 - Low non-copyable token-fast BUY ratio.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: hegseth, defense, pete, secretary, fall, regime.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
+- Operational whitelist themes: defense, pete, secretary, hegseth, fall, regime.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
@@ -43,17 +45,17 @@ Calibrated decision score is 62.24 (anchor-referenced), decision: selective_copy
 - sports
 
 ### Whitelist Keywords
-- hegseth
 - defense
 - pete
 - secretary
+- hegseth
 - fall
 - regime
 - russia
 - netanyahu
 - ukraine
-- khamenei
 - mojtaba
+- khamenei
 - leaves
 
 ### Hard Blacklist Keywords
@@ -78,8 +80,8 @@ Calibrated decision score is 62.24 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `979`
 - total_buy_usdc: `85877.848586`
 - total_sell_usdc: `47858.283950`
-- traded_markets_count_api: `647`
-- position_value_api: `32669.986300`
+- traded_markets_count_api: `701`
+- position_value_api: `37943.149500`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `23.08%`
@@ -99,19 +101,19 @@ Calibrated decision score is 62.24 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `31.580645`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `volatile_up`
-- all_time_score: `6`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `18.050000`
 - deployability_score: `20`
 - multi_market_structure_score: `10.710000`
-- pnl_curve_stability_score: `5.000000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-3.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

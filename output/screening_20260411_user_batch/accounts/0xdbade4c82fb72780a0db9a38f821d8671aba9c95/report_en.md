@@ -8,34 +8,34 @@
 - Source local name: `account_54`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 61.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, april, december, forces, enter. Soft blacklist themes: agrees. Whitelist themes: march, ufc, fight, night, israel. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 34.38 (anchor-referenced), decision: not_recommended. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, april, december, enter, forces. Soft blacklist themes: agrees. Whitelist themes: march, ufc, night, fight, israel. PnL curve tag: long_strong_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
-- decision: `selective_copying_only`
-- final_score (decision basis): `61.880000`
-- raw_score: `50.200000`
-- anchored_score: `61.880000`
-- delta_vs_anchor_60: `1.880000`
-- delta_vs_anchor_raw: `2.890000`
+- decision: `not_recommended`
+- final_score (decision basis): `34.380000`
+- raw_score: `43.910000`
+- anchored_score: `34.380000`
+- delta_vs_anchor_60: `-25.620000`
+- delta_vs_anchor_raw: `-39.410000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 4511 trades across 25 active trading days in the analysis window.
-- PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=volatile_up, 30d=down, 7d=smooth_up.
 - Dominant sector themes: geopolitics, us_politics, sports.
 
 ## 4. Copy-Trading Strengths
 - Low non-copyable token-fast BUY ratio.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: march, ufc, fight, night, israel, strike.
+- Operational whitelist themes: march, ufc, night, fight, israel, strike.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
-- Hard blacklist themes to avoid: iran, april, december, forces, enter, ceasefire.
+- Recent 30-day PnL is down, which weakens near-term copy confidence.
+- Hard blacklist themes to avoid: iran, april, december, enter, forces, ceasefire.
 - Soft blacklist themes requiring stricter triggers: agrees.
 
 ## 6. Sector and Keyword Filters
@@ -47,8 +47,8 @@ Calibrated decision score is 61.88 (anchor-referenced), decision: selective_copy
 ### Whitelist Keywords
 - march
 - ufc
-- fight
 - night
+- fight
 - israel
 - strike
 - iranian
@@ -62,13 +62,13 @@ Calibrated decision score is 61.88 (anchor-referenced), decision: selective_copy
 - iran
 - april
 - december
-- forces
 - enter
+- forces
 - ceasefire
 - march
 - end
-- against
 - military
+- against
 - hormuz
 - trump
 
@@ -80,8 +80,8 @@ Calibrated decision score is 61.88 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `4511`
 - total_buy_usdc: `3828338.916196`
 - total_sell_usdc: `41408.206103`
-- traded_markets_count_api: `965`
-- position_value_api: `1421634.225900`
+- traded_markets_count_api: `977`
+- position_value_api: `1575251.963700`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `18.54%`
@@ -101,19 +101,19 @@ Calibrated decision score is 61.88 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `180.440000`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `smooth_up`
-- all_time_score: `12`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `volatile_up`
+- all_time_score: `6`
+- d30_shape: `down`
+- d30_score: `-6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_strong_recent_weak`
 
 ## 10. Score Breakdown
 - copyability_score: `18.830000`
 - deployability_score: `20`
 - multi_market_structure_score: `7.380000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `3.700000`
 - risk_penalty_adjustment: `-6.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

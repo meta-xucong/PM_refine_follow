@@ -1,27 +1,27 @@
 {
   "anchor_version": "anchor_v2_20260411",
-  "created_at_utc": "2026-04-11T13:30:54.911260+00:00",
+  "created_at_utc": "2026-04-19T16:47:36.438814+00:00",
   "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
   "target_anchor_score": 60.0,
-  "raw_base_score": 47.31,
-  "score_offset": 12.69,
+  "raw_base_score": 83.32,
+  "score_offset": -23.32,
   "calibration_scale": 0.65,
-  "source_mode": "pulled_from_api",
-  "source_csv": "D:\\AI\\PM_refine_follow\\skill\\polymarket-account-review-skill\\baseline\\anchor_activity_0x39d0f1dca6fb7e5514858c1a337724a426764fe8_1773322175_1775914175.csv",
+  "source_mode": "provided_csv",
+  "source_csv": "D:\\AI\\PM_refine_follow\\output\\run_20260411_user_batch\\polymarket_trades_merged_all55.csv",
   "window_days": 30,
   "data_fingerprint": {
-    "rows": 2082,
-    "min_ts": 1773326133,
-    "max_ts": 1775913467,
-    "sha256": "254f679f9cd60a8d5134a4bb125a3848244c229a9146e165a722eb02f0d9c2d0"
+    "rows": 2091,
+    "min_ts": 1773328171,
+    "max_ts": 1775919931,
+    "sha256": "379c8a5352391a48b6051eafee45fd06bad990e60060c5396e9dbb640c55a5bd"
   },
   "baseline_metrics": {
-    "dual_side_buy_usdc_ratio": 0.006193,
+    "dual_side_buy_usdc_ratio": 0.006171,
     "exclusive_concurrent_leg_ratio": 0.0,
-    "nested_concurrent_leg_ratio": 0.537557,
-    "weighted_multi_market_risk_ratio": 0.187712,
-    "noncopyable_token_fast_buy_ratio": 0.04642,
+    "nested_concurrent_leg_ratio": 0.539571,
+    "weighted_multi_market_risk_ratio": 0.188787,
+    "noncopyable_token_fast_buy_ratio": 0.046261,
     "deployable_event_equivalent": 34.5,
-    "deployable_event_density": 1.152074
+    "deployable_event_density": 1.150106
   }
 }

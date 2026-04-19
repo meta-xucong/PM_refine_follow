@@ -11,8 +11,8 @@
   "total_buy_usdc": 295336.989903,
   "total_sell_usdc": 124756.457204,
   "api_summary": {
-    "positions_value": 18011.5208,
-    "traded_markets": 136
+    "positions_value": 30769.2532,
+    "traded_markets": 157
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.0,
@@ -818,9 +818,9 @@
     "copyability_score": 21.97,
     "deployability_score": 20,
     "multi_market_structure_score": 7.33,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 18.5,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -828,63 +828,63 @@
     "trade_count": 1675.0,
     "active_day_ratio": 0.796251,
     "avg_trades_per_active_day": 72.826087,
-    "raw_before_cap": 40.97,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 67.8,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 40.97,
-  "anchored_score": 55.88,
-  "delta_vs_anchor_60": -4.12,
-  "delta_vs_anchor_raw": -6.34,
-  "final_score": 55.88,
+  "raw_score": 67.8,
+  "anchored_score": 49.91,
+  "delta_vs_anchor_60": -10.09,
+  "delta_vs_anchor_raw": -15.52,
+  "final_score": 49.91,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 28,
-      "total_return": -5603.245377,
-      "trend_slope": -108.372065,
-      "max_drawdown": 7192.450201,
-      "daily_volatility": 2446.788057
+      "shape": "volatile_up",
+      "score": 6,
+      "points_count": 65,
+      "total_return": 18547.697096,
+      "trend_slope": 298.138282,
+      "max_drawdown": 25472.478112,
+      "daily_volatility": 4602.854379
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 27,
+      "total_return": 31069.271123,
+      "trend_slope": 942.20124,
+      "max_drawdown": 25472.478112,
+      "daily_volatility": 5474.168702
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 8,
+      "total_return": 13798.328498,
+      "trend_slope": 2059.252482,
+      "max_drawdown": 1239.958438,
+      "daily_volatility": 2380.31982
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -900,15 +900,15 @@
       "atl",
       "club",
       "barcelona",
-      "tbol",
       "sociedad",
+      "tbol",
       "germany",
       "united",
-      "afc"
+      "bournemouth"
     ],
     "hard_blacklist_keywords": [
-      "sweden",
-      "poland"
+      "poland",
+      "sweden"
     ],
     "soft_blacklist_keywords": [
       "nba"
@@ -920,7 +920,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 1675 trades across 23 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=volatile_up, 30d=volatile_up, 7d=smooth_up.",
       "Dominant sector themes: sports, geopolitics, us_politics."
     ],
     "strength_points": [
@@ -933,12 +933,11 @@
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: sweden, poland.",
+      "Hard blacklist themes to avoid: poland, sweden.",
       "Soft blacklist themes requiring stricter triggers: nba."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 55.88 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): sweden, poland. Soft blacklist themes (copy only with strict trigger): nba. Whitelist themes (higher priority for selective following): win, madrid, real, tico, atl. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 49.91 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): poland, sweden. Soft blacklist themes (copy only with strict trigger): nba. Whitelist themes (higher priority for selective following): win, madrid, real, tico, atl. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:28.417819+00:00"
+  "generated_at_utc": "2026-04-19T16:48:14.261670+00:00"
 }

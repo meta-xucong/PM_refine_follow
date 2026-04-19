@@ -8,15 +8,15 @@
 - Source local name: `account_28`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: non-copyable token-fast exposure. Hard blacklist themes: bitcoin, march, down, am-11, pm-2. Whitelist themes: march, bitcoin, down, pm-8, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 47.44 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: non-copyable token-fast exposure. Hard blacklist themes: bitcoin, march, down, am-11, pm-2. Whitelist themes: march, bitcoin, down, pm-8, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `70.850000`
+- final_score (decision basis): `47.440000`
 - raw_score: `64`
-- anchored_score: `70.850000`
-- delta_vs_anchor_60: `10.850000`
-- delta_vs_anchor_raw: `16.690000`
+- anchored_score: `47.440000`
+- delta_vs_anchor_60: `-12.560000`
+- delta_vs_anchor_raw: `-19.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -57,7 +57,7 @@ Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copy
 - am-9
 - pm-1
 - iran
-- april
+- ceasefire
 
 ### Hard Blacklist Keywords
 - bitcoin

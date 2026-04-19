@@ -8,22 +8,22 @@
 - 本地名称: `account_29`
 
 ## 1. 执行结论
-校准后决策分 78.75（锚点口径），结论：相对可跟。主要板块暴露：macro、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。硬黑名单主题（禁止跟）：end、march、iran、oil、crude。白名单主题（优先筛选）：fed、meeting、there、rates、interest。收益曲线标签：长期与近期均偏弱。建议在账户级黑名单过滤下进行较高比例跟随。
+校准后决策分 67.05（锚点口径），结论：只适合筛着跟。主要板块暴露：macro、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。硬黑名单主题（禁止跟）：end、march、iran、oil、crude。白名单主题（优先筛选）：fed、meeting、there、change、interest。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
-- decision: `相对可跟`
-- final_score（决策分）: `78.750000`
-- raw_score: `76.160000`
-- anchored_score: `78.750000`
-- delta_vs_anchor_60: `18.750000`
-- delta_vs_anchor_raw: `28.850000`
+- decision: `只适合筛着跟`
+- final_score（决策分）: `67.050000`
+- raw_score: `94.170000`
+- anchored_score: `67.050000`
+- delta_vs_anchor_60: `7.050000`
+- delta_vs_anchor_raw: `10.850000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 470 笔交易，覆盖 28 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： macro, geopolitics, us_politics.
 
 ## 4. 跟单优势
@@ -32,7 +32,8 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：fed, meeting, there, rates, interest, change.
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：fed, meeting, there, change, interest, rates.
 
 ## 5. 跟单风险
 - 硬黑名单主题（应避免）：end, march, iran, oil, crude, hit.
@@ -47,15 +48,15 @@
 - fed
 - meeting
 - there
-- rates
-- interest
 - change
+- interest
+- rates
 - april
-- regime
 - iranian
+- regime
 - fall
-- forces
 - enter
+- forces
 
 ### 硬黑名单关键词
 - end
@@ -67,9 +68,9 @@
 - high
 - ceasefire
 - april
-- military
 - trump
-- operations
+- announces
+- military
 
 ### 软黑名单关键词
 - (none)
@@ -79,8 +80,8 @@
 - trade_rows_used: `470`
 - total_buy_usdc: `73214.732206`
 - total_sell_usdc: `26902.520293`
-- traded_markets_count_api: `396`
-- position_value_api: `46411.615200`
+- traded_markets_count_api: `403`
+- position_value_api: `52671.992400`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `3.81%`
@@ -102,17 +103,17 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `29.710000`
 - deployability_score: `20`
 - multi_market_structure_score: `16.450000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

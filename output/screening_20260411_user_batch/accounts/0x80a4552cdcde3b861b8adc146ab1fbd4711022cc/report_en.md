@@ -8,38 +8,39 @@
 - Source local name: `account_14`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommended. Primary sector exposure: geopolitics, macro, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: iran, april, ceasefire, december, forces. Soft blacklist themes: world, fifa, cup, brazil, trump. Whitelist themes: iranian, regime, fall, june, end. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 35.82 (anchor-referenced), decision: not_recommended. Primary sector exposure: geopolitics, macro, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: exclusive concurrent-leg risk, non-copyable token-fast exposure, dual-side condition buying. Hard blacklist themes: iran, april, ceasefire, december, enter. Soft blacklist themes: world, cup, fifa, brazil, trump. Whitelist themes: iranian, regime, fall, june, end. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_mid_short_strong. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
-- final_score (decision basis): `35.610000`
-- raw_score: `9.790000`
-- anchored_score: `35.610000`
-- delta_vs_anchor_60: `-24.390000`
-- delta_vs_anchor_raw: `-37.520000`
+- final_score (decision basis): `35.820000`
+- raw_score: `46.120000`
+- anchored_score: `35.820000`
+- delta_vs_anchor_60: `-24.180000`
+- delta_vs_anchor_raw: `-37.200000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 1360 trades across 31 active trading days in the analysis window.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: geopolitics, macro, sports.
 
 ## 4. Copy-Trading Strengths
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
-- Operational whitelist themes: iranian, regime, fall, june, end, fighting.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
+- Operational whitelist themes: iranian, regime, fall, june, end, illinois.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: iran, april, ceasefire, december, forces, enter.
-- Soft blacklist themes requiring stricter triggers: world, fifa, cup, brazil, trump, inflation.
+- Hard blacklist themes to avoid: iran, april, ceasefire, december, enter, forces.
+- Soft blacklist themes requiring stricter triggers: world, cup, fifa, brazil, trump, inflation.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -53,9 +54,9 @@ Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommende
 - fall
 - june
 - end
-- fighting
 - illinois
 - illini
+- fighting
 - win
 - march
 - iowa
@@ -66,19 +67,19 @@ Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommende
 - april
 - ceasefire
 - december
-- forces
 - enter
+- forces
 - fed
 - spread
 - bound
 - parliamentary
 - duke
-- blue
+- devils
 
 ### Soft Blacklist Keywords
 - world
-- fifa
 - cup
+- fifa
 - brazil
 - trump
 - inflation
@@ -90,8 +91,8 @@ Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommende
 - trade_rows_used: `1360`
 - total_buy_usdc: `50021.292998`
 - total_sell_usdc: `38509.659160`
-- traded_markets_count_api: `1408`
-- position_value_api: `29254.116200`
+- traded_markets_count_api: `1429`
+- position_value_api: `30738.730400`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `30.99%`
@@ -111,19 +112,19 @@ Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommende
 - avg_trades_per_active_day: `43.870968`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `down`
-- all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `3.370000`
 - deployability_score: `20`
 - multi_market_structure_score: `2.750000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

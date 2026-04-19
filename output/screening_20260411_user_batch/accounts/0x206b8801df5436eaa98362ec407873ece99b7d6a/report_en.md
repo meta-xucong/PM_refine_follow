@@ -8,33 +8,34 @@
 - Source local name: `account_2`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 64.66 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: march, bitcoin, down, april, pm-7. Whitelist themes: down, bitcoin, april, pm-10, pm-7. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 64.87 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: march, bitcoin, down, april, pm-7. Whitelist themes: down, bitcoin, april, pm-10, pm-7. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `64.660000`
-- raw_score: `54.480000`
-- anchored_score: `64.660000`
-- delta_vs_anchor_60: `4.660000`
-- delta_vs_anchor_raw: `7.170000`
+- final_score (decision basis): `64.870000`
+- raw_score: `90.810000`
+- anchored_score: `64.870000`
+- delta_vs_anchor_60: `4.870000`
+- delta_vs_anchor_raw: `7.490000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 32428 trades across 31 active trading days in the analysis window.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: crypto, geopolitics.
 
 ## 4. Copy-Trading Strengths
 - Low non-copyable token-fast BUY ratio.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
 - Operational whitelist themes: down, bitcoin, april, pm-10, pm-7, pm-9.
 
 ## 5. Copy-Trading Risks
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: march, bitcoin, down, april, pm-7, elon.
+- Hard blacklist themes to avoid: march, bitcoin, down, april, pm-7, tweets.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -61,10 +62,10 @@ Calibrated decision score is 64.66 (anchor-referenced), decision: selective_copy
 - down
 - april
 - pm-7
-- elon
+- tweets
 - musk
 - post
-- tweets
+- elon
 - pm-11
 - pm-10
 - am-12
@@ -77,8 +78,8 @@ Calibrated decision score is 64.66 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `32428`
 - total_buy_usdc: `98623.289611`
 - total_sell_usdc: `25733.535931`
-- traded_markets_count_api: `2102`
-- position_value_api: `699.980000`
+- traded_markets_count_api: `2348`
+- position_value_api: `605.375500`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `12.80%`
@@ -98,19 +99,19 @@ Calibrated decision score is 64.66 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `1046.064516`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `down`
-- all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `27.390000`
 - deployability_score: `20`
 - multi_market_structure_score: `15.410000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

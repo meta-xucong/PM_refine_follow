@@ -8,27 +8,28 @@
 - Source local name: `account_48`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommended. Primary sector exposure: crypto, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: march, down, bitcoin, ethereum, am-12. Soft blacklist themes: pm-11. Whitelist themes: april, reach, am-9, am-3, pm-10. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 24.07 (anchor-referenced), decision: not_recommended. Primary sector exposure: crypto, sports. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk, non-copyable token-fast exposure. Hard blacklist themes: march, down, bitcoin, ethereum, am-12. Soft blacklist themes: pm-11. Whitelist themes: april, reach, am-9, am-3, pm-10. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
-- final_score (decision basis): `45.670000`
-- raw_score: `25.270000`
-- anchored_score: `45.670000`
-- delta_vs_anchor_60: `-14.330000`
-- delta_vs_anchor_raw: `-22.040000`
+- final_score (decision basis): `24.070000`
+- raw_score: `28.050000`
+- anchored_score: `24.070000`
+- delta_vs_anchor_60: `-35.930000`
+- delta_vs_anchor_raw: `-55.270000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 2146 trades across 14 active trading days in the analysis window.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=down, 30d=smooth_up, 7d=insufficient_data.
 - Dominant sector themes: crypto, sports.
 
 ## 4. Copy-Trading Strengths
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
+- Recent 30-day PnL remains constructive.
 - Operational whitelist themes: april, reach, am-9, am-3, pm-10, am-7.
 
 ## 5. Copy-Trading Risks
@@ -36,7 +37,7 @@ Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommende
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
 - All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: march, down, bitcoin, ethereum, am-12, shanghai.
+- Hard blacklist themes to avoid: march, down, bitcoin, ethereum, am-12, temperature.
 - Soft blacklist themes requiring stricter triggers: pm-11.
 
 ## 6. Sector and Keyword Filters
@@ -59,9 +60,9 @@ Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommende
 - bitcoin
 - ethereum
 - am-12
-- shanghai
 - temperature
 - highest
+- shanghai
 - pm-12
 - am-10
 - am-11
@@ -98,8 +99,8 @@ Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommende
 ## 9. PnL Curve Evaluation
 - all_time_shape: `down`
 - all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
+- d30_shape: `smooth_up`
+- d30_score: `6`
 - d7_shape: `insufficient_data`
 - d7_score: `0`
 - pnl_tag: `long_and_recent_weak`
@@ -108,7 +109,7 @@ Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommende
 - copyability_score: `13.200000`
 - deployability_score: `20`
 - multi_market_structure_score: `8.400000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `-5.550000`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`
@@ -117,3 +118,4 @@ Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommende
 - Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering
 - Severe risk gate triggered; score threshold for not_recommended is tightened
 - Severe risk gate + low calibrated score -> not_recommended
+- Calibrated score below 32 -> not_recommended floor

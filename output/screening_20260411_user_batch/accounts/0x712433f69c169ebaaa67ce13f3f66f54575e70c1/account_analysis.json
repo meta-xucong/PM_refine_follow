@@ -11,8 +11,8 @@
   "total_buy_usdc": 73214.732206,
   "total_sell_usdc": 26902.520293,
   "api_summary": {
-    "positions_value": 46411.6152,
-    "traded_markets": 396
+    "positions_value": 52671.9924,
+    "traded_markets": 403
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.071429,
@@ -480,9 +480,9 @@
     "copyability_score": 29.71,
     "deployability_score": 20,
     "multi_market_structure_score": 16.45,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -490,29 +490,29 @@
     "trade_count": 470.0,
     "active_day_ratio": 0.942083,
     "avg_trades_per_active_day": 16.785714,
-    "raw_before_cap": 76.16,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 94.17,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 76.16,
-  "anchored_score": 78.75,
-  "delta_vs_anchor_60": 18.75,
-  "delta_vs_anchor_raw": 28.85,
-  "final_score": 78.75,
-  "decision": "relative_copyable",
+  "raw_score": 94.17,
+  "anchored_score": 67.05,
+  "delta_vs_anchor_60": 7.05,
+  "delta_vs_anchor_raw": 10.85,
+  "final_score": 67.05,
+  "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -520,33 +520,33 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 29,
-      "total_return": 3802.498083,
-      "trend_slope": 137.473843,
-      "max_drawdown": 701.405431,
-      "daily_volatility": 342.165622
+      "points_count": 196,
+      "total_return": 35363.447264,
+      "trend_slope": 190.227107,
+      "max_drawdown": 7310.781524,
+      "daily_volatility": 1082.624358
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 16,
+      "total_return": 1754.917629,
+      "trend_slope": 108.358287,
+      "max_drawdown": 247.913055,
+      "daily_volatility": 219.107708
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 4,
+      "total_return": 420.659439,
+      "trend_slope": 172.163776,
+      "max_drawdown": 94.0,
+      "daily_volatility": 233.92521
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -558,15 +558,15 @@
       "fed",
       "meeting",
       "there",
-      "rates",
-      "interest",
       "change",
+      "interest",
+      "rates",
       "april",
-      "regime",
       "iranian",
+      "regime",
       "fall",
-      "forces",
-      "enter"
+      "enter",
+      "forces"
     ],
     "hard_blacklist_keywords": [
       "end",
@@ -578,9 +578,9 @@
       "high",
       "ceasefire",
       "april",
-      "military",
       "trump",
-      "operations"
+      "announces",
+      "military"
     ],
     "soft_blacklist_keywords": [],
     "whitelist_keyword_count": 19,
@@ -590,7 +590,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 470 trades across 28 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: macro, geopolitics, us_politics."
     ],
     "strength_points": [
@@ -599,13 +599,14 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: fed, meeting, there, rates, interest, change."
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: fed, meeting, there, change, interest, rates."
     ],
     "risk_points": [
       "Hard blacklist themes to avoid: end, march, iran, oil, crude, hit."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 78.75 (anchor-referenced), decision: relative_copyable. Primary sector exposure: macro, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): end, march, iran, oil, crude. Whitelist themes (higher priority for selective following): fed, meeting, there, rates, interest. PnL curve tag: long_and_recent_weak. This account can be copied more broadly, while still enforcing keyword blacklists.",
+  "narrative_conclusion": "Calibrated decision score is 67.05 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): end, march, iran, oil, crude. Whitelist themes (higher priority for selective following): fed, meeting, there, change, interest. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:18:25.729785+00:00"
+  "generated_at_utc": "2026-04-19T16:49:41.694744+00:00"
 }

@@ -8,22 +8,22 @@
 - Source local name: `account_42`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: rockets, pacers, lakers, magic, knicks. Whitelist themes: win, newcastle, united, clippers, hawks. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 40.76 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: rockets, pacers, lakers, magic, knicks. Whitelist themes: win, newcastle, united, clippers, hawks. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `42.520000`
-- raw_score: `20.420000`
-- anchored_score: `42.520000`
-- delta_vs_anchor_60: `-17.480000`
-- delta_vs_anchor_raw: `-26.890000`
+- final_score (decision basis): `40.760000`
+- raw_score: `53.720000`
+- anchored_score: `40.760000`
+- delta_vs_anchor_60: `-19.240000`
+- delta_vs_anchor_raw: `-29.600000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 997 trades across 17 active trading days in the analysis window.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.
 - Dominant sector themes: sports.
 
 ## 4. Copy-Trading Strengths
@@ -31,12 +31,13 @@ Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
 - Operational whitelist themes: win, newcastle, united, clippers, hawks, suns.
 
 ## 5. Copy-Trading Risks
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
 - Hard blacklist themes to avoid: rockets, pacers, lakers, magic, knicks, warriors.
 
 ## 6. Sector and Keyword Filters
@@ -73,7 +74,7 @@ Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `997`
 - total_buy_usdc: `726931.365364`
 - total_sell_usdc: `0`
-- traded_markets_count_api: `428`
+- traded_markets_count_api: `429`
 - position_value_api: `0.000000`
 
 ## 8. Core Metrics
@@ -94,10 +95,10 @@ Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `58.647059`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `down`
-- all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `smooth_up`
+- d30_score: `6`
 - d7_shape: `insufficient_data`
 - d7_score: `0`
 - pnl_tag: `long_and_recent_weak`
@@ -106,7 +107,7 @@ Calibrated decision score is 42.52 (anchor-referenced), decision: selective_copy
 - copyability_score: `13.320000`
 - deployability_score: `20`
 - multi_market_structure_score: `3.430000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `24.980000`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

@@ -8,15 +8,15 @@
 - 本地名称: `account_28`
 
 ## 1. 执行结论
-校准后决策分 70.85（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：bitcoin、march、down、am-11、pm-2。白名单主题（优先筛选）：march、bitcoin、down、pm-8、pm-5。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 47.44（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：bitcoin、march、down、am-11、pm-2。白名单主题（优先筛选）：march、bitcoin、down、pm-8、pm-5。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `70.850000`
+- final_score（决策分）: `47.440000`
 - raw_score: `64`
-- anchored_score: `70.850000`
-- delta_vs_anchor_60: `10.850000`
-- delta_vs_anchor_raw: `16.690000`
+- anchored_score: `47.440000`
+- delta_vs_anchor_60: `-12.560000`
+- delta_vs_anchor_raw: `-19.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -57,7 +57,7 @@
 - am-9
 - pm-1
 - iran
-- april
+- ceasefire
 
 ### 硬黑名单关键词
 - bitcoin

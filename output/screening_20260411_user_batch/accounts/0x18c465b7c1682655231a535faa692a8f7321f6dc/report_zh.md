@@ -8,22 +8,22 @@
 - 本地名称: `account_35`
 
 ## 1. 执行结论
-校准后决策分 55.88（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：sweden、poland。软黑名单主题（谨慎跟）：nba。白名单主题（优先筛选）：win、madrid、real、tico、atl。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 49.91（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、geopolitics、us_politics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：poland、sweden。软黑名单主题（谨慎跟）：nba。白名单主题（优先筛选）：win、madrid、real、tico、atl。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `55.880000`
-- raw_score: `40.970000`
-- anchored_score: `55.880000`
-- delta_vs_anchor_60: `-4.120000`
-- delta_vs_anchor_raw: `-6.340000`
+- final_score（决策分）: `49.910000`
+- raw_score: `67.800000`
+- anchored_score: `49.910000`
+- delta_vs_anchor_60: `-10.090000`
+- delta_vs_anchor_raw: `-15.520000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 1675 笔交易，覆盖 23 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=volatile_up, 30d=volatile_up, 7d=smooth_up.
 - 主要板块主题： sports, geopolitics, us_politics.
 
 ## 4. 跟单优势
@@ -36,8 +36,7 @@
 
 ## 5. 跟单风险
 - 存在明显互斥市场并发多腿行为。
-- 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：sweden, poland.
+- 硬黑名单主题（应避免）：poland, sweden.
 - 软黑名单主题（需更严格触发）：nba.
 
 ## 6. 板块与关键词过滤
@@ -54,15 +53,15 @@
 - atl
 - club
 - barcelona
-- tbol
 - sociedad
+- tbol
 - germany
 - united
-- afc
+- bournemouth
 
 ### 硬黑名单关键词
-- sweden
 - poland
+- sweden
 
 ### 软黑名单关键词
 - nba
@@ -72,8 +71,8 @@
 - trade_rows_used: `1675`
 - total_buy_usdc: `295336.989903`
 - total_sell_usdc: `124756.457204`
-- traded_markets_count_api: `136`
-- position_value_api: `18011.520800`
+- traded_markets_count_api: `157`
+- position_value_api: `30769.253200`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -93,19 +92,19 @@
 - avg_trades_per_active_day: `72.826087`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `高波动上行`
+- all_time_score: `6`
+- d30_shape: `高波动上行`
+- d30_score: `2`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `21.970000`
 - deployability_score: `20`
 - multi_market_structure_score: `7.330000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `18.500000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

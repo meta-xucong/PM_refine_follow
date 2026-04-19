@@ -8,22 +8,22 @@
 - 本地名称: `account_10`
 
 ## 1. 执行结论
-校准后决策分 73.37（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、macro。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：iran、march、april、ceasefire、trump。软黑名单主题（谨慎跟）：countries、strike、israel、yemen、action。白名单主题（优先筛选）：through、hormuz、ship、escorts、commercial。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 61.67（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、macro。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：存在不可复制的 token 快交易暴露。硬黑名单主题（禁止跟）：iran、march、april、ceasefire、trump。软黑名单主题（谨慎跟）：countries、israel、strike、yemen、action。白名单主题（优先筛选）：hormuz、through、commercial、escorts、ship。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `73.370000`
-- raw_score: `67.880000`
-- anchored_score: `73.370000`
-- delta_vs_anchor_60: `13.370000`
-- delta_vs_anchor_raw: `20.570000`
+- final_score（决策分）: `61.670000`
+- raw_score: `85.890000`
+- anchored_score: `61.670000`
+- delta_vs_anchor_60: `1.670000`
+- delta_vs_anchor_raw: `2.570000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 515 笔交易，覆盖 29 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： geopolitics, us_politics, macro.
 
 ## 4. 跟单优势
@@ -32,12 +32,13 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：through, hormuz, ship, escorts, commercial, ends.
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：hormuz, through, commercial, escorts, ship, ends.
 
 ## 5. 跟单风险
 - 不可复制的 token 快交易（BUY）比例偏高，收益更依赖执行优势。
 - 硬黑名单主题（应避免）：iran, march, april, ceasefire, trump, forces.
-- 软黑名单主题（需更严格触发）：countries, strike, israel, yemen, action, jinping.
+- 软黑名单主题（需更严格触发）：countries, israel, strike, yemen, action, jinping.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -46,18 +47,18 @@
 - macro
 
 ### 白名单关键词
-- through
 - hormuz
-- ship
-- escorts
+- through
 - commercial
+- escorts
+- ship
 - ends
 - conflict
 - country
 - another
 - may
-- uranium
 - obtains
+- uranium
 
 ### 硬黑名单关键词
 - iran
@@ -67,16 +68,16 @@
 - trump
 - forces
 - enter
-- china
 - visit
+- china
 - meeting
 - week
 - say
 
 ### 软黑名单关键词
 - countries
-- strike
 - israel
+- strike
 - yemen
 - action
 - jinping
@@ -86,7 +87,7 @@
 - trade_rows_used: `515`
 - total_buy_usdc: `22777.652069`
 - total_sell_usdc: `27928.501351`
-- traded_markets_count_api: `832`
+- traded_markets_count_api: `859`
 - position_value_api: `0.000000`
 
 ## 8. 核心指标
@@ -109,17 +110,17 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `22.670000`
 - deployability_score: `20`
 - multi_market_structure_score: `15.220000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

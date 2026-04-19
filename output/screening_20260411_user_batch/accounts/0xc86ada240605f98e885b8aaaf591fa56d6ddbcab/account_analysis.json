@@ -11,8 +11,8 @@
   "total_buy_usdc": 64445.710421,
   "total_sell_usdc": 105.385,
   "api_summary": {
-    "positions_value": 0.0,
-    "traded_markets": 34
+    "positions_value": 19.4705,
+    "traded_markets": 36
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.0,
@@ -311,9 +311,9 @@
     "copyability_score": 33.94,
     "deployability_score": 20,
     "multi_market_structure_score": 20,
-    "pnl_curve_stability_score": 28,
-    "pnl_confidence": 1.0,
-    "pnl_windows_available": 3,
+    "pnl_curve_stability_score": 24.98,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": 64,
@@ -321,10 +321,10 @@
     "trade_count": 120.0,
     "active_day_ratio": 1.053379,
     "avg_trades_per_active_day": 8.0,
-    "raw_before_cap": 100,
-    "pnl_tag": "long_mid_short_strong",
+    "raw_before_cap": 98.92,
+    "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
@@ -332,18 +332,18 @@
     "severe_risk_gate_triggered": false
   },
   "raw_score": 64,
-  "anchored_score": 70.85,
-  "delta_vs_anchor_60": 10.85,
-  "delta_vs_anchor_raw": 16.69,
-  "final_score": 70.85,
+  "anchored_score": 47.44,
+  "delta_vs_anchor_60": -12.56,
+  "delta_vs_anchor_raw": -19.32,
+  "final_score": 47.44,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -351,33 +351,33 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 24,
-      "total_return": 22944.988694,
-      "trend_slope": 1307.880575,
+      "points_count": 25,
+      "total_return": 18826.274594,
+      "trend_slope": 1277.029665,
       "max_drawdown": 4582.586363,
-      "daily_volatility": 2576.37673
+      "daily_volatility": 2721.469794
     },
     "d30": {
       "window": "d30",
       "shape": "smooth_up",
       "score": 6,
-      "points_count": 14,
-      "total_return": 25809.130097,
-      "trend_slope": 2052.452281,
-      "max_drawdown": 3049.988736,
-      "daily_volatility": 2952.718872
+      "points_count": 15,
+      "total_return": 21690.415997,
+      "trend_slope": 1832.641925,
+      "max_drawdown": 4118.7141,
+      "daily_volatility": 3250.702848
     },
     "d7": {
       "window": "d7",
-      "shape": "smooth_up",
-      "score": 2,
-      "points_count": 6,
-      "total_return": 10217.882907,
-      "trend_slope": 1530.965041,
-      "max_drawdown": 1294.944,
-      "daily_volatility": 3805.79625
+      "shape": "insufficient_data",
+      "score": 0,
+      "points_count": 1,
+      "total_return": 0.0,
+      "trend_slope": 0.0,
+      "max_drawdown": 0.0,
+      "daily_volatility": 0.0
     },
-    "summary_tag": "long_mid_short_strong"
+    "summary_tag": "long_and_recent_weak"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -407,7 +407,7 @@
     "behavior_points": [
       "Observed 120 trades across 15 active trading days in the analysis window.",
       "Low-frequency cap is active at 64, reflecting constrained copy capacity.",
-      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: sports."
     ],
     "strength_points": [
@@ -424,7 +424,7 @@
       "Frequency/deployability constraints limit practical copy capacity."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Whitelist themes (higher priority for selective following): nuggets, hawks, spurs, pistons, wizards. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 47.44 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Whitelist themes (higher priority for selective following): nuggets, hawks, spurs, pistons, wizards. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:19:31.297903+00:00"
+  "generated_at_utc": "2026-04-19T16:51:18.021817+00:00"
 }

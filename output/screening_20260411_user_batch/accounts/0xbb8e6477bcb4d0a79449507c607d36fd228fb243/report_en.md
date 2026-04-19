@@ -8,22 +8,22 @@
 - Source local name: `account_43`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, april, ceasefire, announces, trump. Whitelist themes: march, out, netanyahu, forces, enter. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 62.48 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: nested concurrent-ladder risk. Hard blacklist themes: iran, april, ceasefire, announces, trump. Whitelist themes: march, out, netanyahu, forces, enter. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `74.180000`
-- raw_score: `69.130000`
-- anchored_score: `74.180000`
-- delta_vs_anchor_60: `14.180000`
-- delta_vs_anchor_raw: `21.820000`
+- final_score (decision basis): `62.480000`
+- raw_score: `87.140000`
+- anchored_score: `62.480000`
+- delta_vs_anchor_60: `2.480000`
+- delta_vs_anchor_raw: `3.820000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 183 trades across 16 active trading days in the analysis window.
-- PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: geopolitics, us_politics, sports.
 
 ## 4. Copy-Trading Strengths
@@ -31,7 +31,8 @@ Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copy
 - Low non-copyable token-fast BUY ratio.
 - Weighted multi-market structure risk is controlled.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: march, out, netanyahu, forces, enter, hezbollah.
+- Recent 30-day PnL remains constructive.
+- Operational whitelist themes: march, out, netanyahu, forces, enter, israel.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
@@ -49,8 +50,8 @@ Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copy
 - netanyahu
 - forces
 - enter
-- hezbollah
 - israel
+- hezbollah
 
 ### Hard Blacklist Keywords
 - iran
@@ -59,9 +60,9 @@ Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copy
 - announces
 - trump
 - operations
+- military
 - end
 - against
-- military
 
 ### Soft Blacklist Keywords
 - (none)
@@ -71,8 +72,8 @@ Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `183`
 - total_buy_usdc: `246613.901461`
 - total_sell_usdc: `240387.405970`
-- traded_markets_count_api: `296`
-- position_value_api: `15023.376000`
+- traded_markets_count_api: `311`
+- position_value_api: `108775.433600`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -94,17 +95,17 @@ Calibrated decision score is 74.18 (anchor-referenced), decision: selective_copy
 ## 9. PnL Curve Evaluation
 - all_time_shape: `smooth_up`
 - all_time_score: `12`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `26.800000`
 - deployability_score: `20`
 - multi_market_structure_score: `12.340000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

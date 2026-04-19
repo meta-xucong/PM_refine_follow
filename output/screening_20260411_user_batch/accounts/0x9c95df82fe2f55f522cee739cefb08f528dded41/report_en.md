@@ -8,22 +8,22 @@
 - Source local name: `account_4`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk, dual-side condition buying. Hard blacklist themes: win, heavyweight, milan, prelims, madrid. Soft blacklist themes: bayern, nchen. Whitelist themes: arsenal, flyers, blackhawks, barcelona, utah. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_and_recent_weak. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
+Calibrated decision score is 31.84 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk, dual-side condition buying. Hard blacklist themes: win, heavyweight, milan, prelims, madrid. Soft blacklist themes: bayern, nchen. Whitelist themes: arsenal, flyers, blackhawks, barcelona, utah. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. PnL curve tag: long_mid_short_strong. This account is not recommended as a primary copy-trading source; only rare manual picks may be considered.
 
 ## 2. Decision Snapshot
 - decision: `not_recommended`
-- final_score (decision basis): `37.590000`
-- raw_score: `12.830000`
-- anchored_score: `37.590000`
-- delta_vs_anchor_60: `-22.410000`
-- delta_vs_anchor_raw: `-34.480000`
+- final_score (decision basis): `31.840000`
+- raw_score: `40.000000`
+- anchored_score: `31.840000`
+- delta_vs_anchor_60: `-28.160000`
+- delta_vs_anchor_raw: `-43.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 1188 trades across 26 active trading days in the analysis window.
-- PnL curve shapes: all-time=flat, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: sports.
 
 ## 4. Copy-Trading Strengths
@@ -31,6 +31,8 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
 - Operational whitelist themes: arsenal, flyers, blackhawks, barcelona, utah, kings.
 
 ## 5. Copy-Trading Risks
@@ -38,7 +40,6 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).
 - Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.
 - Severe-risk gate is triggered; poor setups are automatically classified as not recommended.
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
 - Hard blacklist themes to avoid: win, heavyweight, milan, prelims, madrid, warriors.
 - Soft blacklist themes requiring stricter triggers: bayern, nchen.
 
@@ -58,7 +59,7 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - roma
 - milano
 - internazionale
-- vitor
+- petrino
 
 ### Hard Blacklist Keywords
 - win
@@ -69,8 +70,8 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - warriors
 - real
 - timberwolves
-- nuggets
 - spurs
+- nuggets
 - pistons
 - hawks
 
@@ -83,8 +84,8 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - trade_rows_used: `1188`
 - total_buy_usdc: `237909.133938`
 - total_sell_usdc: `142213.014615`
-- traded_markets_count_api: `591`
-- position_value_api: `6556.680100`
+- traded_markets_count_api: `604`
+- position_value_api: `959.822600`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `42.01%`
@@ -104,19 +105,19 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - avg_trades_per_active_day: `45.692308`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `flat`
-- all_time_score: `1`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `0`
 - deployability_score: `20`
 - multi_market_structure_score: `0`
-- pnl_curve_stability_score: `0.830000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`
@@ -125,3 +126,4 @@ Calibrated decision score is 37.59 (anchor-referenced), decision: not_recommende
 - Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering
 - Severe risk gate triggered; score threshold for not_recommended is tightened
 - Severe risk gate + low calibrated score -> not_recommended
+- Calibrated score below 32 -> not_recommended floor

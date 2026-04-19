@@ -1715,7 +1715,7 @@
     "raw_before_cap": 85.98,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
@@ -1723,18 +1723,18 @@
     "severe_risk_gate_triggered": false
   },
   "raw_score": 64,
-  "anchored_score": 70.85,
-  "delta_vs_anchor_60": 10.85,
-  "delta_vs_anchor_raw": 16.69,
-  "final_score": 70.85,
+  "anchored_score": 47.44,
+  "delta_vs_anchor_60": -12.56,
+  "delta_vs_anchor_raw": -19.32,
+  "final_score": 47.44,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -1742,21 +1742,21 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 9,
-      "total_return": 5685.228946,
-      "trend_slope": 617.907871,
+      "points_count": 15,
+      "total_return": 22894.887861,
+      "trend_slope": 1582.495469,
       "max_drawdown": 762.443844,
-      "daily_volatility": 1058.220315
+      "daily_volatility": 2441.783013
     },
     "d30": {
       "window": "d30",
       "shape": "smooth_up",
       "score": 6,
-      "points_count": 2,
-      "total_return": 2356.669159,
-      "trend_slope": 2356.669159,
+      "points_count": 5,
+      "total_return": 14609.284918,
+      "trend_slope": 3886.082705,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 3441.273134
     },
     "d7": {
       "window": "d7",
@@ -1787,7 +1787,7 @@
       "am-9",
       "pm-1",
       "iran",
-      "april"
+      "ceasefire"
     ],
     "hard_blacklist_keywords": [
       "bitcoin",
@@ -1824,7 +1824,7 @@
       "Hard blacklist themes to avoid: bitcoin, march, down, am-11, pm-2, pm-12."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: non-copyable token-fast exposure. Hard blacklist themes (avoid copying): bitcoin, march, down, am-11, pm-2. Whitelist themes (higher priority for selective following): march, bitcoin, down, pm-8, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 47.44 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: non-copyable token-fast exposure. Hard blacklist themes (avoid copying): bitcoin, march, down, am-11, pm-2. Whitelist themes (higher priority for selective following): march, bitcoin, down, pm-8, pm-5. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:18:08.429364+00:00"
+  "generated_at_utc": "2026-04-19T16:49:17.329554+00:00"
 }

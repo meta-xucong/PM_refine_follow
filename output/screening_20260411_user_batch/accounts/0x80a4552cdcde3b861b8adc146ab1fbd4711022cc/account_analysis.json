@@ -11,8 +11,8 @@
   "total_buy_usdc": 50021.292998,
   "total_sell_usdc": 38509.65916,
   "api_summary": {
-    "positions_value": 29254.1162,
-    "traded_markets": 1408
+    "positions_value": 30738.7304,
+    "traded_markets": 1429
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.043011,
@@ -1000,9 +1000,9 @@
     "copyability_score": 3.37,
     "deployability_score": 20,
     "multi_market_structure_score": 2.75,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -8.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -1010,63 +1010,63 @@
     "trade_count": 1360.0,
     "active_day_ratio": 1.001224,
     "avg_trades_per_active_day": 43.870968,
-    "raw_before_cap": 9.79,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 46.12,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 9.79,
-  "anchored_score": 35.61,
-  "delta_vs_anchor_60": -24.39,
-  "delta_vs_anchor_raw": -37.52,
-  "final_score": 35.61,
+  "raw_score": 46.12,
+  "anchored_score": 35.82,
+  "delta_vs_anchor_60": -24.18,
+  "delta_vs_anchor_raw": -37.2,
+  "final_score": 35.82,
   "decision": "not_recommended",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 14,
-      "total_return": -89.104206,
-      "trend_slope": 11.173443,
-      "max_drawdown": 549.182178,
-      "daily_volatility": 163.368619
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 445,
+      "total_return": 67858.965932,
+      "trend_slope": 136.923134,
+      "max_drawdown": 4769.531627,
+      "daily_volatility": 596.895451
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 22,
+      "total_return": 4487.141071,
+      "trend_slope": 223.487562,
+      "max_drawdown": 136.845838,
+      "daily_volatility": 483.315121
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 5,
+      "total_return": 150.32543,
+      "trend_slope": 36.472337,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 22.429316
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -1080,9 +1080,9 @@
       "fall",
       "june",
       "end",
-      "fighting",
       "illinois",
       "illini",
+      "fighting",
       "win",
       "march",
       "iowa",
@@ -1093,19 +1093,19 @@
       "april",
       "ceasefire",
       "december",
-      "forces",
       "enter",
+      "forces",
       "fed",
       "spread",
       "bound",
       "parliamentary",
       "duke",
-      "blue"
+      "devils"
     ],
     "soft_blacklist_keywords": [
       "world",
-      "fifa",
       "cup",
+      "fifa",
       "brazil",
       "trump",
       "inflation",
@@ -1119,28 +1119,29 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 1360 trades across 31 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: geopolitics, macro, sports."
     ],
     "strength_points": [
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: iranian, regime, fall, june, end, fighting."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: iranian, regime, fall, june, end, illinois."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Elevated non-copyable token-fast BUY ratio, suggesting execution-dependent edge.",
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: iran, april, ceasefire, december, forces, enter.",
-      "Soft blacklist themes requiring stricter triggers: world, fifa, cup, brazil, trump, inflation."
+      "Hard blacklist themes to avoid: iran, april, ceasefire, december, enter, forces.",
+      "Soft blacklist themes requiring stricter triggers: world, cup, fifa, brazil, trump, inflation."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 35.61 (anchor-referenced), decision: not_recommended. Primary sector exposure: geopolitics, macro, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): iran, april, ceasefire, december, forces. Soft blacklist themes (copy only with strict trigger): world, fifa, cup, brazil, trump. Whitelist themes (higher priority for selective following): iranian, regime, fall, june, end. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 35.82 (anchor-referenced), decision: not_recommended. Primary sector exposure: geopolitics, macro, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: high exclusive concurrent-leg behavior, non-copyable token-fast exposure, material dual-side condition buying. Hard blacklist themes (avoid copying): iran, april, ceasefire, december, enter. Soft blacklist themes (copy only with strict trigger): world, cup, fifa, brazil, trump. Whitelist themes (higher priority for selective following): iranian, regime, fall, june, end. PnL curve tag: long_mid_short_strong. Risk gate is active, so broad-copy mode is disabled. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T16:18:44.352904+00:00"
+  "generated_at_utc": "2026-04-19T16:50:06.242162+00:00"
 }

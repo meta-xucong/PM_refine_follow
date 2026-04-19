@@ -8,34 +8,35 @@
 - 本地名称: `account_19`
 
 ## 1. 执行结论
-校准后决策分 51.70（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：iran、march、trump、military、april。软黑名单主题（谨慎跟）：win、nba、last、more、days。白名单主题（优先筛选）：out、ukraine、forces、enter、russia。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 51.90（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、sports。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：iran、march、trump、military、april。软黑名单主题（谨慎跟）：win、nba、days、last、more。白名单主题（优先筛选）：out、ukraine、enter、forces、russia。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `51.700000`
-- raw_score: `34.540000`
-- anchored_score: `51.700000`
-- delta_vs_anchor_60: `-8.300000`
-- delta_vs_anchor_raw: `-12.770000`
+- final_score（决策分）: `51.900000`
+- raw_score: `70.860000`
+- anchored_score: `51.900000`
+- delta_vs_anchor_60: `-8.100000`
+- delta_vs_anchor_raw: `-12.460000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 4251 笔交易，覆盖 31 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： geopolitics, us_politics, sports.
 
 ## 4. 跟单优势
 - 不可复制 token 快交易（BUY）比例较低。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：out, ukraine, forces, enter, russia, hormuz.
+- 全周期收益曲线为平滑上行，策略一致性较好。
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：out, ukraine, enter, forces, russia, hormuz.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
-- 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：iran, march, trump, military, april, end.
-- 软黑名单主题（需更严格触发）：win, nba, last, more, days, doncic.
+- 软黑名单主题（需更严格触发）：win, nba, days, last, more, luka.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -46,14 +47,14 @@
 ### 白名单关键词
 - out
 - ukraine
-- forces
 - enter
+- forces
 - russia
 - hormuz
 - pete
-- secretary
 - defense
 - hegseth
+- secretary
 - through
 - island
 
@@ -74,24 +75,24 @@
 ### 软黑名单关键词
 - win
 - nba
+- days
 - last
 - more
-- days
-- doncic
 - luka
 - mvp
-- knicks
-- york
+- doncic
 - finals
+- knicks
 - new
+- york
 
 ## 7. 账户概览
 - analysis_window: `2026-03-12 15:39:23 UTC -> 2026-04-11 12:59:49 UTC`
 - trade_rows_used: `4251`
 - total_buy_usdc: `197801.090721`
 - total_sell_usdc: `151561.349358`
-- traded_markets_count_api: `828`
-- position_value_api: `92121.724300`
+- traded_markets_count_api: `880`
+- position_value_api: `107621.901200`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `14.64%`
@@ -111,19 +112,19 @@
 - avg_trades_per_active_day: `137.129032`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `平滑上行`
+- all_time_score: `12`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `17.550000`
 - deployability_score: `20`
 - multi_market_structure_score: `8.310000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-3.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

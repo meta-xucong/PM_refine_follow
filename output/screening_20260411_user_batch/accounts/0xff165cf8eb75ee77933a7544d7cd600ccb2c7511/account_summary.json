@@ -1,6 +1,6 @@
 {
   "account_address": "0xff165cf8eb75ee77933a7544d7cd600ccb2c7511",
-  "fetched_at_utc": "2026-04-11T15:21:06.797281+00:00",
+  "fetched_at_utc": "2026-04-19T16:44:54.638599+00:00",
   "sources": {
     "value": "/value",
     "traded": "/traded",
@@ -9,48 +9,48 @@
     "accounting_snapshot": "/v1/accounting/snapshot"
   },
   "summary": {
-    "positions_value": 34544.6822,
-    "traded_markets": 635,
-    "open_positions_count": 126,
-    "open_positions_cash_pnl_sum": -5603.5605,
-    "open_positions_realized_pnl_sum": 1641.9792,
-    "closed_positions_count": 50,
-    "closed_positions_realized_pnl_total": -3854.823768,
-    "closed_positions_realized_pnl_30d": 0,
-    "closed_positions_realized_pnl_7d": 0
+    "positions_value": 23826.8715,
+    "traded_markets": 651,
+    "open_positions_count": 123,
+    "open_positions_cash_pnl_sum": -7607.2608,
+    "open_positions_realized_pnl_sum": 1712.9879,
+    "closed_positions_count": 566,
+    "closed_positions_realized_pnl_total": 55434.60527,
+    "closed_positions_realized_pnl_30d": 19968.170209,
+    "closed_positions_realized_pnl_7d": 2246.738634
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 30,
-      "total_return": -3878.920008,
-      "trend_slope": -123.145703,
-      "max_drawdown": 9176.390334,
-      "daily_volatility": 1703.208848
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 227,
+      "total_return": 55410.50903,
+      "trend_slope": 261.599234,
+      "max_drawdown": 10353.466427,
+      "daily_volatility": 1823.322414
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 28,
+      "total_return": 19865.016729,
+      "trend_slope": 807.243281,
+      "max_drawdown": 287.340834,
+      "daily_volatility": 2018.095583
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 7,
+      "total_return": 1936.638135,
+      "trend_slope": 362.178583,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 461.075264
     },
-    "summary_tag": "long_and_recent_weak",
+    "summary_tag": "long_mid_short_strong",
     "daily_points": [
       {
         "date": "2024-09-13",
@@ -201,17 +201,1002 @@
         "date": "2025-01-20",
         "daily_realized_pnl": 27.065499,
         "cumulative_realized_pnl": -3854.823768
+      },
+      {
+        "date": "2025-01-21",
+        "daily_realized_pnl": 9.5691,
+        "cumulative_realized_pnl": -3845.254668
+      },
+      {
+        "date": "2025-01-23",
+        "daily_realized_pnl": -235.550276,
+        "cumulative_realized_pnl": -4080.804944
+      },
+      {
+        "date": "2025-01-24",
+        "daily_realized_pnl": 0.0,
+        "cumulative_realized_pnl": -4080.804944
+      },
+      {
+        "date": "2025-01-29",
+        "daily_realized_pnl": 22.564041,
+        "cumulative_realized_pnl": -4058.240903
+      },
+      {
+        "date": "2025-01-30",
+        "daily_realized_pnl": 66.68601,
+        "cumulative_realized_pnl": -3991.554893
+      },
+      {
+        "date": "2025-02-03",
+        "daily_realized_pnl": 9.9999,
+        "cumulative_realized_pnl": -3981.554993
+      },
+      {
+        "date": "2025-02-05",
+        "daily_realized_pnl": 126.906481,
+        "cumulative_realized_pnl": -3854.648512
+      },
+      {
+        "date": "2025-02-06",
+        "daily_realized_pnl": 4.398364,
+        "cumulative_realized_pnl": -3850.250148
+      },
+      {
+        "date": "2025-02-12",
+        "daily_realized_pnl": 2.5411,
+        "cumulative_realized_pnl": -3847.709048
+      },
+      {
+        "date": "2025-02-16",
+        "daily_realized_pnl": 49.998358,
+        "cumulative_realized_pnl": -3797.71069
+      },
+      {
+        "date": "2025-02-17",
+        "daily_realized_pnl": -113.5536,
+        "cumulative_realized_pnl": -3911.26429
+      },
+      {
+        "date": "2025-02-19",
+        "daily_realized_pnl": 70.227116,
+        "cumulative_realized_pnl": -3841.037174
+      },
+      {
+        "date": "2025-02-24",
+        "daily_realized_pnl": 568.018869,
+        "cumulative_realized_pnl": -3273.018305
+      },
+      {
+        "date": "2025-02-26",
+        "daily_realized_pnl": 527.5,
+        "cumulative_realized_pnl": -2745.518305
+      },
+      {
+        "date": "2025-02-27",
+        "daily_realized_pnl": 87.33903,
+        "cumulative_realized_pnl": -2658.179275
+      },
+      {
+        "date": "2025-03-03",
+        "daily_realized_pnl": 33.29497,
+        "cumulative_realized_pnl": -2624.884305
+      },
+      {
+        "date": "2025-03-06",
+        "daily_realized_pnl": 0.999041,
+        "cumulative_realized_pnl": -2623.885264
+      },
+      {
+        "date": "2025-03-09",
+        "daily_realized_pnl": 49.9997,
+        "cumulative_realized_pnl": -2573.885564
+      },
+      {
+        "date": "2025-03-21",
+        "daily_realized_pnl": 3.082529,
+        "cumulative_realized_pnl": -2570.803035
+      },
+      {
+        "date": "2025-03-22",
+        "daily_realized_pnl": 80.57807,
+        "cumulative_realized_pnl": -2490.224965
+      },
+      {
+        "date": "2025-03-26",
+        "daily_realized_pnl": 480.0,
+        "cumulative_realized_pnl": -2010.224965
+      },
+      {
+        "date": "2025-04-01",
+        "daily_realized_pnl": 270.0,
+        "cumulative_realized_pnl": -1740.224965
+      },
+      {
+        "date": "2025-04-04",
+        "daily_realized_pnl": 41.242962,
+        "cumulative_realized_pnl": -1698.982003
+      },
+      {
+        "date": "2025-04-08",
+        "daily_realized_pnl": -180.521844,
+        "cumulative_realized_pnl": -1879.503847
+      },
+      {
+        "date": "2025-04-18",
+        "daily_realized_pnl": 75.762923,
+        "cumulative_realized_pnl": -1803.740924
+      },
+      {
+        "date": "2025-04-20",
+        "daily_realized_pnl": -79.999209,
+        "cumulative_realized_pnl": -1883.740133
+      },
+      {
+        "date": "2025-04-22",
+        "daily_realized_pnl": -53.192451,
+        "cumulative_realized_pnl": -1936.932584
+      },
+      {
+        "date": "2025-04-25",
+        "daily_realized_pnl": 88.2006,
+        "cumulative_realized_pnl": -1848.731984
+      },
+      {
+        "date": "2025-04-28",
+        "daily_realized_pnl": -675.711354,
+        "cumulative_realized_pnl": -2524.443338
+      },
+      {
+        "date": "2025-04-29",
+        "daily_realized_pnl": -208.580102,
+        "cumulative_realized_pnl": -2733.02344
+      },
+      {
+        "date": "2025-05-01",
+        "daily_realized_pnl": 15.430661,
+        "cumulative_realized_pnl": -2717.592779
+      },
+      {
+        "date": "2025-05-02",
+        "daily_realized_pnl": -6.166679,
+        "cumulative_realized_pnl": -2723.759458
+      },
+      {
+        "date": "2025-05-03",
+        "daily_realized_pnl": 153.924211,
+        "cumulative_realized_pnl": -2569.835247
+      },
+      {
+        "date": "2025-05-07",
+        "daily_realized_pnl": 4.999989,
+        "cumulative_realized_pnl": -2564.835258
+      },
+      {
+        "date": "2025-05-16",
+        "daily_realized_pnl": 204.8572,
+        "cumulative_realized_pnl": -2359.978058
+      },
+      {
+        "date": "2025-05-19",
+        "daily_realized_pnl": 588.504135,
+        "cumulative_realized_pnl": -1771.473923
+      },
+      {
+        "date": "2025-05-21",
+        "daily_realized_pnl": 1054.007405,
+        "cumulative_realized_pnl": -717.466518
+      },
+      {
+        "date": "2025-05-22",
+        "daily_realized_pnl": 19.999977,
+        "cumulative_realized_pnl": -697.466541
+      },
+      {
+        "date": "2025-06-02",
+        "daily_realized_pnl": 2259.667827,
+        "cumulative_realized_pnl": 1562.201286
+      },
+      {
+        "date": "2025-06-06",
+        "daily_realized_pnl": 5.049895,
+        "cumulative_realized_pnl": 1567.251181
+      },
+      {
+        "date": "2025-06-07",
+        "daily_realized_pnl": 8.009958,
+        "cumulative_realized_pnl": 1575.261139
+      },
+      {
+        "date": "2025-06-13",
+        "daily_realized_pnl": 9.999413,
+        "cumulative_realized_pnl": 1585.260552
+      },
+      {
+        "date": "2025-06-16",
+        "daily_realized_pnl": 22.9964,
+        "cumulative_realized_pnl": 1608.256952
+      },
+      {
+        "date": "2025-06-18",
+        "daily_realized_pnl": 6.15,
+        "cumulative_realized_pnl": 1614.406952
+      },
+      {
+        "date": "2025-06-24",
+        "daily_realized_pnl": 131.852796,
+        "cumulative_realized_pnl": 1746.259748
+      },
+      {
+        "date": "2025-07-01",
+        "daily_realized_pnl": 1234.554255,
+        "cumulative_realized_pnl": 2980.814003
+      },
+      {
+        "date": "2025-07-02",
+        "daily_realized_pnl": 882.010449,
+        "cumulative_realized_pnl": 3862.824452
+      },
+      {
+        "date": "2025-07-08",
+        "daily_realized_pnl": 50.0,
+        "cumulative_realized_pnl": 3912.824452
+      },
+      {
+        "date": "2025-07-14",
+        "daily_realized_pnl": -2667.5,
+        "cumulative_realized_pnl": 1245.324452
+      },
+      {
+        "date": "2025-07-15",
+        "daily_realized_pnl": 333.186036,
+        "cumulative_realized_pnl": 1578.510488
+      },
+      {
+        "date": "2025-07-16",
+        "daily_realized_pnl": 258.998214,
+        "cumulative_realized_pnl": 1837.508702
+      },
+      {
+        "date": "2025-07-23",
+        "daily_realized_pnl": 19.700006,
+        "cumulative_realized_pnl": 1857.208708
+      },
+      {
+        "date": "2025-07-26",
+        "daily_realized_pnl": 13.923076,
+        "cumulative_realized_pnl": 1871.131784
+      },
+      {
+        "date": "2025-07-27",
+        "daily_realized_pnl": 11.581168,
+        "cumulative_realized_pnl": 1882.712952
+      },
+      {
+        "date": "2025-08-02",
+        "daily_realized_pnl": 105.204053,
+        "cumulative_realized_pnl": 1987.917005
+      },
+      {
+        "date": "2025-08-03",
+        "daily_realized_pnl": 5.47285,
+        "cumulative_realized_pnl": 1993.389855
+      },
+      {
+        "date": "2025-08-06",
+        "daily_realized_pnl": 216.330719,
+        "cumulative_realized_pnl": 2209.720574
+      },
+      {
+        "date": "2025-08-07",
+        "daily_realized_pnl": -120.0,
+        "cumulative_realized_pnl": 2089.720574
+      },
+      {
+        "date": "2025-08-08",
+        "daily_realized_pnl": 0.0,
+        "cumulative_realized_pnl": 2089.720574
+      },
+      {
+        "date": "2025-08-09",
+        "daily_realized_pnl": 360.0,
+        "cumulative_realized_pnl": 2449.720574
+      },
+      {
+        "date": "2025-08-15",
+        "daily_realized_pnl": 0.626548,
+        "cumulative_realized_pnl": 2450.347122
+      },
+      {
+        "date": "2025-08-18",
+        "daily_realized_pnl": 19.999738,
+        "cumulative_realized_pnl": 2470.34686
+      },
+      {
+        "date": "2025-08-19",
+        "daily_realized_pnl": 128.074,
+        "cumulative_realized_pnl": 2598.42086
+      },
+      {
+        "date": "2025-08-20",
+        "daily_realized_pnl": -256.999599,
+        "cumulative_realized_pnl": 2341.421261
+      },
+      {
+        "date": "2025-09-02",
+        "daily_realized_pnl": 417.74661,
+        "cumulative_realized_pnl": 2759.167871
+      },
+      {
+        "date": "2025-09-17",
+        "daily_realized_pnl": -759.26039,
+        "cumulative_realized_pnl": 1999.907481
+      },
+      {
+        "date": "2025-09-19",
+        "daily_realized_pnl": 32.868613,
+        "cumulative_realized_pnl": 2032.776094
+      },
+      {
+        "date": "2025-09-23",
+        "daily_realized_pnl": 17.999923,
+        "cumulative_realized_pnl": 2050.776017
+      },
+      {
+        "date": "2025-09-24",
+        "daily_realized_pnl": 4.0828,
+        "cumulative_realized_pnl": 2054.858817
+      },
+      {
+        "date": "2025-09-25",
+        "daily_realized_pnl": 359.9991,
+        "cumulative_realized_pnl": 2414.857917
+      },
+      {
+        "date": "2025-09-29",
+        "daily_realized_pnl": 41.6,
+        "cumulative_realized_pnl": 2456.457917
+      },
+      {
+        "date": "2025-10-01",
+        "daily_realized_pnl": 1446.0,
+        "cumulative_realized_pnl": 3902.457917
+      },
+      {
+        "date": "2025-10-02",
+        "daily_realized_pnl": 459.6,
+        "cumulative_realized_pnl": 4362.057917
+      },
+      {
+        "date": "2025-10-03",
+        "daily_realized_pnl": 38.0,
+        "cumulative_realized_pnl": 4400.057917
+      },
+      {
+        "date": "2025-10-04",
+        "daily_realized_pnl": 4.224889,
+        "cumulative_realized_pnl": 4404.282806
+      },
+      {
+        "date": "2025-10-06",
+        "daily_realized_pnl": 152.0,
+        "cumulative_realized_pnl": 4556.282806
+      },
+      {
+        "date": "2025-10-07",
+        "daily_realized_pnl": 10.779357,
+        "cumulative_realized_pnl": 4567.062163
+      },
+      {
+        "date": "2025-10-10",
+        "daily_realized_pnl": 627.838657,
+        "cumulative_realized_pnl": 5194.90082
+      },
+      {
+        "date": "2025-10-11",
+        "daily_realized_pnl": 5.932131,
+        "cumulative_realized_pnl": 5200.832951
+      },
+      {
+        "date": "2025-10-13",
+        "daily_realized_pnl": 19.0,
+        "cumulative_realized_pnl": 5219.832951
+      },
+      {
+        "date": "2025-10-15",
+        "daily_realized_pnl": -10353.466427,
+        "cumulative_realized_pnl": -5133.633476
+      },
+      {
+        "date": "2025-10-17",
+        "daily_realized_pnl": 201.650032,
+        "cumulative_realized_pnl": -4931.983444
+      },
+      {
+        "date": "2025-10-18",
+        "daily_realized_pnl": 13.999152,
+        "cumulative_realized_pnl": -4917.984292
+      },
+      {
+        "date": "2025-10-20",
+        "daily_realized_pnl": 2125.619068,
+        "cumulative_realized_pnl": -2792.365224
+      },
+      {
+        "date": "2025-10-21",
+        "daily_realized_pnl": 476.545834,
+        "cumulative_realized_pnl": -2315.81939
+      },
+      {
+        "date": "2025-10-22",
+        "daily_realized_pnl": 49.999,
+        "cumulative_realized_pnl": -2265.82039
+      },
+      {
+        "date": "2025-10-26",
+        "daily_realized_pnl": 14074.66422,
+        "cumulative_realized_pnl": 11808.84383
+      },
+      {
+        "date": "2025-10-27",
+        "daily_realized_pnl": 675.0,
+        "cumulative_realized_pnl": 12483.84383
+      },
+      {
+        "date": "2025-10-28",
+        "daily_realized_pnl": 1668.115347,
+        "cumulative_realized_pnl": 14151.959177
+      },
+      {
+        "date": "2025-10-29",
+        "daily_realized_pnl": 3862.625598,
+        "cumulative_realized_pnl": 18014.584775
+      },
+      {
+        "date": "2025-10-30",
+        "daily_realized_pnl": -403.667752,
+        "cumulative_realized_pnl": 17610.917023
+      },
+      {
+        "date": "2025-10-31",
+        "daily_realized_pnl": 2.0,
+        "cumulative_realized_pnl": 17612.917023
+      },
+      {
+        "date": "2025-11-01",
+        "daily_realized_pnl": 1.75,
+        "cumulative_realized_pnl": 17614.667023
+      },
+      {
+        "date": "2025-11-02",
+        "daily_realized_pnl": 1.0,
+        "cumulative_realized_pnl": 17615.667023
+      },
+      {
+        "date": "2025-11-03",
+        "daily_realized_pnl": 2.5,
+        "cumulative_realized_pnl": 17618.167023
+      },
+      {
+        "date": "2025-11-04",
+        "daily_realized_pnl": -2308.790041,
+        "cumulative_realized_pnl": 15309.376982
+      },
+      {
+        "date": "2025-11-05",
+        "daily_realized_pnl": 876.7175,
+        "cumulative_realized_pnl": 16186.094482
+      },
+      {
+        "date": "2025-11-06",
+        "daily_realized_pnl": 12.2204,
+        "cumulative_realized_pnl": 16198.314882
+      },
+      {
+        "date": "2025-11-07",
+        "daily_realized_pnl": 3.569984,
+        "cumulative_realized_pnl": 16201.884866
+      },
+      {
+        "date": "2025-11-10",
+        "daily_realized_pnl": 6.445225,
+        "cumulative_realized_pnl": 16208.330091
+      },
+      {
+        "date": "2025-11-11",
+        "daily_realized_pnl": 1.0,
+        "cumulative_realized_pnl": 16209.330091
+      },
+      {
+        "date": "2025-11-12",
+        "daily_realized_pnl": -686.095309,
+        "cumulative_realized_pnl": 15523.234782
+      },
+      {
+        "date": "2025-11-18",
+        "daily_realized_pnl": -154.297491,
+        "cumulative_realized_pnl": 15368.937291
+      },
+      {
+        "date": "2025-11-20",
+        "daily_realized_pnl": -110.311094,
+        "cumulative_realized_pnl": 15258.626197
+      },
+      {
+        "date": "2025-11-22",
+        "daily_realized_pnl": -22.2996,
+        "cumulative_realized_pnl": 15236.326597
+      },
+      {
+        "date": "2025-11-23",
+        "daily_realized_pnl": 60.942175,
+        "cumulative_realized_pnl": 15297.268772
+      },
+      {
+        "date": "2025-11-24",
+        "daily_realized_pnl": 1189.524772,
+        "cumulative_realized_pnl": 16486.793544
+      },
+      {
+        "date": "2025-11-25",
+        "daily_realized_pnl": 14.0153,
+        "cumulative_realized_pnl": 16500.808844
+      },
+      {
+        "date": "2025-11-26",
+        "daily_realized_pnl": 18.999718,
+        "cumulative_realized_pnl": 16519.808562
+      },
+      {
+        "date": "2025-11-29",
+        "daily_realized_pnl": 0.481934,
+        "cumulative_realized_pnl": 16520.290496
+      },
+      {
+        "date": "2025-12-01",
+        "daily_realized_pnl": 70.0,
+        "cumulative_realized_pnl": 16590.290496
+      },
+      {
+        "date": "2025-12-03",
+        "daily_realized_pnl": -35.0,
+        "cumulative_realized_pnl": 16555.290496
+      },
+      {
+        "date": "2025-12-04",
+        "daily_realized_pnl": 1.6,
+        "cumulative_realized_pnl": 16556.890496
+      },
+      {
+        "date": "2025-12-05",
+        "daily_realized_pnl": 3.29974,
+        "cumulative_realized_pnl": 16560.190236
+      },
+      {
+        "date": "2025-12-09",
+        "daily_realized_pnl": 1.9999,
+        "cumulative_realized_pnl": 16562.190136
+      },
+      {
+        "date": "2025-12-10",
+        "daily_realized_pnl": -60.771758,
+        "cumulative_realized_pnl": 16501.418378
+      },
+      {
+        "date": "2025-12-11",
+        "daily_realized_pnl": 515.114071,
+        "cumulative_realized_pnl": 17016.532449
+      },
+      {
+        "date": "2025-12-12",
+        "daily_realized_pnl": 30.466508,
+        "cumulative_realized_pnl": 17046.998957
+      },
+      {
+        "date": "2025-12-14",
+        "daily_realized_pnl": 13.284222,
+        "cumulative_realized_pnl": 17060.283179
+      },
+      {
+        "date": "2025-12-15",
+        "daily_realized_pnl": 6.79957,
+        "cumulative_realized_pnl": 17067.082749
+      },
+      {
+        "date": "2025-12-16",
+        "daily_realized_pnl": 119.99934,
+        "cumulative_realized_pnl": 17187.082089
+      },
+      {
+        "date": "2025-12-21",
+        "daily_realized_pnl": 15.68084,
+        "cumulative_realized_pnl": 17202.762929
+      },
+      {
+        "date": "2026-01-02",
+        "daily_realized_pnl": 11356.787272,
+        "cumulative_realized_pnl": 28559.550201
+      },
+      {
+        "date": "2026-01-04",
+        "daily_realized_pnl": 180.0,
+        "cumulative_realized_pnl": 28739.550201
+      },
+      {
+        "date": "2026-01-06",
+        "daily_realized_pnl": 43.20238,
+        "cumulative_realized_pnl": 28782.752581
+      },
+      {
+        "date": "2026-01-08",
+        "daily_realized_pnl": 4.0,
+        "cumulative_realized_pnl": 28786.752581
+      },
+      {
+        "date": "2026-01-13",
+        "daily_realized_pnl": 10.0,
+        "cumulative_realized_pnl": 28796.752581
+      },
+      {
+        "date": "2026-01-23",
+        "daily_realized_pnl": 54.665516,
+        "cumulative_realized_pnl": 28851.418097
+      },
+      {
+        "date": "2026-01-26",
+        "daily_realized_pnl": -24.998027,
+        "cumulative_realized_pnl": 28826.42007
+      },
+      {
+        "date": "2026-01-29",
+        "daily_realized_pnl": 2541.240156,
+        "cumulative_realized_pnl": 31367.660226
+      },
+      {
+        "date": "2026-01-30",
+        "daily_realized_pnl": -6183.913698,
+        "cumulative_realized_pnl": 25183.746528
+      },
+      {
+        "date": "2026-01-31",
+        "daily_realized_pnl": 10.22653,
+        "cumulative_realized_pnl": 25193.973058
+      },
+      {
+        "date": "2026-02-01",
+        "daily_realized_pnl": 12.249946,
+        "cumulative_realized_pnl": 25206.223004
+      },
+      {
+        "date": "2026-02-02",
+        "daily_realized_pnl": 281.75371,
+        "cumulative_realized_pnl": 25487.976714
+      },
+      {
+        "date": "2026-02-04",
+        "daily_realized_pnl": 31.866987,
+        "cumulative_realized_pnl": 25519.843701
+      },
+      {
+        "date": "2026-02-07",
+        "daily_realized_pnl": 13.14481,
+        "cumulative_realized_pnl": 25532.988511
+      },
+      {
+        "date": "2026-02-08",
+        "daily_realized_pnl": 1468.785,
+        "cumulative_realized_pnl": 27001.773511
+      },
+      {
+        "date": "2026-02-09",
+        "daily_realized_pnl": 495.328433,
+        "cumulative_realized_pnl": 27497.101944
+      },
+      {
+        "date": "2026-02-10",
+        "daily_realized_pnl": 704.931885,
+        "cumulative_realized_pnl": 28202.033829
+      },
+      {
+        "date": "2026-02-11",
+        "daily_realized_pnl": 39.370943,
+        "cumulative_realized_pnl": 28241.404772
+      },
+      {
+        "date": "2026-02-12",
+        "daily_realized_pnl": -3.795861,
+        "cumulative_realized_pnl": 28237.608911
+      },
+      {
+        "date": "2026-02-14",
+        "daily_realized_pnl": 8.56,
+        "cumulative_realized_pnl": 28246.168911
+      },
+      {
+        "date": "2026-02-15",
+        "daily_realized_pnl": 4.593322,
+        "cumulative_realized_pnl": 28250.762233
+      },
+      {
+        "date": "2026-02-19",
+        "daily_realized_pnl": 30.0,
+        "cumulative_realized_pnl": 28280.762233
+      },
+      {
+        "date": "2026-02-20",
+        "daily_realized_pnl": -691.49403,
+        "cumulative_realized_pnl": 27589.268203
+      },
+      {
+        "date": "2026-02-23",
+        "daily_realized_pnl": 0.2,
+        "cumulative_realized_pnl": 27589.468203
+      },
+      {
+        "date": "2026-02-24",
+        "daily_realized_pnl": 22.449173,
+        "cumulative_realized_pnl": 27611.917376
+      },
+      {
+        "date": "2026-02-25",
+        "daily_realized_pnl": -24.285362,
+        "cumulative_realized_pnl": 27587.632014
+      },
+      {
+        "date": "2026-02-26",
+        "daily_realized_pnl": 34.049586,
+        "cumulative_realized_pnl": 27621.6816
+      },
+      {
+        "date": "2026-02-27",
+        "daily_realized_pnl": 125.38612,
+        "cumulative_realized_pnl": 27747.06772
+      },
+      {
+        "date": "2026-02-28",
+        "daily_realized_pnl": 4227.517649,
+        "cumulative_realized_pnl": 31974.585369
+      },
+      {
+        "date": "2026-03-02",
+        "daily_realized_pnl": 595.0,
+        "cumulative_realized_pnl": 32569.585369
+      },
+      {
+        "date": "2026-03-03",
+        "daily_realized_pnl": 32.875199,
+        "cumulative_realized_pnl": 32602.460568
+      },
+      {
+        "date": "2026-03-04",
+        "daily_realized_pnl": 472.13389,
+        "cumulative_realized_pnl": 33074.594458
+      },
+      {
+        "date": "2026-03-05",
+        "daily_realized_pnl": -42.136673,
+        "cumulative_realized_pnl": 33032.457785
+      },
+      {
+        "date": "2026-03-06",
+        "daily_realized_pnl": 33.892778,
+        "cumulative_realized_pnl": 33066.350563
+      },
+      {
+        "date": "2026-03-07",
+        "daily_realized_pnl": 16.16195,
+        "cumulative_realized_pnl": 33082.512513
+      },
+      {
+        "date": "2026-03-08",
+        "daily_realized_pnl": 2.377249,
+        "cumulative_realized_pnl": 33084.889762
+      },
+      {
+        "date": "2026-03-09",
+        "daily_realized_pnl": 1144.961783,
+        "cumulative_realized_pnl": 34229.851545
+      },
+      {
+        "date": "2026-03-10",
+        "daily_realized_pnl": 393.86678,
+        "cumulative_realized_pnl": 34623.718325
+      },
+      {
+        "date": "2026-03-11",
+        "daily_realized_pnl": 215.899043,
+        "cumulative_realized_pnl": 34839.617368
+      },
+      {
+        "date": "2026-03-12",
+        "daily_realized_pnl": 25.0,
+        "cumulative_realized_pnl": 34864.617368
+      },
+      {
+        "date": "2026-03-13",
+        "daily_realized_pnl": 3.99996,
+        "cumulative_realized_pnl": 34868.617328
+      },
+      {
+        "date": "2026-03-14",
+        "daily_realized_pnl": 43.643515,
+        "cumulative_realized_pnl": 34912.260843
+      },
+      {
+        "date": "2026-03-15",
+        "daily_realized_pnl": 107.449999,
+        "cumulative_realized_pnl": 35019.710842
+      },
+      {
+        "date": "2026-03-16",
+        "daily_realized_pnl": 92.919975,
+        "cumulative_realized_pnl": 35112.630817
+      },
+      {
+        "date": "2026-03-17",
+        "daily_realized_pnl": 155.406311,
+        "cumulative_realized_pnl": 35268.037128
+      },
+      {
+        "date": "2026-03-18",
+        "daily_realized_pnl": 216.272158,
+        "cumulative_realized_pnl": 35484.309286
+      },
+      {
+        "date": "2026-03-19",
+        "daily_realized_pnl": -41.0,
+        "cumulative_realized_pnl": 35443.309286
+      },
+      {
+        "date": "2026-03-20",
+        "daily_realized_pnl": 126.279255,
+        "cumulative_realized_pnl": 35569.588541
+      },
+      {
+        "date": "2026-03-22",
+        "daily_realized_pnl": 298.64528,
+        "cumulative_realized_pnl": 35868.233821
+      },
+      {
+        "date": "2026-03-23",
+        "daily_realized_pnl": -287.340834,
+        "cumulative_realized_pnl": 35580.892987
+      },
+      {
+        "date": "2026-03-24",
+        "daily_realized_pnl": 63.343959,
+        "cumulative_realized_pnl": 35644.236946
+      },
+      {
+        "date": "2026-03-25",
+        "daily_realized_pnl": 3.802025,
+        "cumulative_realized_pnl": 35648.038971
+      },
+      {
+        "date": "2026-03-26",
+        "daily_realized_pnl": 215.710737,
+        "cumulative_realized_pnl": 35863.749708
+      },
+      {
+        "date": "2026-03-27",
+        "daily_realized_pnl": 9865.290851,
+        "cumulative_realized_pnl": 45729.040559
+      },
+      {
+        "date": "2026-03-28",
+        "daily_realized_pnl": 199.83494,
+        "cumulative_realized_pnl": 45928.875499
+      },
+      {
+        "date": "2026-03-29",
+        "daily_realized_pnl": 99.999628,
+        "cumulative_realized_pnl": 46028.875127
+      },
+      {
+        "date": "2026-03-30",
+        "daily_realized_pnl": 99.948153,
+        "cumulative_realized_pnl": 46128.82328
+      },
+      {
+        "date": "2026-03-31",
+        "daily_realized_pnl": 719.003672,
+        "cumulative_realized_pnl": 46847.826952
+      },
+      {
+        "date": "2026-04-01",
+        "daily_realized_pnl": 4874.118452,
+        "cumulative_realized_pnl": 51721.945404
+      },
+      {
+        "date": "2026-04-02",
+        "daily_realized_pnl": 34.50212,
+        "cumulative_realized_pnl": 51756.447524
+      },
+      {
+        "date": "2026-04-03",
+        "daily_realized_pnl": 4.999663,
+        "cumulative_realized_pnl": 51761.447187
+      },
+      {
+        "date": "2026-04-04",
+        "daily_realized_pnl": 402.590695,
+        "cumulative_realized_pnl": 52164.037882
+      },
+      {
+        "date": "2026-04-05",
+        "daily_realized_pnl": 717.63312,
+        "cumulative_realized_pnl": 52881.671002
+      },
+      {
+        "date": "2026-04-07",
+        "daily_realized_pnl": 37.497611,
+        "cumulative_realized_pnl": 52919.168613
+      },
+      {
+        "date": "2026-04-08",
+        "daily_realized_pnl": 23.5,
+        "cumulative_realized_pnl": 52942.668613
+      },
+      {
+        "date": "2026-04-09",
+        "daily_realized_pnl": 112.195533,
+        "cumulative_realized_pnl": 53054.864146
+      },
+      {
+        "date": "2026-04-10",
+        "daily_realized_pnl": 67.0,
+        "cumulative_realized_pnl": 53121.864146
+      },
+      {
+        "date": "2026-04-11",
+        "daily_realized_pnl": 66.00249,
+        "cumulative_realized_pnl": 53187.866636
+      },
+      {
+        "date": "2026-04-12",
+        "daily_realized_pnl": 310.100499,
+        "cumulative_realized_pnl": 53497.967135
+      },
+      {
+        "date": "2026-04-13",
+        "daily_realized_pnl": 398.275967,
+        "cumulative_realized_pnl": 53896.243102
+      },
+      {
+        "date": "2026-04-14",
+        "daily_realized_pnl": 78.572877,
+        "cumulative_realized_pnl": 53974.815979
+      },
+      {
+        "date": "2026-04-15",
+        "daily_realized_pnl": 1314.593376,
+        "cumulative_realized_pnl": 55289.409355
+      },
+      {
+        "date": "2026-04-16",
+        "daily_realized_pnl": 58.396401,
+        "cumulative_realized_pnl": 55347.805756
+      },
+      {
+        "date": "2026-04-17",
+        "daily_realized_pnl": 27.485414,
+        "cumulative_realized_pnl": 55375.29117
+      },
+      {
+        "date": "2026-04-18",
+        "daily_realized_pnl": 59.3141,
+        "cumulative_realized_pnl": 55434.60527
       }
     ]
   },
   "snapshot": {
     "equity": {
-      "cashBalance": "8800.715944",
-      "positionsValue": "34544.679899",
-      "equity": "43345.395843",
-      "valuationTime": "2026-04-11T15:21:05Z"
+      "cashBalance": "15782.366899",
+      "positionsValue": "23826.599745",
+      "equity": "39608.966644",
+      "valuationTime": "2026-04-19T16:44:53Z"
     },
-    "positions_rows": 126,
+    "positions_rows": 124,
     "raw_files": [
       "equity.csv",
       "positions.csv"

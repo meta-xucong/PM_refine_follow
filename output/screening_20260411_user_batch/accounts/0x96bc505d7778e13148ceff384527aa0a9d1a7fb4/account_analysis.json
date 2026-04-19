@@ -11,8 +11,8 @@
   "total_buy_usdc": 33763.331594,
   "total_sell_usdc": 1528.9997,
   "api_summary": {
-    "positions_value": 89.0438,
-    "traded_markets": 940
+    "positions_value": 132.6739,
+    "traded_markets": 941
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.0,
@@ -1000,9 +1000,9 @@
     "copyability_score": 14.86,
     "deployability_score": 20,
     "multi_market_structure_score": 3.04,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 24.98,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": -8.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -1010,29 +1010,29 @@
     "trade_count": 365.0,
     "active_day_ratio": 1.00051,
     "avg_trades_per_active_day": 26.071429,
-    "raw_before_cap": 39.89,
+    "raw_before_cap": 54.88,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 39.89,
-  "anchored_score": 55.18,
-  "delta_vs_anchor_60": -4.82,
-  "delta_vs_anchor_raw": -7.42,
-  "final_score": 55.18,
+  "raw_score": 54.88,
+  "anchored_score": 41.51,
+  "delta_vs_anchor_60": -18.49,
+  "delta_vs_anchor_raw": -28.44,
+  "final_score": 41.51,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -1040,21 +1040,21 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 23,
-      "total_return": 17793.05413,
-      "trend_slope": 806.911029,
-      "max_drawdown": 0.0,
-      "daily_volatility": 552.996127
+      "points_count": 147,
+      "total_return": 274546.745349,
+      "trend_slope": 2160.223144,
+      "max_drawdown": 10.836601,
+      "daily_volatility": 1818.350736
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 4,
+      "total_return": 2040.0,
+      "trend_slope": 651.0,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 461.969696
     },
     "d7": {
       "window": "d7",
@@ -1081,8 +1081,8 @@
       "blast",
       "rotterdam",
       "hawks",
-      "vct",
       "santiago",
+      "vct",
       "dota",
       "pistons",
       "spurs"
@@ -1094,8 +1094,8 @@
       "group",
       "bo5",
       "game",
-      "stand",
       "first",
+      "stand",
       "bilibili",
       "lyon",
       "esports",
@@ -1109,7 +1109,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 365 trades across 14 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: sports, geopolitics."
     ],
     "strength_points": [
@@ -1118,6 +1118,7 @@
       "Nested concurrent behavior remains relatively contained.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
       "Operational whitelist themes: bo3, open, valorant, masters, blast, rotterdam."
     ],
     "risk_points": [
@@ -1126,9 +1127,9 @@
       "Hard blacklist themes to avoid: lol, winner, gaming, group, bo5, game."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): lol, winner, gaming, group, bo5. Whitelist themes (higher priority for selective following): bo3, open, valorant, masters, blast. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 41.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): lol, winner, gaming, group, bo5. Whitelist themes (higher priority for selective following): bo3, open, valorant, masters, blast. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T16:18:58.380232+00:00"
+  "generated_at_utc": "2026-04-19T16:50:33.829624+00:00"
 }

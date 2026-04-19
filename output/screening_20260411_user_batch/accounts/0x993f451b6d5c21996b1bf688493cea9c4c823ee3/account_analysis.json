@@ -11,8 +11,8 @@
   "total_buy_usdc": 116358.350091,
   "total_sell_usdc": 26346.702598,
   "api_summary": {
-    "positions_value": 50642.0753,
-    "traded_markets": 439
+    "positions_value": 62756.7609,
+    "traded_markets": 442
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.0,
@@ -428,9 +428,9 @@
     "copyability_score": 29.92,
     "deployability_score": 20,
     "multi_market_structure_score": 14.67,
-    "pnl_curve_stability_score": 5.0,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -438,63 +438,63 @@
     "trade_count": 228.0,
     "active_day_ratio": 0.840569,
     "avg_trades_per_active_day": 8.769231,
-    "raw_before_cap": 69.58,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 92.58,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 69.58,
-  "anchored_score": 74.48,
-  "delta_vs_anchor_60": 14.48,
-  "delta_vs_anchor_raw": 22.27,
-  "final_score": 74.48,
+  "raw_score": 92.58,
+  "anchored_score": 66.02,
+  "delta_vs_anchor_60": 6.02,
+  "delta_vs_anchor_raw": 9.26,
+  "final_score": 66.02,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "volatile_up",
-      "score": 6,
-      "points_count": 25,
-      "total_return": 6676.380376,
-      "trend_slope": 321.348858,
-      "max_drawdown": 2938.224398,
-      "daily_volatility": 980.822292
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 154,
+      "total_return": 124654.259765,
+      "trend_slope": 700.008691,
+      "max_drawdown": 39282.394305,
+      "daily_volatility": 5221.632426
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 9,
+      "total_return": 45812.908439,
+      "trend_slope": 7537.940029,
+      "max_drawdown": 196.0,
+      "daily_volatility": 13671.760336
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 2,
+      "total_return": 260.387554,
+      "trend_slope": 260.387554,
       "max_drawdown": 0.0,
       "daily_volatility": 0.0
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -508,13 +508,13 @@
       "one",
       "token",
       "win",
-      "above",
-      "fdv",
       "day",
-      "awards",
+      "fdv",
+      "above",
+      "battle",
+      "best",
       "picture",
-      "academy",
-      "another"
+      "academy"
     ],
     "hard_blacklist_keywords": [
       "iran",
@@ -524,12 +524,12 @@
     ],
     "soft_blacklist_keywords": [
       "trump",
-      "during",
-      "news",
       "monday",
       "china",
       "conference",
-      "say"
+      "say",
+      "during",
+      "news"
     ],
     "whitelist_keyword_count": 32,
     "hard_blacklist_keyword_count": 4,
@@ -538,7 +538,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 228 trades across 26 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=volatile_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: sports, geopolitics, us_politics."
     ],
     "strength_points": [
@@ -546,14 +546,16 @@
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: launch, usd, one, token, win, above."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: launch, usd, one, token, win, day."
     ],
     "risk_points": [
       "Hard blacklist themes to avoid: iran, forces, enter, march.",
-      "Soft blacklist themes requiring stricter triggers: trump, during, news, monday, china, conference."
+      "Soft blacklist themes requiring stricter triggers: trump, monday, china, conference, say, during."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 74.48 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, forces, enter, march. Soft blacklist themes (copy only with strict trigger): trump, during, news, monday, china. Whitelist themes (higher priority for selective following): launch, usd, one, token, win. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 66.02 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics, us_politics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, forces, enter, march. Soft blacklist themes (copy only with strict trigger): trump, monday, china, conference, say. Whitelist themes (higher priority for selective following): launch, usd, one, token, win. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:19:01.765152+00:00"
+  "generated_at_utc": "2026-04-19T16:50:41.919914+00:00"
 }

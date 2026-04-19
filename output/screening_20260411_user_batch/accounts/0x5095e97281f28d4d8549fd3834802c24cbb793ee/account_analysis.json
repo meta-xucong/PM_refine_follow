@@ -11,8 +11,8 @@
   "total_buy_usdc": 71073.81359,
   "total_sell_usdc": 33556.024241,
   "api_summary": {
-    "positions_value": 4527.0236,
-    "traded_markets": 347
+    "positions_value": 10634.8178,
+    "traded_markets": 357
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.243902,
@@ -233,9 +233,9 @@
     "copyability_score": 18.32,
     "deployability_score": 12.11,
     "multi_market_structure_score": 17.5,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -5.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": 56,
@@ -243,29 +243,29 @@
     "trade_count": 911.0,
     "active_day_ratio": 0.814347,
     "avg_trades_per_active_day": 36.44,
-    "raw_before_cap": 52.92,
+    "raw_before_cap": 70.93,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 52.92,
-  "anchored_score": 63.65,
-  "delta_vs_anchor_60": 3.65,
-  "delta_vs_anchor_raw": 5.61,
-  "final_score": 63.65,
+  "raw_score": 56,
+  "anchored_score": 42.24,
+  "delta_vs_anchor_60": -17.76,
+  "delta_vs_anchor_raw": -27.32,
+  "final_score": 42.24,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -273,30 +273,30 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 18,
-      "total_return": 9278.496921,
-      "trend_slope": 594.123883,
-      "max_drawdown": 1646.067134,
-      "daily_volatility": 1859.78152
+      "points_count": 158,
+      "total_return": 83757.555979,
+      "trend_slope": 405.248563,
+      "max_drawdown": 20046.321396,
+      "daily_volatility": 2071.51476
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 14,
+      "total_return": 14297.084315,
+      "trend_slope": 1078.821814,
+      "max_drawdown": 2017.794111,
+      "daily_volatility": 2342.678179
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
+      "shape": "flat",
       "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
+      "points_count": 2,
+      "total_return": -794.998905,
+      "trend_slope": -794.998905,
+      "max_drawdown": 794.998905,
       "daily_volatility": 0.0
     },
     "summary_tag": "long_and_recent_weak"
@@ -307,26 +307,26 @@
     ],
     "whitelist_keywords": [],
     "hard_blacklist_keywords": [
+      "weekend",
       "box",
       "office",
-      "weekend",
       "opening",
       "greater",
       "between",
       "project",
-      "hail",
       "mary",
+      "hail",
       "less",
       "hoppers",
-      "super"
+      "galaxy"
     ],
     "soft_blacklist_keywords": [
       "reminders",
       "him",
+      "come",
       "here",
       "ready",
-      "not",
-      "come"
+      "not"
     ],
     "whitelist_keyword_count": 0,
     "hard_blacklist_keyword_count": 20,
@@ -336,26 +336,27 @@
     "behavior_points": [
       "Observed 911 trades across 25 active trading days in the analysis window.",
       "Low-frequency cap is active at 56, reflecting constrained copy capacity.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=flat.",
       "Dominant sector themes: entertainment."
     ],
     "strength_points": [
       "Low non-copyable token-fast BUY ratio.",
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
-      "All-time PnL profile is smooth-up, supporting strategy consistency."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: box, office, weekend, opening, greater, between.",
-      "Soft blacklist themes requiring stricter triggers: reminders, him, here, ready, not, come."
+      "Hard blacklist themes to avoid: weekend, box, office, opening, greater, between.",
+      "Soft blacklist themes requiring stricter triggers: reminders, him, come, here, ready, not."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 63.65 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): box, office, weekend, opening, greater. Soft blacklist themes (copy only with strict trigger): reminders, him, here, ready, not. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 42.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): weekend, box, office, opening, greater. Soft blacklist themes (copy only with strict trigger): reminders, him, come, here, ready. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T16:18:04.919269+00:00"
+  "generated_at_utc": "2026-04-19T16:49:13.027954+00:00"
 }

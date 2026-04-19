@@ -8,15 +8,15 @@
 - Source local name: `account_1`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 61.68 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: weekend, box, office, opening, less. Soft blacklist themes: hoppers. Whitelist themes: tuscany, mario, super, movie, galaxy. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 42.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: entertainment. Strengths: contained multi-market weighted risk, low non-copyable token-fast ratio. Key risks: dual-side condition buying. Hard blacklist themes: office, box, weekend, opening, less. Soft blacklist themes: hoppers. Whitelist themes: tuscany, mario, movie, super, galaxy. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `61.680000`
-- raw_score: `49.890000`
-- anchored_score: `61.680000`
-- delta_vs_anchor_60: `1.680000`
-- delta_vs_anchor_raw: `2.580000`
+- final_score (decision basis): `42.240000`
+- raw_score: `56`
+- anchored_score: `42.240000`
+- delta_vs_anchor_60: `-17.760000`
+- delta_vs_anchor_raw: `-27.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -24,20 +24,19 @@ Calibrated decision score is 61.68 (anchor-referenced), decision: selective_copy
 ## 3. Behavior Interpretation
 - Observed 452 trades across 23 active trading days in the analysis window.
 - Low-frequency cap is active at 56, reflecting constrained copy capacity.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=volatile_up, 30d=volatile_up, 7d=smooth_up.
 - Dominant sector themes: entertainment.
 
 ## 4. Copy-Trading Strengths
 - Low non-copyable token-fast BUY ratio.
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
-- Operational whitelist themes: tuscany, mario, super, movie, galaxy.
+- Operational whitelist themes: tuscany, mario, movie, super, galaxy.
 
 ## 5. Copy-Trading Risks
 - High dual-side condition activity, which is often difficult to mirror in copy-trading.
 - Frequency/deployability constraints limit practical copy capacity.
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
-- Hard blacklist themes to avoid: weekend, box, office, opening, less, between.
+- Hard blacklist themes to avoid: office, box, weekend, opening, less, between.
 - Soft blacklist themes requiring stricter triggers: hoppers.
 
 ## 6. Sector and Keyword Filters
@@ -47,23 +46,23 @@ Calibrated decision score is 61.68 (anchor-referenced), decision: selective_copy
 ### Whitelist Keywords
 - tuscany
 - mario
-- super
 - movie
+- super
 - galaxy
 
 ### Hard Blacklist Keywords
-- weekend
-- box
 - office
+- box
+- weekend
 - opening
 - less
 - between
 - you
-- kill
 - they
+- kill
+- project
 - hail
 - mary
-- project
 
 ### Soft Blacklist Keywords
 - hoppers
@@ -73,8 +72,8 @@ Calibrated decision score is 61.68 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `452`
 - total_buy_usdc: `38119.847324`
 - total_sell_usdc: `18526.888896`
-- traded_markets_count_api: `571`
-- position_value_api: `1036.294600`
+- traded_markets_count_api: `576`
+- position_value_api: `875.187600`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `38.66%`
@@ -94,19 +93,19 @@ Calibrated decision score is 61.68 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `19.652174`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `down`
-- all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- all_time_shape: `volatile_up`
+- all_time_score: `6`
+- d30_shape: `volatile_up`
+- d30_score: `2`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `23.720000`
 - deployability_score: `14.490000`
 - multi_market_structure_score: `20`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `18.500000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `56`

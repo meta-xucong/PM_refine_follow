@@ -11,7 +11,7 @@
   "total_buy_usdc": 1037268.903122,
   "total_sell_usdc": 661068.449447,
   "api_summary": {
-    "positions_value": 1271.0022,
+    "positions_value": 1576.0427,
     "traded_markets": 999
   },
   "metrics": {
@@ -831,9 +831,9 @@
     "copyability_score": 28.52,
     "deployability_score": 20,
     "multi_market_structure_score": 15.62,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 24.98,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -841,29 +841,29 @@
     "trade_count": 2972.0,
     "active_day_ratio": 0.756044,
     "avg_trades_per_active_day": 129.217391,
-    "raw_before_cap": 74.13,
+    "raw_before_cap": 89.11,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 74.13,
-  "anchored_score": 77.43,
-  "delta_vs_anchor_60": 17.43,
-  "delta_vs_anchor_raw": 26.82,
-  "final_score": 77.43,
+  "raw_score": 89.11,
+  "anchored_score": 63.76,
+  "delta_vs_anchor_60": 3.76,
+  "delta_vs_anchor_raw": 5.79,
+  "final_score": 63.76,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -871,21 +871,21 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 15,
-      "total_return": 11503.549975,
-      "trend_slope": 568.428997,
-      "max_drawdown": 1975.579916,
-      "daily_volatility": 1659.420552
+      "points_count": 207,
+      "total_return": 1429202.212471,
+      "trend_slope": 7679.966087,
+      "max_drawdown": 144444.622126,
+      "daily_volatility": 25844.627495
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 11,
+      "total_return": 107454.181623,
+      "trend_slope": 8702.055983,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 13879.606819
     },
     "d7": {
       "window": "d7",
@@ -907,30 +907,30 @@
     "whitelist_keywords": [
       "michigan",
       "wolverines",
-      "north",
       "carolina",
+      "north",
       "heels",
       "tar",
-      "vcu",
       "rams",
-      "huskies",
+      "vcu",
       "connecticut",
-      "crimson",
-      "alabama"
+      "huskies",
+      "alabama",
+      "tide"
     ],
     "hard_blacklist_keywords": [
       "blue",
-      "devils",
       "duke",
+      "devils",
       "state",
       "siena",
       "saints",
       "texas",
       "longhorns",
-      "north",
       "carolina",
+      "north",
       "wolfpack",
-      "huskies"
+      "connecticut"
     ],
     "soft_blacklist_keywords": [
       "mets"
@@ -942,7 +942,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 2972 trades across 23 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: sports, crypto."
     ],
     "strength_points": [
@@ -952,14 +952,15 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: michigan, wolverines, north, carolina, heels, tar."
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: michigan, wolverines, carolina, north, heels, tar."
     ],
     "risk_points": [
-      "Hard blacklist themes to avoid: blue, devils, duke, state, siena, saints.",
+      "Hard blacklist themes to avoid: blue, duke, devils, state, siena, saints.",
       "Soft blacklist themes requiring stricter triggers: mets."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): blue, devils, duke, state, siena. Soft blacklist themes (copy only with strict trigger): mets. Whitelist themes (higher priority for selective following): michigan, wolverines, north, carolina, heels. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 63.76 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): blue, duke, devils, state, siena. Soft blacklist themes (copy only with strict trigger): mets. Whitelist themes (higher priority for selective following): michigan, wolverines, carolina, north, heels. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:41.638780+00:00"
+  "generated_at_utc": "2026-04-19T16:48:42.110952+00:00"
 }

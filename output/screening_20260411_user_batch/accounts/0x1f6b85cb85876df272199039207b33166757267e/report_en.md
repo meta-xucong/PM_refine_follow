@@ -8,29 +8,30 @@
 - Source local name: `account_21`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 66.46 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, macro, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk. Hard blacklist themes: march, bitcoin, price, above, down. Soft blacklist themes: am-11, any, day, am-1. Whitelist themes: pm-2, crude, oil, hit, am-8. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 54.76 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto, macro, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk. Key risks: nested concurrent-ladder risk. Hard blacklist themes: march, bitcoin, price, above, down. Soft blacklist themes: am-11, any, day, am-1. Whitelist themes: pm-2, oil, crude, hit, am-8. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `66.460000`
-- raw_score: `57.250000`
-- anchored_score: `66.460000`
-- delta_vs_anchor_60: `6.460000`
-- delta_vs_anchor_raw: `9.940000`
+- final_score (decision basis): `54.760000`
+- raw_score: `75.260000`
+- anchored_score: `54.760000`
+- delta_vs_anchor_60: `-5.240000`
+- delta_vs_anchor_raw: `-8.060000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 5876 trades across 28 active trading days in the analysis window.
-- PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - Dominant sector themes: crypto, macro, geopolitics.
 
 ## 4. Copy-Trading Strengths
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: pm-2, crude, oil, hit, am-8, end.
+- Recent 30-day PnL remains constructive.
+- Operational whitelist themes: pm-2, oil, crude, hit, am-8, end.
 
 ## 5. Copy-Trading Risks
 - High nested concurrent-ladder ratio, implying heavier structure management.
@@ -45,8 +46,8 @@ Calibrated decision score is 66.46 (anchor-referenced), decision: selective_copy
 
 ### Whitelist Keywords
 - pm-2
-- crude
 - oil
+- crude
 - hit
 - am-8
 - end
@@ -82,8 +83,8 @@ Calibrated decision score is 66.46 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `5876`
 - total_buy_usdc: `24282.344940`
 - total_sell_usdc: `12702.448494`
-- traded_markets_count_api: `4325`
-- position_value_api: `43.590900`
+- traded_markets_count_api: `4464`
+- position_value_api: `0.897000`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `16.48%`
@@ -105,17 +106,17 @@ Calibrated decision score is 66.46 (anchor-referenced), decision: selective_copy
 ## 9. PnL Curve Evaluation
 - all_time_shape: `smooth_up`
 - all_time_score: `12`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
-- d7_shape: `insufficient_data`
-- d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- d30_shape: `smooth_up`
+- d30_score: `6`
+- d7_shape: `smooth_up`
+- d7_score: `2`
+- pnl_tag: `long_mid_short_strong`
 
 ## 10. Score Breakdown
 - copyability_score: `19.160000`
 - deployability_score: `20`
 - multi_market_structure_score: `11.110000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-3.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

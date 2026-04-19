@@ -11,8 +11,8 @@
   "total_buy_usdc": 343601.417406,
   "total_sell_usdc": 154045.323609,
   "api_summary": {
-    "positions_value": 21179.7058,
-    "traded_markets": 1316
+    "positions_value": 1351.8767,
+    "traded_markets": 1332
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.307692,
@@ -883,9 +883,9 @@
     "copyability_score": 23.12,
     "deployability_score": 20,
     "multi_market_structure_score": 20,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -5.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -893,63 +893,63 @@
     "trade_count": 1673.0,
     "active_day_ratio": 0.711279,
     "avg_trades_per_active_day": 76.045455,
-    "raw_before_cap": 49.8,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 86.12,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 49.8,
-  "anchored_score": 61.62,
-  "delta_vs_anchor_60": 1.62,
-  "delta_vs_anchor_raw": 2.49,
-  "final_score": 61.62,
+  "raw_score": 86.12,
+  "anchored_score": 61.82,
+  "delta_vs_anchor_60": 1.82,
+  "delta_vs_anchor_raw": 2.8,
+  "final_score": 61.82,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 27,
-      "total_return": -2297.227677,
-      "trend_slope": -97.391505,
-      "max_drawdown": 3709.250622,
-      "daily_volatility": 540.585957
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 274,
+      "total_return": 1430453.927895,
+      "trend_slope": 4431.081015,
+      "max_drawdown": 366158.223486,
+      "daily_volatility": 24647.983666
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 12,
+      "total_return": 152337.858553,
+      "trend_slope": 10779.73581,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 18278.783884
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 4,
+      "total_return": 21023.898587,
+      "trend_slope": 7583.20432,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 4685.302622
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -960,22 +960,22 @@
       "rockets",
       "hawks",
       "lakers",
-      "paris",
       "saint-germain",
+      "paris",
       "leipzig",
       "brentford",
       "acf",
       "fiorentina",
-      "blue",
       "jackets",
+      "blue",
       "panthers"
     ],
     "hard_blacklist_keywords": [
       "win",
       "arsenal",
       "united",
-      "nchen",
       "bayern",
+      "nchen",
       "newcastle",
       "pelicans",
       "clippers",
@@ -992,7 +992,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 1673 trades across 22 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: sports, geopolitics."
     ],
     "strength_points": [
@@ -1000,18 +1000,19 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: rockets, hawks, lakers, paris, saint-germain, leipzig."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: rockets, hawks, lakers, saint-germain, paris, leipzig."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: win, arsenal, united, nchen, bayern, newcastle."
+      "Hard blacklist themes to avoid: win, arsenal, united, bayern, nchen, newcastle."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 61.62 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, arsenal, united, nchen, bayern. Whitelist themes (higher priority for selective following): rockets, hawks, lakers, paris, saint-germain. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 61.82 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): win, arsenal, united, bayern, nchen. Whitelist themes (higher priority for selective following): rockets, hawks, lakers, saint-germain, paris. PnL curve tag: long_mid_short_strong. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T16:19:43.925058+00:00"
+  "generated_at_utc": "2026-04-19T16:51:31.338693+00:00"
 }

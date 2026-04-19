@@ -8397,9 +8397,9 @@
     "copyability_score": 13.2,
     "deployability_score": 20,
     "multi_market_structure_score": 8.4,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": -5.55,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": -8.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -8407,29 +8407,29 @@
     "trade_count": 2146.0,
     "active_day_ratio": 0.974824,
     "avg_trades_per_active_day": 153.285714,
-    "raw_before_cap": 25.27,
+    "raw_before_cap": 28.05,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": true
   },
-  "raw_score": 25.27,
-  "anchored_score": 45.67,
-  "delta_vs_anchor_60": -14.33,
-  "delta_vs_anchor_raw": -22.04,
-  "final_score": 45.67,
+  "raw_score": 28.05,
+  "anchored_score": 24.07,
+  "delta_vs_anchor_60": -35.93,
+  "delta_vs_anchor_raw": -55.27,
+  "final_score": 24.07,
   "decision": "not_recommended",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -8437,21 +8437,21 @@
       "window": "all_time",
       "shape": "down",
       "score": -10,
-      "points_count": 16,
-      "total_return": -6360.562403,
-      "trend_slope": -1916.673569,
-      "max_drawdown": 49291.617569,
-      "daily_volatility": 14987.215774
+      "points_count": 42,
+      "total_return": -5674.099803,
+      "trend_slope": -1044.261931,
+      "max_drawdown": 82088.176409,
+      "daily_volatility": 11020.786429
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 14,
+      "total_return": 10894.441367,
+      "trend_slope": 894.041273,
+      "max_drawdown": 3092.584717,
+      "daily_volatility": 1874.352213
     },
     "d7": {
       "window": "d7",
@@ -8485,9 +8485,9 @@
       "bitcoin",
       "ethereum",
       "am-12",
-      "shanghai",
       "temperature",
       "highest",
+      "shanghai",
       "pm-12",
       "am-10",
       "am-11",
@@ -8503,12 +8503,13 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 2146 trades across 14 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=down, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: crypto, sports."
     ],
     "strength_points": [
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
+      "Recent 30-day PnL remains constructive.",
       "Operational whitelist themes: april, reach, am-9, am-3, pm-10, am-7."
     ],
     "risk_points": [
@@ -8516,15 +8517,16 @@
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Severe-risk gate is triggered; poor setups are automatically classified as not recommended.",
       "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: march, down, bitcoin, ethereum, am-12, shanghai.",
+      "Hard blacklist themes to avoid: march, down, bitcoin, ethereum, am-12, temperature.",
       "Soft blacklist themes requiring stricter triggers: pm-11."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 45.67 (anchor-referenced), decision: not_recommended. Primary sector exposure: crypto, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, non-copyable token-fast exposure. Hard blacklist themes (avoid copying): march, down, bitcoin, ethereum, am-12. Soft blacklist themes (copy only with strict trigger): pm-11. Whitelist themes (higher priority for selective following): april, reach, am-9, am-3, pm-10. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
+  "narrative_conclusion": "Calibrated decision score is 24.07 (anchor-referenced), decision: not_recommended. Primary sector exposure: crypto, sports. Strengths: good deployable event breadth, contained weighted multi-market risk. Key risks: elevated nested concurrent ladder behavior, non-copyable token-fast exposure. Hard blacklist themes (avoid copying): march, down, bitcoin, ethereum, am-12. Soft blacklist themes (copy only with strict trigger): pm-11. Whitelist themes (higher priority for selective following): april, reach, am-9, am-3, pm-10. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. Severe-risk gate is active; low-score scenarios are forced to not_recommended. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering",
     "Severe risk gate triggered; score threshold for not_recommended is tightened",
-    "Severe risk gate + low calibrated score -> not_recommended"
+    "Severe risk gate + low calibrated score -> not_recommended",
+    "Calibrated score below 32 -> not_recommended floor"
   ],
-  "generated_at_utc": "2026-04-11T16:19:23.635046+00:00"
+  "generated_at_utc": "2026-04-19T16:51:09.606339+00:00"
 }

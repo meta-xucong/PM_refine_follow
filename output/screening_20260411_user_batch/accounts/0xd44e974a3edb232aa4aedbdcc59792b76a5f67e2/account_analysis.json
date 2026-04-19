@@ -11,8 +11,8 @@
   "total_buy_usdc": 239597.271513,
   "total_sell_usdc": 217157.970043,
   "api_summary": {
-    "positions_value": 226113.1176,
-    "traded_markets": 676
+    "positions_value": 207098.4521,
+    "traded_markets": 696
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.017544,
@@ -727,9 +727,9 @@
     "copyability_score": 20.27,
     "deployability_score": 20,
     "multi_market_structure_score": 6.56,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -6.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -737,63 +737,63 @@
     "trade_count": 1399.0,
     "active_day_ratio": 0.909574,
     "avg_trades_per_active_day": 49.964286,
-    "raw_before_cap": 32.5,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 68.83,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 32.5,
-  "anchored_score": 50.37,
-  "delta_vs_anchor_60": -9.63,
-  "delta_vs_anchor_raw": -14.81,
-  "final_score": 50.37,
+  "raw_score": 68.83,
+  "anchored_score": 50.58,
+  "delta_vs_anchor_60": -9.42,
+  "delta_vs_anchor_raw": -14.49,
+  "final_score": 50.58,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 26,
-      "total_return": -274.230728,
-      "trend_slope": -14.331652,
-      "max_drawdown": 498.613422,
-      "daily_volatility": 89.430587
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 306,
+      "total_return": 177297.295472,
+      "trend_slope": 569.126622,
+      "max_drawdown": 15406.854022,
+      "daily_volatility": 3718.624368
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 24,
+      "total_return": 19986.450617,
+      "trend_slope": 795.312719,
+      "max_drawdown": 15406.854022,
+      "daily_volatility": 5907.813977
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 8,
+      "total_return": 8374.907218,
+      "trend_slope": 1212.077338,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 870.72214
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -806,12 +806,12 @@
       "israel",
       "oil",
       "ukraine",
-      "island",
       "kharg",
+      "island",
       "regime",
       "fall",
-      "power",
       "plant",
+      "power",
       "agrees"
     ],
     "hard_blacklist_keywords": [
@@ -836,22 +836,22 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 1399 trades across 28 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=volatile_up, 7d=smooth_up.",
       "Dominant sector themes: geopolitics, us_politics."
     ],
     "strength_points": [
       "Low dual-side condition exposure, indicating cleaner directional expression.",
       "Low non-copyable token-fast BUY ratio.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: iranian, invade, israel, oil, ukraine, island."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Operational whitelist themes: iranian, invade, israel, oil, ukraine, kharg."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
       "Hard blacklist themes to avoid: iran, april, ceasefire, december, forces, enter."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 50.37 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, april, ceasefire, december, forces. Whitelist themes (higher priority for selective following): iranian, invade, israel, oil, ukraine. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 50.58 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, april, ceasefire, december, forces. Whitelist themes (higher priority for selective following): iranian, invade, israel, oil, ukraine. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:19:50.606460+00:00"
+  "generated_at_utc": "2026-04-19T16:51:38.563691+00:00"
 }

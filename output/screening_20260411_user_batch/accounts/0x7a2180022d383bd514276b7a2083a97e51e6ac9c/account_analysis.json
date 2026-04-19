@@ -11,7 +11,7 @@
   "total_buy_usdc": 2770.526558,
   "total_sell_usdc": 0,
   "api_summary": {
-    "positions_value": 733.5147,
+    "positions_value": 767.488,
     "traded_markets": 132
   },
   "metrics": {
@@ -363,9 +363,9 @@
     "copyability_score": 24.01,
     "deployability_score": 19.52,
     "multi_market_structure_score": 8.05,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 16.65,
+    "pnl_confidence": 0.75,
+    "pnl_windows_available": 2,
     "risk_penalty_adjustment": -16.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": 48,
@@ -373,49 +373,49 @@
     "trade_count": 29.0,
     "active_day_ratio": 0.252341,
     "avg_trades_per_active_day": 5.8,
-    "raw_before_cap": 45.57,
+    "raw_before_cap": 52.23,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 45.57,
-  "anchored_score": 58.87,
-  "delta_vs_anchor_60": -1.13,
-  "delta_vs_anchor_raw": -1.74,
-  "final_score": 58.87,
-  "decision": "selective_copying_only",
+  "raw_score": 48,
+  "anchored_score": 37.04,
+  "delta_vs_anchor_60": -22.96,
+  "delta_vs_anchor_raw": -35.32,
+  "final_score": 37.04,
+  "decision": "not_recommended",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "smooth_up",
-      "score": 12,
-      "points_count": 26,
-      "total_return": 80936.735511,
-      "trend_slope": 2825.013724,
-      "max_drawdown": 7588.628746,
-      "daily_volatility": 8028.295879
+      "shape": "volatile_up",
+      "score": 6,
+      "points_count": 66,
+      "total_return": 154283.096825,
+      "trend_slope": 2563.624017,
+      "max_drawdown": 70958.479252,
+      "daily_volatility": 12147.610858
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 2,
+      "total_return": 64.120795,
+      "trend_slope": 64.120795,
       "max_drawdown": 0.0,
       "daily_volatility": 0.0
     },
@@ -436,23 +436,23 @@
       "crypto"
     ],
     "whitelist_keywords": [
-      "bitcoin",
       "down",
+      "bitcoin",
       "am-11",
       "am-2",
       "am-1",
       "am-10",
       "pm-11",
-      "fall",
-      "regime",
       "iranian",
+      "regime",
+      "fall",
       "am-12"
     ],
     "hard_blacklist_keywords": [
-      "oil",
       "hit",
-      "high",
+      "oil",
       "crude",
+      "high",
       "april",
       "wti",
       "end",
@@ -467,7 +467,7 @@
     "behavior_points": [
       "Observed 29 trades across 5 active trading days in the analysis window.",
       "Low-frequency cap is active at 48, reflecting constrained copy capacity.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=volatile_up, 30d=smooth_up, 7d=insufficient_data.",
       "Dominant sector themes: crypto."
     ],
     "strength_points": [
@@ -475,18 +475,18 @@
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: bitcoin, down, am-11, am-2, am-1, am-10."
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: down, bitcoin, am-11, am-2, am-1, am-10."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: oil, hit, high, crude, april, wti."
+      "Hard blacklist themes to avoid: hit, oil, crude, high, april, wti."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 58.87 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): oil, hit, high, crude, april. Whitelist themes (higher priority for selective following): bitcoin, down, am-11, am-2, am-1. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 37.04 (anchor-referenced), decision: not_recommended. Primary sector exposure: crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): hit, oil, crude, high, april. Whitelist themes (higher priority for selective following): down, bitcoin, am-11, am-2, am-1. PnL curve tag: long_and_recent_weak. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "No matched SELL inventory found; holding-time metrics unavailable"
   ],
-  "generated_at_utc": "2026-04-11T16:18:33.864665+00:00"
+  "generated_at_utc": "2026-04-19T16:49:51.058744+00:00"
 }

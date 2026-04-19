@@ -8,38 +8,39 @@
 - 本地名称: `account_14`
 
 ## 1. 执行结论
-校准后决策分 35.61（锚点口径），结论：不值得跟。主要板块暴露：geopolitics、macro、sports。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：iran、april、ceasefire、december、forces。软黑名单主题（谨慎跟）：world、fifa、cup、brazil、trump。白名单主题（优先筛选）：iranian、regime、fall、june、end。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 35.82（锚点口径），结论：不值得跟。主要板块暴露：geopolitics、macro、sports。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：互斥型并存腿风险较高、存在不可复制的 token 快交易暴露、存在同 condition 双边买入。硬黑名单主题（禁止跟）：iran、april、ceasefire、december、enter。软黑名单主题（谨慎跟）：world、cup、fifa、brazil、trump。白名单主题（优先筛选）：iranian、regime、fall、june、end。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期/中期/短期均偏强。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
-- final_score（决策分）: `35.610000`
-- raw_score: `9.790000`
-- anchored_score: `35.610000`
-- delta_vs_anchor_60: `-24.390000`
-- delta_vs_anchor_raw: `-37.520000`
+- final_score（决策分）: `35.820000`
+- raw_score: `46.120000`
+- anchored_score: `35.820000`
+- delta_vs_anchor_60: `-24.180000`
+- delta_vs_anchor_raw: `-37.200000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 1360 笔交易，覆盖 31 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： geopolitics, macro, sports.
 
 ## 4. 跟单优势
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：iranian, regime, fall, june, end, fighting.
+- 全周期收益曲线为平滑上行，策略一致性较好。
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：iranian, regime, fall, june, end, illinois.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 不可复制的 token 快交易（BUY）比例偏高，收益更依赖执行优势。
 - 存在明显互斥市场并发多腿行为。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
-- 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：iran, april, ceasefire, december, forces, enter.
-- 软黑名单主题（需更严格触发）：world, fifa, cup, brazil, trump, inflation.
+- 硬黑名单主题（应避免）：iran, april, ceasefire, december, enter, forces.
+- 软黑名单主题（需更严格触发）：world, cup, fifa, brazil, trump, inflation.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -53,9 +54,9 @@
 - fall
 - june
 - end
-- fighting
 - illinois
 - illini
+- fighting
 - win
 - march
 - iowa
@@ -66,19 +67,19 @@
 - april
 - ceasefire
 - december
-- forces
 - enter
+- forces
 - fed
 - spread
 - bound
 - parliamentary
 - duke
-- blue
+- devils
 
 ### 软黑名单关键词
 - world
-- fifa
 - cup
+- fifa
 - brazil
 - trump
 - inflation
@@ -90,8 +91,8 @@
 - trade_rows_used: `1360`
 - total_buy_usdc: `50021.292998`
 - total_sell_usdc: `38509.659160`
-- traded_markets_count_api: `1408`
-- position_value_api: `29254.116200`
+- traded_markets_count_api: `1429`
+- position_value_api: `30738.730400`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `30.99%`
@@ -111,19 +112,19 @@
 - avg_trades_per_active_day: `43.870968`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `平滑上行`
+- all_time_score: `12`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `3.370000`
 - deployability_score: `20`
 - multi_market_structure_score: `2.750000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

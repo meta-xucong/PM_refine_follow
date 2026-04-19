@@ -8,22 +8,22 @@
 - Source local name: `account_39`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 72.54 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Whitelist themes: warriors, cavaliers, hawks, celtics, suns. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 59.95 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Whitelist themes: warriors, cavaliers, hawks, celtics, suns. PnL curve tag: long_strong_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `72.540000`
-- raw_score: `66.600000`
-- anchored_score: `72.540000`
-- delta_vs_anchor_60: `12.540000`
-- delta_vs_anchor_raw: `19.290000`
+- final_score (decision basis): `59.950000`
+- raw_score: `83.250000`
+- anchored_score: `59.950000`
+- delta_vs_anchor_60: `-0.050000`
+- delta_vs_anchor_raw: `-0.070000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 485 trades across 14 active trading days in the analysis window.
-- PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=down, 7d=insufficient_data.
 - Dominant sector themes: sports, geopolitics.
 
 ## 4. Copy-Trading Strengths
@@ -32,10 +32,11 @@ Calibrated decision score is 72.54 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
+- All-time PnL profile is smooth-up, supporting strategy consistency.
 - Operational whitelist themes: warriors, cavaliers, hawks, celtics, suns, win.
 
 ## 5. Copy-Trading Risks
-- All-time PnL profile is not strongly upward, reducing confidence in persistent edge.
+- Recent 30-day PnL is down, which weakens near-term copy confidence.
 
 ## 6. Sector and Keyword Filters
 ### Sector Tags
@@ -67,8 +68,8 @@ Calibrated decision score is 72.54 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `485`
 - total_buy_usdc: `317985.364041`
 - total_sell_usdc: `65034.426781`
-- traded_markets_count_api: `329`
-- position_value_api: `64.780000`
+- traded_markets_count_api: `330`
+- position_value_api: `149.614100`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -88,19 +89,19 @@ Calibrated decision score is 72.54 (anchor-referenced), decision: selective_copy
 - avg_trades_per_active_day: `34.642857`
 
 ## 9. PnL Curve Evaluation
-- all_time_shape: `down`
-- all_time_score: `-10`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
+- all_time_shape: `smooth_up`
+- all_time_score: `12`
+- d30_shape: `down`
+- d30_score: `-6`
 - d7_shape: `insufficient_data`
 - d7_score: `0`
-- pnl_tag: `long_and_recent_weak`
+- pnl_tag: `long_strong_recent_weak`
 
 ## 10. Score Breakdown
 - copyability_score: `34.920000`
 - deployability_score: `20`
 - multi_market_structure_score: `20`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `8.330000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

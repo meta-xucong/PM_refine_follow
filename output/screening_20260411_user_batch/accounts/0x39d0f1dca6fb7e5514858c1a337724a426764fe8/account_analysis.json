@@ -11,8 +11,8 @@
   "total_buy_usdc": 102614.637336,
   "total_sell_usdc": 64429.618819,
   "api_summary": {
-    "positions_value": 84587.265,
-    "traded_markets": 1450
+    "positions_value": 93605.6497,
+    "traded_markets": 1472
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.017544,
@@ -649,9 +649,9 @@
     "copyability_score": 24.44,
     "deployability_score": 20,
     "multi_market_structure_score": 11.13,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 27.75,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -659,63 +659,63 @@
     "trade_count": 2091.0,
     "active_day_ratio": 1.00009,
     "avg_trades_per_active_day": 67.451613,
-    "raw_before_cap": 47.24,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 83.32,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 47.24,
-  "anchored_score": 59.95,
-  "delta_vs_anchor_60": -0.05,
-  "delta_vs_anchor_raw": -0.07,
-  "final_score": 59.95,
+  "raw_score": 83.32,
+  "anchored_score": 60.0,
+  "delta_vs_anchor_60": 0.0,
+  "delta_vs_anchor_raw": 0.0,
+  "final_score": 60.0,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 18,
-      "total_return": -468.886958,
-      "trend_slope": -35.480165,
-      "max_drawdown": 587.964704,
-      "daily_volatility": 92.536694
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 472,
+      "total_return": 99868.262547,
+      "trend_slope": 204.823927,
+      "max_drawdown": 10856.177238,
+      "daily_volatility": 1373.22273
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 21,
+      "total_return": 10276.105905,
+      "trend_slope": 431.558262,
+      "max_drawdown": 3741.027135,
+      "daily_volatility": 2318.822692
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 1,
+      "points_count": 7,
+      "total_return": 3814.116053,
+      "trend_slope": 743.520978,
+      "max_drawdown": 1927.960012,
+      "daily_volatility": 2171.408518
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -727,14 +727,14 @@
       "out",
       "netanyahu",
       "invade",
-      "regime",
       "fall",
+      "regime",
       "next",
       "hormuz",
       "strait",
+      "traffic",
       "returns",
       "normal",
-      "traffic",
       "election"
     ],
     "hard_blacklist_keywords": [
@@ -745,8 +745,8 @@
       "april",
       "israel",
       "march",
-      "conflict",
       "ends",
+      "conflict",
       "ceasefire",
       "hezbollah",
       "against"
@@ -759,7 +759,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 2091 trades across 31 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=volatile_up, 7d=volatile_up.",
       "Dominant sector themes: geopolitics, us_politics, sports."
     ],
     "strength_points": [
@@ -767,15 +767,15 @@
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: out, netanyahu, invade, regime, fall, next."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Operational whitelist themes: out, netanyahu, invade, fall, regime, next."
     ],
     "risk_points": [
       "High nested concurrent-ladder ratio, implying heavier structure management.",
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
       "Hard blacklist themes to avoid: iran, enter, forces, december, april, israel."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 59.95 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, enter, forces, december, april. Whitelist themes (higher priority for selective following): out, netanyahu, invade, regime, fall. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 60.00 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): iran, enter, forces, december, april. Whitelist themes (higher priority for selective following): out, netanyahu, invade, fall, regime. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:56.291422+00:00"
+  "generated_at_utc": "2026-04-19T16:49:04.076580+00:00"
 }

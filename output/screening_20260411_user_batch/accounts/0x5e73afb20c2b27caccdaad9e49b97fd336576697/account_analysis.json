@@ -11,8 +11,8 @@
   "total_buy_usdc": 91700.419198,
   "total_sell_usdc": 76112.622542,
   "api_summary": {
-    "positions_value": 18610.795,
-    "traded_markets": 1364
+    "positions_value": 27095.8565,
+    "traded_markets": 1398
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.071429,
@@ -1078,9 +1078,9 @@
     "copyability_score": 19.83,
     "deployability_score": 20,
     "multi_market_structure_score": 15.57,
-    "pnl_curve_stability_score": 5.0,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 22.2,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -1088,61 +1088,61 @@
     "trade_count": 930.0,
     "active_day_ratio": 0.999615,
     "avg_trades_per_active_day": 30.0,
-    "raw_before_cap": 60.4,
+    "raw_before_cap": 77.6,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 60.4,
-  "anchored_score": 68.51,
-  "delta_vs_anchor_60": 8.51,
-  "delta_vs_anchor_raw": 13.09,
-  "final_score": 68.51,
+  "raw_score": 77.6,
+  "anchored_score": 56.28,
+  "delta_vs_anchor_60": -3.72,
+  "delta_vs_anchor_raw": -5.72,
+  "final_score": 56.28,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "volatile_up",
-      "score": 6,
-      "points_count": 28,
-      "total_return": 1287.346632,
-      "trend_slope": 54.754746,
-      "max_drawdown": 857.039011,
-      "daily_volatility": 252.825653
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 360,
+      "total_return": 57748.950746,
+      "trend_slope": 144.120439,
+      "max_drawdown": 6427.776133,
+      "daily_volatility": 706.12528
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 24,
+      "total_return": 6056.39128,
+      "trend_slope": 482.268815,
+      "max_drawdown": 6427.776133,
+      "daily_volatility": 1649.664086
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "down",
+      "score": -2,
+      "points_count": 8,
+      "total_return": -3928.170311,
+      "trend_slope": -755.01541,
+      "max_drawdown": 6427.776133,
+      "daily_volatility": 2484.370466
     },
     "summary_tag": "long_and_recent_weak"
   },
@@ -1156,15 +1156,15 @@
       "vance",
       "meeting",
       "diplomatic",
-      "down",
       "spx",
+      "down",
       "opens",
       "june",
       "iranian",
       "tariffs",
-      "force",
+      "refund",
       "court",
-      "refund"
+      "force"
     ],
     "hard_blacklist_keywords": [
       "iran",
@@ -1193,22 +1193,24 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 930 trades across 31 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=volatile_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=volatile_up, 7d=down.",
       "Dominant sector themes: geopolitics, us_politics, macro."
     ],
     "strength_points": [
       "Low non-copyable token-fast BUY ratio.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: vance, meeting, diplomatic, down, spx, opens."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Operational whitelist themes: vance, meeting, diplomatic, spx, down, opens."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
+      "Latest 7-day PnL momentum is negative and needs tighter entry filters.",
       "Hard blacklist themes to avoid: iran, end, hit, oil, high, crude.",
       "Soft blacklist themes requiring stricter triggers: israel, deal, new, nato."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 68.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, macro. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): iran, end, hit, oil, high. Soft blacklist themes (copy only with strict trigger): israel, deal, new, nato. Whitelist themes (higher priority for selective following): vance, meeting, diplomatic, down, spx. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 56.28 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, macro. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): iran, end, hit, oil, high. Soft blacklist themes (copy only with strict trigger): israel, deal, new, nato. Whitelist themes (higher priority for selective following): vance, meeting, diplomatic, spx, down. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:18:11.859490+00:00"
+  "generated_at_utc": "2026-04-19T16:49:20.821325+00:00"
 }

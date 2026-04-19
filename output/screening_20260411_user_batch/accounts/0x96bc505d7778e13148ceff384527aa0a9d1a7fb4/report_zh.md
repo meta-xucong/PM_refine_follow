@@ -8,22 +8,22 @@
 - 本地名称: `account_6`
 
 ## 1. 执行结论
-校准后决策分 55.18（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、geopolitics。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：lol、winner、gaming、group、bo5。白名单主题（优先筛选）：bo3、open、valorant、masters、blast。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 41.51（锚点口径），结论：只适合筛着跟。主要板块暴露：sports、geopolitics。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：互斥型并存腿风险较高。硬黑名单主题（禁止跟）：lol、winner、gaming、group、bo5。白名单主题（优先筛选）：bo3、open、valorant、masters、blast。风险门槛已触发，宽跟模式自动关闭。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `55.180000`
-- raw_score: `39.890000`
-- anchored_score: `55.180000`
-- delta_vs_anchor_60: `-4.820000`
-- delta_vs_anchor_raw: `-7.420000`
+- final_score（决策分）: `41.510000`
+- raw_score: `54.880000`
+- anchored_score: `41.510000`
+- delta_vs_anchor_60: `-18.490000`
+- delta_vs_anchor_raw: `-28.440000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 365 笔交易，覆盖 14 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=insufficient_data.
 - 主要板块主题： sports, geopolitics.
 
 ## 4. 跟单优势
@@ -32,6 +32,7 @@
 - 递进型并发行为相对可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
+- 近 30 天收益曲线表现仍偏正向。
 - 可执行白名单主题：bo3, open, valorant, masters, blast, rotterdam.
 
 ## 5. 跟单风险
@@ -52,8 +53,8 @@
 - blast
 - rotterdam
 - hawks
-- vct
 - santiago
+- vct
 - dota
 - pistons
 - spurs
@@ -65,8 +66,8 @@
 - group
 - bo5
 - game
-- stand
 - first
+- stand
 - bilibili
 - lyon
 - esports
@@ -80,8 +81,8 @@
 - trade_rows_used: `365`
 - total_buy_usdc: `33763.331594`
 - total_sell_usdc: `1528.999700`
-- traded_markets_count_api: `940`
-- position_value_api: `89.043800`
+- traded_markets_count_api: `941`
+- position_value_api: `132.673900`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -103,8 +104,8 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
+- d30_shape: `平滑上行`
+- d30_score: `6`
 - d7_shape: `数据不足`
 - d7_score: `0`
 - pnl_tag: `长期与近期均偏弱`
@@ -113,7 +114,7 @@
 - copyability_score: `14.860000`
 - deployability_score: `20`
 - multi_market_structure_score: `3.040000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `24.980000`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

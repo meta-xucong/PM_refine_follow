@@ -8,22 +8,22 @@
 - 本地名称: `account_4`
 
 ## 1. 执行结论
-校准后决策分 37.59（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、heavyweight、milan、prelims、madrid。软黑名单主题（谨慎跟）：bayern、nchen。白名单主题（优先筛选）：arsenal、flyers、blackhawks、barcelona、utah。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期与近期均偏弱。不建议作为主跟单源，仅可少量人工挑选。
+校准后决策分 31.84（锚点口径），结论：不值得跟。主要板块暴露：sports。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：互斥型并存腿风险较高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：win、heavyweight、milan、prelims、madrid。软黑名单主题（谨慎跟）：bayern、nchen。白名单主题（优先筛选）：arsenal、flyers、blackhawks、barcelona、utah。风险门槛已触发，宽跟模式自动关闭。重风险门槛已触发，低分情形会被强制判定为不值得跟。收益曲线标签：长期/中期/短期均偏强。不建议作为主跟单源，仅可少量人工挑选。
 
 ## 2. 决策快照
 - decision: `不值得跟`
-- final_score（决策分）: `37.590000`
-- raw_score: `12.830000`
-- anchored_score: `37.590000`
-- delta_vs_anchor_60: `-22.410000`
-- delta_vs_anchor_raw: `-34.480000`
+- final_score（决策分）: `31.840000`
+- raw_score: `40.000000`
+- anchored_score: `31.840000`
+- delta_vs_anchor_60: `-28.160000`
+- delta_vs_anchor_raw: `-43.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 1188 笔交易，覆盖 26 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=flat, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： sports.
 
 ## 4. 跟单优势
@@ -31,6 +31,8 @@
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
+- 全周期收益曲线为平滑上行，策略一致性较好。
+- 近 30 天收益曲线表现仍偏正向。
 - 可执行白名单主题：arsenal, flyers, blackhawks, barcelona, utah, kings.
 
 ## 5. 跟单风险
@@ -38,7 +40,6 @@
 - 存在明显互斥市场并发多腿行为。
 - 已触发风险门槛，禁止宽跟，只能严格筛选跟单。
 - 已触发重风险门槛，差质标的会被自动归为不值得跟。
-- 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：win, heavyweight, milan, prelims, madrid, warriors.
 - 软黑名单主题（需更严格触发）：bayern, nchen.
 
@@ -58,7 +59,7 @@
 - roma
 - milano
 - internazionale
-- vitor
+- petrino
 
 ### 硬黑名单关键词
 - win
@@ -69,8 +70,8 @@
 - warriors
 - real
 - timberwolves
-- nuggets
 - spurs
+- nuggets
 - pistons
 - hawks
 
@@ -83,8 +84,8 @@
 - trade_rows_used: `1188`
 - total_buy_usdc: `237909.133938`
 - total_sell_usdc: `142213.014615`
-- traded_markets_count_api: `591`
-- position_value_api: `6556.680100`
+- traded_markets_count_api: `604`
+- position_value_api: `959.822600`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `42.01%`
@@ -104,19 +105,19 @@
 - avg_trades_per_active_day: `45.692308`
 
 ## 9. 收益曲线评估
-- all_time_shape: `走平`
-- all_time_score: `1`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `平滑上行`
+- all_time_score: `12`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `0`
 - deployability_score: `20`
 - multi_market_structure_score: `0`
-- pnl_curve_stability_score: `0.830000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`
@@ -125,3 +126,4 @@
 - 触发风险门槛，禁止宽跟模式，需严格黑名单筛选
 - 触发重风险门槛，不值得跟的判定阈值被收紧
 - 重风险门槛叠加低分，判定为不值得跟
+- 校准分低于 32，触发不值得跟底线

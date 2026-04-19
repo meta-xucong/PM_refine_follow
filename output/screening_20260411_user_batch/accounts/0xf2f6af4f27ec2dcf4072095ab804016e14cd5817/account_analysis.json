@@ -11,8 +11,8 @@
   "total_buy_usdc": 1419984.630382,
   "total_sell_usdc": 527513.964841,
   "api_summary": {
-    "positions_value": 689121.6997,
-    "traded_markets": 1940
+    "positions_value": 675520.1437,
+    "traded_markets": 1977
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.052941,
@@ -1533,9 +1533,9 @@
     "copyability_score": 8.41,
     "deployability_score": 20,
     "multi_market_structure_score": 0,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": -8.0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -1543,29 +1543,29 @@
     "trade_count": 8986.0,
     "active_day_ratio": 1.007127,
     "avg_trades_per_active_day": 289.870968,
-    "raw_before_cap": 30.4,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 48.41,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": true,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 30.4,
-  "anchored_score": 49.01,
-  "delta_vs_anchor_60": -10.99,
-  "delta_vs_anchor_raw": -16.91,
-  "final_score": 49.01,
-  "decision": "selective_copying_only",
+  "raw_score": 48.41,
+  "anchored_score": 37.31,
+  "delta_vs_anchor_60": -22.69,
+  "delta_vs_anchor_raw": -34.91,
+  "final_score": 37.31,
+  "decision": "not_recommended",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -1573,33 +1573,33 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 23,
-      "total_return": 28843.142439,
-      "trend_slope": 1584.432581,
-      "max_drawdown": 10055.462181,
-      "daily_volatility": 8517.20946
+      "points_count": 442,
+      "total_return": 4096435.10734,
+      "trend_slope": 8897.209335,
+      "max_drawdown": 682886.974589,
+      "daily_volatility": 46482.081624
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 24,
+      "total_return": 356283.320865,
+      "trend_slope": 14425.221858,
+      "max_drawdown": 3864.09635,
+      "daily_volatility": 15152.944133
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 5,
+      "total_return": 49279.797519,
+      "trend_slope": 11449.450705,
+      "max_drawdown": 3864.09635,
+      "daily_volatility": 11878.319318
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -1615,10 +1615,10 @@
       "spread",
       "real",
       "arsenal",
-      "ufc",
-      "prelims",
-      "night",
       "fight",
+      "night",
+      "prelims",
+      "ufc",
       "texas"
     ],
     "hard_blacklist_keywords": [
@@ -1633,14 +1633,14 @@
       "most",
       "win",
       "april",
-      "slovenian"
+      "movement"
     ],
     "soft_blacklist_keywords": [
       "candidates",
       "tournament",
-      "giri",
-      "fide",
       "anish",
+      "fide",
+      "giri",
       "second",
       "senate",
       "tisza",
@@ -1656,7 +1656,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 8986 trades across 31 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: sports, us_politics, crypto."
     ],
     "strength_points": [
@@ -1665,6 +1665,7 @@
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
       "Operational whitelist themes: iranian, fall, regime, june, spread, real."
     ],
     "risk_points": [
@@ -1672,12 +1673,12 @@
       "High nested concurrent-ladder ratio, implying heavier structure management.",
       "Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.",
       "Hard blacklist themes to avoid: march, out, netanyahu, dip, bitcoin, seats.",
-      "Soft blacklist themes requiring stricter triggers: candidates, tournament, giri, fide, anish, second."
+      "Soft blacklist themes requiring stricter triggers: candidates, tournament, anish, fide, giri, second."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 49.01 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): march, out, netanyahu, dip, bitcoin. Soft blacklist themes (copy only with strict trigger): candidates, tournament, giri, fide, anish. Whitelist themes (higher priority for selective following): iranian, fall, regime, june, spread. PnL curve tag: long_and_recent_weak. Risk gate is active, so broad-copy mode is disabled. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 37.31 (anchor-referenced), decision: not_recommended. Primary sector exposure: sports, us_politics, crypto. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior, elevated nested concurrent ladder behavior. Hard blacklist themes (avoid copying): march, out, netanyahu, dip, bitcoin. Soft blacklist themes (copy only with strict trigger): candidates, tournament, anish, fide, giri. Whitelist themes (higher priority for selective following): iranian, fall, regime, june, spread. PnL curve tag: long_mid_short_strong. Risk gate is active, so broad-copy mode is disabled. This account should not be a main copy-trading source; only consider rare, manually screened setups.",
   "assumptions": [
     "Risk gate triggered; decision cannot be broad-copy and requires strict blacklist filtering"
   ],
-  "generated_at_utc": "2026-04-11T16:20:12.780231+00:00"
+  "generated_at_utc": "2026-04-19T16:52:00.285407+00:00"
 }

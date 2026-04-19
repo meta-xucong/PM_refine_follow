@@ -11,8 +11,8 @@
   "total_buy_usdc": 78772.677214,
   "total_sell_usdc": 2805.636177,
   "api_summary": {
-    "positions_value": 29237.6553,
-    "traded_markets": 413
+    "positions_value": 23524.2697,
+    "traded_markets": 442
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.0,
@@ -883,9 +883,9 @@
     "copyability_score": 23.72,
     "deployability_score": 20,
     "multi_market_structure_score": 9.85,
-    "pnl_curve_stability_score": 5.0,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 14.8,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -893,29 +893,29 @@
     "trade_count": 443.0,
     "active_day_ratio": 0.786018,
     "avg_trades_per_active_day": 18.458333,
-    "raw_before_cap": 58.57,
+    "raw_before_cap": 68.37,
     "pnl_tag": "long_and_recent_weak",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 58.57,
-  "anchored_score": 67.32,
-  "delta_vs_anchor_60": 7.32,
-  "delta_vs_anchor_raw": 11.26,
-  "final_score": 67.32,
+  "raw_score": 68.37,
+  "anchored_score": 50.28,
+  "delta_vs_anchor_60": -9.72,
+  "delta_vs_anchor_raw": -14.95,
+  "final_score": 50.28,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -923,31 +923,31 @@
       "window": "all_time",
       "shape": "volatile_up",
       "score": 6,
-      "points_count": 27,
-      "total_return": 429.786217,
-      "trend_slope": 8.425516,
-      "max_drawdown": 1452.689307,
-      "daily_volatility": 276.815598
+      "points_count": 237,
+      "total_return": 33004.69597,
+      "trend_slope": 144.878989,
+      "max_drawdown": 12213.986209,
+      "daily_volatility": 1382.729424
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 26,
+      "total_return": 6164.42857,
+      "trend_slope": 182.999651,
+      "max_drawdown": 4420.806801,
+      "daily_volatility": 1232.581398
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
+      "shape": "flat",
       "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "points_count": 8,
+      "total_return": 545.504832,
+      "trend_slope": -149.333238,
+      "max_drawdown": 4420.806801,
+      "daily_volatility": 1799.205946
     },
     "summary_tag": "long_and_recent_weak"
   },
@@ -967,9 +967,9 @@
       "win",
       "march",
       "april",
-      "seats",
-      "parliamentary",
-      "election"
+      "kdnp",
+      "hungarian",
+      "most"
     ],
     "hard_blacklist_keywords": [
       "playoffs",
@@ -977,23 +977,23 @@
       "bo5",
       "vincere",
       "natus",
+      "blast",
       "vitality",
       "rotterdam",
       "open",
-      "blast",
       "esports",
       "fut",
       "pgl"
     ],
     "soft_blacklist_keywords": [
       "next",
-      "hungary",
       "orb",
-      "prime",
       "viktor",
+      "prime",
       "minister",
-      "gaming",
+      "hungary",
       "aurora",
+      "gaming",
       "themongolz",
       "bo3",
       "astralis",
@@ -1006,7 +1006,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 443 trades across 24 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=volatile_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=volatile_up, 30d=volatile_up, 7d=flat.",
       "Dominant sector themes: sports, us_politics, macro."
     ],
     "strength_points": [
@@ -1019,11 +1019,11 @@
     ],
     "risk_points": [
       "Meaningful exclusive concurrent-leg behavior (multi-leg overlap in mutually exclusive markets).",
-      "Hard blacklist themes to avoid: playoffs, counter-strike, bo5, vincere, natus, vitality.",
-      "Soft blacklist themes requiring stricter triggers: next, hungary, orb, prime, viktor, minister."
+      "Hard blacklist themes to avoid: playoffs, counter-strike, bo5, vincere, natus, blast.",
+      "Soft blacklist themes requiring stricter triggers: next, orb, viktor, prime, minister, hungary."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 67.32 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, macro. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): playoffs, counter-strike, bo5, vincere, natus. Soft blacklist themes (copy only with strict trigger): next, hungary, orb, prime, viktor. Whitelist themes (higher priority for selective following): bo3, group, fall, regime, iranian. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 50.28 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, us_politics, macro. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Key risks: high exclusive concurrent-leg behavior. Hard blacklist themes (avoid copying): playoffs, counter-strike, bo5, vincere, natus. Soft blacklist themes (copy only with strict trigger): next, orb, viktor, prime, minister. Whitelist themes (higher priority for selective following): bo3, group, fall, regime, iranian. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:48.737097+00:00"
+  "generated_at_utc": "2026-04-19T16:48:54.067295+00:00"
 }

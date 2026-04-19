@@ -8,33 +8,33 @@
 - 本地名称: `account_47`
 
 ## 1. 执行结论
-校准后决策分 50.37（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：iran、april、ceasefire、december、forces。白名单主题（优先筛选）：iranian、invade、israel、oil、ukraine。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 50.58（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：iran、april、ceasefire、december、forces。白名单主题（优先筛选）：iranian、invade、israel、oil、ukraine。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `50.370000`
-- raw_score: `32.500000`
-- anchored_score: `50.370000`
-- delta_vs_anchor_60: `-9.630000`
-- delta_vs_anchor_raw: `-14.810000`
+- final_score（决策分）: `50.580000`
+- raw_score: `68.830000`
+- anchored_score: `50.580000`
+- delta_vs_anchor_60: `-9.420000`
+- delta_vs_anchor_raw: `-14.490000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 1399 笔交易，覆盖 28 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=volatile_up, 7d=smooth_up.
 - 主要板块主题： geopolitics, us_politics.
 
 ## 4. 跟单优势
 - 同 condition 双边暴露较低，方向表达更清晰。
 - 不可复制 token 快交易（BUY）比例较低。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 可执行白名单主题：iranian, invade, israel, oil, ukraine, island.
+- 全周期收益曲线为平滑上行，策略一致性较好。
+- 可执行白名单主题：iranian, invade, israel, oil, ukraine, kharg.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
-- 全周期收益并非明显上行，持续优势可信度下降。
 - 硬黑名单主题（应避免）：iran, april, ceasefire, december, forces, enter.
 
 ## 6. 板块与关键词过滤
@@ -48,12 +48,12 @@
 - israel
 - oil
 - ukraine
-- island
 - kharg
+- island
 - regime
 - fall
-- power
 - plant
+- power
 - agrees
 
 ### 硬黑名单关键词
@@ -78,8 +78,8 @@
 - trade_rows_used: `1399`
 - total_buy_usdc: `239597.271513`
 - total_sell_usdc: `217157.970043`
-- traded_markets_count_api: `676`
-- position_value_api: `226113.117600`
+- traded_markets_count_api: `696`
+- position_value_api: `207098.452100`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -99,19 +99,19 @@
 - avg_trades_per_active_day: `49.964286`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `平滑上行`
+- all_time_score: `12`
+- d30_shape: `高波动上行`
+- d30_score: `2`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `20.270000`
 - deployability_score: `20`
 - multi_market_structure_score: `6.560000`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-6.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

@@ -11,8 +11,8 @@
   "total_buy_usdc": 396135.68113,
   "total_sell_usdc": 373272.936887,
   "api_summary": {
-    "positions_value": 72426.6528,
-    "traded_markets": 1364
+    "positions_value": 69333.8591,
+    "traded_markets": 1372
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.105263,
@@ -2261,9 +2261,9 @@
     "copyability_score": 16.2,
     "deployability_score": 20,
     "multi_market_structure_score": 11.54,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 18.5,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -2271,63 +2271,63 @@
     "trade_count": 3918.0,
     "active_day_ratio": 1.007485,
     "avg_trades_per_active_day": 126.387097,
-    "raw_before_cap": 57.73,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 66.24,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 57.73,
-  "anchored_score": 66.77,
-  "delta_vs_anchor_60": 6.77,
-  "delta_vs_anchor_raw": 10.42,
-  "final_score": 66.77,
+  "raw_score": 66.24,
+  "anchored_score": 48.9,
+  "delta_vs_anchor_60": -11.1,
+  "delta_vs_anchor_raw": -17.08,
+  "final_score": 48.9,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "smooth_up",
-      "score": 12,
-      "points_count": 23,
-      "total_return": 6861.997596,
-      "trend_slope": 256.876288,
-      "max_drawdown": 1739.216052,
-      "daily_volatility": 1078.500535
+      "shape": "volatile_up",
+      "score": 6,
+      "points_count": 273,
+      "total_return": 100991.510583,
+      "trend_slope": 347.419861,
+      "max_drawdown": 39815.551539,
+      "daily_volatility": 2907.837005
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 23,
+      "total_return": 16283.722399,
+      "trend_slope": 745.568066,
+      "max_drawdown": 12722.925575,
+      "daily_volatility": 3315.140073
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 3,
+      "total_return": 159.975226,
+      "trend_slope": 79.987613,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 56.351776
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -2338,12 +2338,12 @@
     "whitelist_keywords": [
       "clash",
       "turkey",
-      "confirm",
-      "aliens",
       "exist",
+      "aliens",
+      "confirm",
       "cuba",
-      "recognizes",
       "reza",
+      "recognizes",
       "pahlavi",
       "miguel",
       "embassy",
@@ -2358,10 +2358,10 @@
       "april",
       "israel",
       "ceasefire",
-      "kharg",
       "island",
-      "iranian",
-      "longer"
+      "kharg",
+      "longer",
+      "iranian"
     ],
     "soft_blacklist_keywords": [
       "fight",
@@ -2380,14 +2380,13 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 3918 trades across 31 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=volatile_up, 30d=volatile_up, 7d=smooth_up.",
       "Dominant sector themes: geopolitics, us_politics, crypto."
     ],
     "strength_points": [
       "Low non-copyable token-fast BUY ratio.",
       "Topic supply is broad enough for selective deployment.",
-      "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: clash, turkey, confirm, aliens, exist, cuba."
+      "Operational whitelist themes: clash, turkey, exist, aliens, confirm, cuba."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
@@ -2396,7 +2395,7 @@
       "Soft blacklist themes requiring stricter triggers: fight, ufc, night, am-12, heavyweight, women."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 66.77 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): iran, march, december, enter, forces. Soft blacklist themes (copy only with strict trigger): fight, ufc, night, am-12, heavyweight. Whitelist themes (higher priority for selective following): clash, turkey, confirm, aliens, exist. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 48.90 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: geopolitics, us_politics, crypto. Strengths: good deployable event breadth, low non-copyable token-fast ratio. Key risks: elevated nested concurrent ladder behavior, material dual-side condition buying. Hard blacklist themes (avoid copying): iran, march, december, enter, forces. Soft blacklist themes (copy only with strict trigger): fight, ufc, night, am-12, heavyweight. Whitelist themes (higher priority for selective following): clash, turkey, exist, aliens, confirm. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:20:16.367627+00:00"
+  "generated_at_utc": "2026-04-19T16:52:03.822798+00:00"
 }

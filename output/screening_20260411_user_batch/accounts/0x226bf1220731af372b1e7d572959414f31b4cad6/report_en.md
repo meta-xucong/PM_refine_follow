@@ -8,22 +8,22 @@
 - Source local name: `account_40`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: blue, devils, duke, state, siena. Soft blacklist themes: mets. Whitelist themes: michigan, wolverines, north, carolina, heels. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 63.76 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, crypto. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Hard blacklist themes: blue, duke, devils, state, siena. Soft blacklist themes: mets. Whitelist themes: michigan, wolverines, carolina, north, heels. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `77.430000`
-- raw_score: `74.130000`
-- anchored_score: `77.430000`
-- delta_vs_anchor_60: `17.430000`
-- delta_vs_anchor_raw: `26.820000`
+- final_score (decision basis): `63.760000`
+- raw_score: `89.110000`
+- anchored_score: `63.760000`
+- delta_vs_anchor_60: `3.760000`
+- delta_vs_anchor_raw: `5.790000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 2972 trades across 23 active trading days in the analysis window.
-- PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.
 - Dominant sector themes: sports, crypto.
 
 ## 4. Copy-Trading Strengths
@@ -33,10 +33,11 @@ Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copy
 - Weighted multi-market structure risk is controlled.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
-- Operational whitelist themes: michigan, wolverines, north, carolina, heels, tar.
+- Recent 30-day PnL remains constructive.
+- Operational whitelist themes: michigan, wolverines, carolina, north, heels, tar.
 
 ## 5. Copy-Trading Risks
-- Hard blacklist themes to avoid: blue, devils, duke, state, siena, saints.
+- Hard blacklist themes to avoid: blue, duke, devils, state, siena, saints.
 - Soft blacklist themes requiring stricter triggers: mets.
 
 ## 6. Sector and Keyword Filters
@@ -47,30 +48,30 @@ Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copy
 ### Whitelist Keywords
 - michigan
 - wolverines
-- north
 - carolina
+- north
 - heels
 - tar
-- vcu
 - rams
-- huskies
+- vcu
 - connecticut
-- crimson
+- huskies
 - alabama
+- tide
 
 ### Hard Blacklist Keywords
 - blue
-- devils
 - duke
+- devils
 - state
 - siena
 - saints
 - texas
 - longhorns
-- north
 - carolina
+- north
 - wolfpack
-- huskies
+- connecticut
 
 ### Soft Blacklist Keywords
 - mets
@@ -81,7 +82,7 @@ Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copy
 - total_buy_usdc: `1037268.903122`
 - total_sell_usdc: `661068.449447`
 - traded_markets_count_api: `999`
-- position_value_api: `1271.002200`
+- position_value_api: `1576.042700`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `2.71%`
@@ -103,8 +104,8 @@ Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copy
 ## 9. PnL Curve Evaluation
 - all_time_shape: `smooth_up`
 - all_time_score: `12`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
+- d30_shape: `smooth_up`
+- d30_score: `6`
 - d7_shape: `insufficient_data`
 - d7_score: `0`
 - pnl_tag: `long_and_recent_weak`
@@ -113,7 +114,7 @@ Calibrated decision score is 77.43 (anchor-referenced), decision: selective_copy
 - copyability_score: `28.520000`
 - deployability_score: `20`
 - multi_market_structure_score: `15.620000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `24.980000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

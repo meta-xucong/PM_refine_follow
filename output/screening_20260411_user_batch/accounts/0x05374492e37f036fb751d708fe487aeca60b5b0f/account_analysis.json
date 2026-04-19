@@ -12,7 +12,7 @@
   "total_sell_usdc": 17016.936983,
   "api_summary": {
     "positions_value": 0.0,
-    "traded_markets": 829
+    "traded_markets": 834
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.105263,
@@ -168,9 +168,9 @@
     "copyability_score": 19.42,
     "deployability_score": 13.38,
     "multi_market_structure_score": 17.33,
-    "pnl_curve_stability_score": 9.99,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 6.0,
     "low_frequency_cap": 56,
@@ -178,29 +178,29 @@
     "trade_count": 365.0,
     "active_day_ratio": 0.734218,
     "avg_trades_per_active_day": 16.590909,
-    "raw_before_cap": 54.12,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 72.13,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 54.12,
-  "anchored_score": 64.43,
-  "delta_vs_anchor_60": 4.43,
-  "delta_vs_anchor_raw": 6.81,
-  "final_score": 64.43,
+  "raw_score": 56,
+  "anchored_score": 42.24,
+  "delta_vs_anchor_60": -17.76,
+  "delta_vs_anchor_raw": -27.32,
+  "final_score": 42.24,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
@@ -208,62 +208,62 @@
       "window": "all_time",
       "shape": "smooth_up",
       "score": 12,
-      "points_count": 13,
-      "total_return": 882.104726,
-      "trend_slope": 89.916893,
-      "max_drawdown": 149.478577,
-      "daily_volatility": 200.937435
+      "points_count": 255,
+      "total_return": 92209.9757,
+      "trend_slope": 463.215865,
+      "max_drawdown": 23758.019762,
+      "daily_volatility": 3485.999061
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "volatile_up",
+      "score": 2,
+      "points_count": 12,
+      "total_return": 146.705365,
+      "trend_slope": 8.719034,
+      "max_drawdown": 1649.20644,
+      "daily_volatility": 604.813823
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
-      "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 3,
+      "total_return": 250.285652,
+      "trend_slope": 125.142826,
+      "max_drawdown": 45.238887,
+      "daily_volatility": 170.381713
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
       "macro"
     ],
     "whitelist_keywords": [
-      "gta",
       "iceman",
       "drake",
       "release",
-      "fed",
-      "meeting",
-      "there",
+      "gta",
       "change",
+      "meeting",
+      "rates",
+      "there",
       "interest",
-      "rates"
+      "fed"
     ],
     "hard_blacklist_keywords": [
-      "crude",
       "high",
+      "crude",
       "hit",
       "oil",
       "march",
       "end",
-      "one",
-      "launch",
+      "day",
       "above",
       "fdv",
-      "day",
+      "launch",
+      "one",
       "april"
     ],
     "soft_blacklist_keywords": [
@@ -278,23 +278,23 @@
     "behavior_points": [
       "Observed 365 trades across 22 active trading days in the analysis window.",
       "Low-frequency cap is active at 56, reflecting constrained copy capacity.",
-      "PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=volatile_up, 7d=smooth_up.",
       "Dominant sector themes: macro."
     ],
     "strength_points": [
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "All-time PnL profile is smooth-up, supporting strategy consistency.",
-      "Operational whitelist themes: gta, iceman, drake, release, fed, meeting."
+      "Operational whitelist themes: iceman, drake, release, gta, change, meeting."
     ],
     "risk_points": [
       "High dual-side condition activity, which is often difficult to mirror in copy-trading.",
       "Frequency/deployability constraints limit practical copy capacity.",
-      "Hard blacklist themes to avoid: crude, high, hit, oil, march, end.",
+      "Hard blacklist themes to avoid: high, crude, hit, oil, march, end.",
       "Soft blacklist themes requiring stricter triggers: backpack, opensea."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 64.43 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained weighted multi-market risk. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): crude, high, hit, oil, march. Soft blacklist themes (copy only with strict trigger): backpack, opensea. Whitelist themes (higher priority for selective following): gta, iceman, drake, release, fed. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 42.24 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: macro. Strengths: contained weighted multi-market risk. Key risks: material dual-side condition buying. Hard blacklist themes (avoid copying): high, crude, hit, oil, march. Soft blacklist themes (copy only with strict trigger): backpack, opensea. Whitelist themes (higher priority for selective following): iceman, drake, release, gta, change. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:17:08.974734+00:00"
+  "generated_at_utc": "2026-04-19T16:47:47.934684+00:00"
 }

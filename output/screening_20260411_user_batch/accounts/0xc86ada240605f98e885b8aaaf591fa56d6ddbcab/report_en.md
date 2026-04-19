@@ -8,15 +8,15 @@
 - Source local name: `account_24`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Whitelist themes: nuggets, hawks, spurs, pistons, wizards. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 47.44 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: deployable event breadth, contained multi-market weighted risk, low non-copyable token-fast ratio. Whitelist themes: nuggets, hawks, spurs, pistons, wizards. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `70.850000`
+- final_score (decision basis): `47.440000`
 - raw_score: `64`
-- anchored_score: `70.850000`
-- delta_vs_anchor_60: `10.850000`
-- delta_vs_anchor_raw: `16.690000`
+- anchored_score: `47.440000`
+- delta_vs_anchor_60: `-12.560000`
+- delta_vs_anchor_raw: `-19.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -24,7 +24,7 @@ Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copy
 ## 3. Behavior Interpretation
 - Observed 120 trades across 15 active trading days in the analysis window.
 - Low-frequency cap is active at 64, reflecting constrained copy capacity.
-- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.
 - Dominant sector themes: sports.
 
 ## 4. Copy-Trading Strengths
@@ -69,8 +69,8 @@ Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `120`
 - total_buy_usdc: `64445.710421`
 - total_sell_usdc: `105.385000`
-- traded_markets_count_api: `34`
-- position_value_api: `0.000000`
+- traded_markets_count_api: `36`
+- position_value_api: `19.470500`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -94,15 +94,15 @@ Calibrated decision score is 70.85 (anchor-referenced), decision: selective_copy
 - all_time_score: `12`
 - d30_shape: `smooth_up`
 - d30_score: `6`
-- d7_shape: `smooth_up`
-- d7_score: `2`
-- pnl_tag: `long_mid_short_strong`
+- d7_shape: `insufficient_data`
+- d7_score: `0`
+- pnl_tag: `long_and_recent_weak`
 
 ## 10. Score Breakdown
 - copyability_score: `33.940000`
 - deployability_score: `20`
 - multi_market_structure_score: `20`
-- pnl_curve_stability_score: `28`
+- pnl_curve_stability_score: `24.980000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `64`

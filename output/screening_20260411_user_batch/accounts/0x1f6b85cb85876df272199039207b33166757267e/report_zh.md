@@ -8,29 +8,30 @@
 - 本地名称: `account_21`
 
 ## 1. 执行结论
-校准后决策分 66.46（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、macro、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：march、bitcoin、price、above、down。软黑名单主题（谨慎跟）：am-11、any、day、am-1。白名单主题（优先筛选）：pm-2、crude、oil、hit、am-8。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 54.76（锚点口径），结论：只适合筛着跟。主要板块暴露：crypto、macro、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：march、bitcoin、price、above、down。软黑名单主题（谨慎跟）：am-11、any、day、am-1。白名单主题（优先筛选）：pm-2、oil、crude、hit、am-8。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `66.460000`
-- raw_score: `57.250000`
-- anchored_score: `66.460000`
-- delta_vs_anchor_60: `6.460000`
-- delta_vs_anchor_raw: `9.940000`
+- final_score（决策分）: `54.760000`
+- raw_score: `75.260000`
+- anchored_score: `54.760000`
+- delta_vs_anchor_60: `-5.240000`
+- delta_vs_anchor_raw: `-8.060000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 5876 笔交易，覆盖 28 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： crypto, macro, geopolitics.
 
 ## 4. 跟单优势
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：pm-2, crude, oil, hit, am-8, end.
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：pm-2, oil, crude, hit, am-8, end.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
@@ -45,8 +46,8 @@
 
 ### 白名单关键词
 - pm-2
-- crude
 - oil
+- crude
 - hit
 - am-8
 - end
@@ -82,8 +83,8 @@
 - trade_rows_used: `5876`
 - total_buy_usdc: `24282.344940`
 - total_sell_usdc: `12702.448494`
-- traded_markets_count_api: `4325`
-- position_value_api: `43.590900`
+- traded_markets_count_api: `4464`
+- position_value_api: `0.897000`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `16.48%`
@@ -105,17 +106,17 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `19.160000`
 - deployability_score: `20`
 - multi_market_structure_score: `11.110000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-3.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

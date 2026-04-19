@@ -8,15 +8,15 @@
 - 本地名称: `account_1`
 
 ## 1. 执行结论
-校准后决策分 61.68（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：weekend、box、office、opening、less。软黑名单主题（谨慎跟）：hoppers。白名单主题（优先筛选）：tuscany、mario、super、movie、galaxy。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 42.24（锚点口径），结论：只适合筛着跟。主要板块暴露：entertainment。优势：加权多子市场风险较低、不可复制快交易比例较低。风险点：存在同 condition 双边买入。硬黑名单主题（禁止跟）：office、box、weekend、opening、less。软黑名单主题（谨慎跟）：hoppers。白名单主题（优先筛选）：tuscany、mario、movie、super、galaxy。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `61.680000`
-- raw_score: `49.890000`
-- anchored_score: `61.680000`
-- delta_vs_anchor_60: `1.680000`
-- delta_vs_anchor_raw: `2.580000`
+- final_score（决策分）: `42.240000`
+- raw_score: `56`
+- anchored_score: `42.240000`
+- delta_vs_anchor_60: `-17.760000`
+- delta_vs_anchor_raw: `-27.320000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
@@ -24,20 +24,19 @@
 ## 3. 行为解读
 - 观察到 452 笔交易，覆盖 23 个活跃交易日（分析窗口内）。
 - 低频封顶已生效，封顶分数为 56, ，表明可跟单容量受限。
-- 收益曲线形态： 全周期=down, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=volatile_up, 30d=volatile_up, 7d=smooth_up.
 - 主要板块主题： entertainment.
 
 ## 4. 跟单优势
 - 不可复制 token 快交易（BUY）比例较低。
 - 递进型并发行为相对可控。
 - 加权多子市场结构风险整体可控。
-- 可执行白名单主题：tuscany, mario, super, movie, galaxy.
+- 可执行白名单主题：tuscany, mario, movie, super, galaxy.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
 - 交易频次/可利用度约束限制了实盘跟单容量。
-- 全周期收益并非明显上行，持续优势可信度下降。
-- 硬黑名单主题（应避免）：weekend, box, office, opening, less, between.
+- 硬黑名单主题（应避免）：office, box, weekend, opening, less, between.
 - 软黑名单主题（需更严格触发）：hoppers.
 
 ## 6. 板块与关键词过滤
@@ -47,23 +46,23 @@
 ### 白名单关键词
 - tuscany
 - mario
-- super
 - movie
+- super
 - galaxy
 
 ### 硬黑名单关键词
-- weekend
-- box
 - office
+- box
+- weekend
 - opening
 - less
 - between
 - you
-- kill
 - they
+- kill
+- project
 - hail
 - mary
-- project
 
 ### 软黑名单关键词
 - hoppers
@@ -73,8 +72,8 @@
 - trade_rows_used: `452`
 - total_buy_usdc: `38119.847324`
 - total_sell_usdc: `18526.888896`
-- traded_markets_count_api: `571`
-- position_value_api: `1036.294600`
+- traded_markets_count_api: `576`
+- position_value_api: `875.187600`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `38.66%`
@@ -94,19 +93,19 @@
 - avg_trades_per_active_day: `19.652174`
 
 ## 9. 收益曲线评估
-- all_time_shape: `下行`
-- all_time_score: `-10`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `高波动上行`
+- all_time_score: `6`
+- d30_shape: `高波动上行`
+- d30_score: `2`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `23.720000`
 - deployability_score: `14.490000`
 - multi_market_structure_score: `20`
-- pnl_curve_stability_score: `-8.330000`
+- pnl_curve_stability_score: `18.500000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `56`

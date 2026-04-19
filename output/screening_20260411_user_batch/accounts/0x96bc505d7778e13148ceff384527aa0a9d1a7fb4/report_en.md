@@ -8,22 +8,22 @@
 - Source local name: `account_6`
 
 ## 1. Executive Conclusion
-Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: lol, winner, gaming, group, bo5. Whitelist themes: bo3, open, valorant, masters, blast. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
+Calibrated decision score is 41.51 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports, geopolitics. Strengths: deployable event breadth, low non-copyable token-fast ratio. Key risks: exclusive concurrent-leg risk. Hard blacklist themes: lol, winner, gaming, group, bo5. Whitelist themes: bo3, open, valorant, masters, blast. Risk gate is active, so broad-copy mode is disabled. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode with strict event filters and blacklist constraints.
 
 ## 2. Decision Snapshot
 - decision: `selective_copying_only`
-- final_score (decision basis): `55.180000`
-- raw_score: `39.890000`
-- anchored_score: `55.180000`
-- delta_vs_anchor_60: `-4.820000`
-- delta_vs_anchor_raw: `-7.420000`
+- final_score (decision basis): `41.510000`
+- raw_score: `54.880000`
+- anchored_score: `41.510000`
+- delta_vs_anchor_60: `-18.490000`
+- delta_vs_anchor_raw: `-28.440000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. Behavior Interpretation
 - Observed 365 trades across 14 active trading days in the analysis window.
-- PnL curve shapes: all-time=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=insufficient_data.
 - Dominant sector themes: sports, geopolitics.
 
 ## 4. Copy-Trading Strengths
@@ -32,6 +32,7 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 - Nested concurrent behavior remains relatively contained.
 - Topic supply is broad enough for selective deployment.
 - All-time PnL profile is smooth-up, supporting strategy consistency.
+- Recent 30-day PnL remains constructive.
 - Operational whitelist themes: bo3, open, valorant, masters, blast, rotterdam.
 
 ## 5. Copy-Trading Risks
@@ -52,8 +53,8 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 - blast
 - rotterdam
 - hawks
-- vct
 - santiago
+- vct
 - dota
 - pistons
 - spurs
@@ -65,8 +66,8 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 - group
 - bo5
 - game
-- stand
 - first
+- stand
 - bilibili
 - lyon
 - esports
@@ -80,8 +81,8 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 - trade_rows_used: `365`
 - total_buy_usdc: `33763.331594`
 - total_sell_usdc: `1528.999700`
-- traded_markets_count_api: `940`
-- position_value_api: `89.043800`
+- traded_markets_count_api: `941`
+- position_value_api: `132.673900`
 
 ## 8. Core Metrics
 - dual_side_buy_usdc_ratio: `0.00%`
@@ -103,8 +104,8 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 ## 9. PnL Curve Evaluation
 - all_time_shape: `smooth_up`
 - all_time_score: `12`
-- d30_shape: `insufficient_data`
-- d30_score: `0`
+- d30_shape: `smooth_up`
+- d30_score: `6`
 - d7_shape: `insufficient_data`
 - d7_score: `0`
 - pnl_tag: `long_and_recent_weak`
@@ -113,7 +114,7 @@ Calibrated decision score is 55.18 (anchor-referenced), decision: selective_copy
 - copyability_score: `14.860000`
 - deployability_score: `20`
 - multi_market_structure_score: `3.040000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `24.980000`
 - risk_penalty_adjustment: `-8.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

@@ -8,29 +8,28 @@
 - 本地名称: `account_22`
 
 ## 1. 执行结论
-校准后决策分 66.77（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：iran、march、december、enter、forces。软黑名单主题（谨慎跟）：fight、ufc、night、am-12、heavyweight。白名单主题（优先筛选）：clash、turkey、confirm、aliens、exist。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 48.90（锚点口径），结论：只适合筛着跟。主要板块暴露：geopolitics、us_politics、crypto。优势：可利用事件覆盖广、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高、存在同 condition 双边买入。硬黑名单主题（禁止跟）：iran、march、december、enter、forces。软黑名单主题（谨慎跟）：fight、ufc、night、am-12、heavyweight。白名单主题（优先筛选）：clash、turkey、exist、aliens、confirm。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `66.770000`
-- raw_score: `57.730000`
-- anchored_score: `66.770000`
-- delta_vs_anchor_60: `6.770000`
-- delta_vs_anchor_raw: `10.420000`
+- final_score（决策分）: `48.900000`
+- raw_score: `66.240000`
+- anchored_score: `48.900000`
+- delta_vs_anchor_60: `-11.100000`
+- delta_vs_anchor_raw: `-17.080000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 3918 笔交易，覆盖 31 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=volatile_up, 30d=volatile_up, 7d=smooth_up.
 - 主要板块主题： geopolitics, us_politics, crypto.
 
 ## 4. 跟单优势
 - 不可复制 token 快交易（BUY）比例较低。
 - 可利用主题供给相对充分，具备筛选跟单空间。
-- 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：clash, turkey, confirm, aliens, exist, cuba.
+- 可执行白名单主题：clash, turkey, exist, aliens, confirm, cuba.
 
 ## 5. 跟单风险
 - 同 condition 双边活动较高，跟单复现难度大。
@@ -47,12 +46,12 @@
 ### 白名单关键词
 - clash
 - turkey
-- confirm
-- aliens
 - exist
+- aliens
+- confirm
 - cuba
-- recognizes
 - reza
+- recognizes
 - pahlavi
 - miguel
 - embassy
@@ -67,10 +66,10 @@
 - april
 - israel
 - ceasefire
-- kharg
 - island
-- iranian
+- kharg
 - longer
+- iranian
 
 ### 软黑名单关键词
 - fight
@@ -87,8 +86,8 @@
 - trade_rows_used: `3918`
 - total_buy_usdc: `396135.681130`
 - total_sell_usdc: `373272.936887`
-- traded_markets_count_api: `1364`
-- position_value_api: `72426.652800`
+- traded_markets_count_api: `1372`
+- position_value_api: `69333.859100`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `30.66%`
@@ -108,19 +107,19 @@
 - avg_trades_per_active_day: `126.387097`
 
 ## 9. 收益曲线评估
-- all_time_shape: `平滑上行`
-- all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- all_time_shape: `高波动上行`
+- all_time_score: `6`
+- d30_shape: `高波动上行`
+- d30_score: `2`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `16.200000`
 - deployability_score: `20`
 - multi_market_structure_score: `11.540000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `18.500000`
 - risk_penalty_adjustment: `0`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`

@@ -11,8 +11,8 @@
   "total_buy_usdc": 213597.783677,
   "total_sell_usdc": 11446.002082,
   "api_summary": {
-    "positions_value": 25708.7224,
-    "traded_markets": 1867
+    "positions_value": 21704.7037,
+    "traded_markets": 1887
   },
   "metrics": {
     "dual_side_condition_count_ratio": 0.016393,
@@ -844,9 +844,9 @@
     "copyability_score": 34.22,
     "deployability_score": 20,
     "multi_market_structure_score": 20,
-    "pnl_curve_stability_score": -8.33,
-    "pnl_confidence": 0.45,
-    "pnl_windows_available": 1,
+    "pnl_curve_stability_score": 28,
+    "pnl_confidence": 1.0,
+    "pnl_windows_available": 3,
     "risk_penalty_adjustment": 0,
     "concentration_penalty": 0.0,
     "low_frequency_cap": null,
@@ -854,63 +854,63 @@
     "trade_count": 554.0,
     "active_day_ratio": 0.680605,
     "avg_trades_per_active_day": 26.380952,
-    "raw_before_cap": 65.89,
-    "pnl_tag": "long_and_recent_weak",
+    "raw_before_cap": 100,
+    "pnl_tag": "long_mid_short_strong",
     "decision_score_basis": "calibrated_anchor_score",
-    "anchor_offset": 12.69,
+    "anchor_offset": -23.32,
     "anchor_target_score": 60.0,
     "anchor_calibration_scale": 0.65,
     "anchor_enabled": true,
     "caution_risk_gate_triggered": false,
     "severe_risk_gate_triggered": false
   },
-  "raw_score": 65.89,
-  "anchored_score": 72.08,
-  "delta_vs_anchor_60": 12.08,
-  "delta_vs_anchor_raw": 18.58,
-  "final_score": 72.08,
+  "raw_score": 100,
+  "anchored_score": 70.84,
+  "delta_vs_anchor_60": 10.84,
+  "delta_vs_anchor_raw": 16.68,
+  "final_score": 70.84,
   "decision": "selective_copying_only",
   "anchor_context": {
     "anchor_enabled": true,
     "anchor_version": "anchor_v2_20260411",
     "anchor_account": "0x39d0f1dca6fb7e5514858c1a337724a426764fe8",
     "anchor_target_score": 60.0,
-    "anchor_offset": 12.69,
-    "anchor_raw_base_score": 47.31,
+    "anchor_offset": -23.32,
+    "anchor_raw_base_score": 83.32,
     "anchor_calibration_scale": 0.65
   },
   "pnl_curve": {
     "all_time": {
       "window": "all_time",
-      "shape": "down",
-      "score": -10,
-      "points_count": 10,
-      "total_return": -73.220306,
-      "trend_slope": -25.349901,
-      "max_drawdown": 367.637814,
-      "daily_volatility": 160.521614
+      "shape": "smooth_up",
+      "score": 12,
+      "points_count": 335,
+      "total_return": 541650.767615,
+      "trend_slope": 1245.29172,
+      "max_drawdown": 23356.998899,
+      "daily_volatility": 3776.640325
     },
     "d30": {
       "window": "d30",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 6,
+      "points_count": 15,
+      "total_return": 75658.265601,
+      "trend_slope": 6334.189758,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 5932.684782
     },
     "d7": {
       "window": "d7",
-      "shape": "insufficient_data",
-      "score": 0,
-      "points_count": 0,
-      "total_return": 0.0,
-      "trend_slope": 0.0,
+      "shape": "smooth_up",
+      "score": 2,
+      "points_count": 6,
+      "total_return": 25135.653332,
+      "trend_slope": 5538.738305,
       "max_drawdown": 0.0,
-      "daily_volatility": 0.0
+      "daily_volatility": 3895.273471
     },
-    "summary_tag": "long_and_recent_weak"
+    "summary_tag": "long_mid_short_strong"
   },
   "keyword_profile": {
     "sector_tags": [
@@ -918,13 +918,13 @@
     ],
     "whitelist_keywords": [
       "win",
-      "paris",
       "saint-germain",
+      "paris",
       "barcelona",
       "osasuna",
       "arsenal",
-      "bod",
       "glimt",
+      "bod",
       "freiburg",
       "olympique",
       "lyonnais",
@@ -933,8 +933,8 @@
     "hard_blacklist_keywords": [
       "win",
       "real",
-      "betis",
       "balompi",
+      "betis",
       "manchester"
     ],
     "soft_blacklist_keywords": [],
@@ -945,7 +945,7 @@
   "behavior_summary": {
     "behavior_points": [
       "Observed 554 trades across 21 active trading days in the analysis window.",
-      "PnL curve shapes: all-time=down, 30d=insufficient_data, 7d=insufficient_data.",
+      "PnL curve shapes: all-time=smooth_up, 30d=smooth_up, 7d=smooth_up.",
       "Dominant sector themes: sports."
     ],
     "strength_points": [
@@ -954,14 +954,15 @@
       "Nested concurrent behavior remains relatively contained.",
       "Weighted multi-market structure risk is controlled.",
       "Topic supply is broad enough for selective deployment.",
-      "Operational whitelist themes: win, paris, saint-germain, barcelona, osasuna, arsenal."
+      "All-time PnL profile is smooth-up, supporting strategy consistency.",
+      "Recent 30-day PnL remains constructive.",
+      "Operational whitelist themes: win, saint-germain, paris, barcelona, osasuna, arsenal."
     ],
     "risk_points": [
-      "All-time PnL profile is not strongly upward, reducing confidence in persistent edge.",
-      "Hard blacklist themes to avoid: win, real, betis, balompi, manchester."
+      "Hard blacklist themes to avoid: win, real, balompi, betis, manchester."
     ]
   },
-  "narrative_conclusion": "Calibrated decision score is 72.08 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): win, real, betis, balompi, manchester. Whitelist themes (higher priority for selective following): win, paris, saint-germain, barcelona, osasuna. PnL curve tag: long_and_recent_weak. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
+  "narrative_conclusion": "Calibrated decision score is 70.84 (anchor-referenced), decision: selective_copying_only. Primary sector exposure: sports. Strengths: good deployable event breadth, contained weighted multi-market risk, low non-copyable token-fast ratio. Hard blacklist themes (avoid copying): win, real, balompi, betis, manchester. Whitelist themes (higher priority for selective following): win, saint-germain, paris, barcelona, osasuna. PnL curve tag: long_mid_short_strong. This account is best used in selective-copy mode: copy whitelist themes and block blacklist themes.",
   "assumptions": [],
-  "generated_at_utc": "2026-04-11T16:18:47.747176+00:00"
+  "generated_at_utc": "2026-04-19T16:50:11.489138+00:00"
 }

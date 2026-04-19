@@ -8,22 +8,22 @@
 - 本地名称: `account_44`
 
 ## 1. 执行结论
-校准后决策分 68.89（锚点口径），结论：只适合筛着跟。主要板块暴露：us_politics、entertainment、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：say、during、april、median、home。软黑名单主题（谨慎跟）：easter、bts、sales、album、debut。白名单主题（优先筛选）：francisco、san、number、tsa、total。收益曲线标签：长期与近期均偏弱。建议仅在严格事件筛选和黑名单约束下筛选着跟。
+校准后决策分 57.19（锚点口径），结论：只适合筛着跟。主要板块暴露：us_politics、entertainment、geopolitics。优势：可利用事件覆盖广、加权多子市场风险较低、不可复制快交易比例较低。风险点：递进型并存梯度风险偏高。硬黑名单主题（禁止跟）：say、during、april、value、home。软黑名单主题（谨慎跟）：easter、arirang、bts、debut、sales。白名单主题（优先筛选）：san、francisco、passengers、tsa、number。收益曲线标签：长期/中期/短期均偏强。建议仅在严格事件筛选和黑名单约束下筛选着跟。
 
 ## 2. 决策快照
 - decision: `只适合筛着跟`
-- final_score（决策分）: `68.890000`
-- raw_score: `60.980000`
-- anchored_score: `68.890000`
-- delta_vs_anchor_60: `8.890000`
-- delta_vs_anchor_raw: `13.670000`
+- final_score（决策分）: `57.190000`
+- raw_score: `78.990000`
+- anchored_score: `57.190000`
+- delta_vs_anchor_60: `-2.810000`
+- delta_vs_anchor_raw: `-4.330000`
 - decision_score_basis: `calibrated_anchor_score`
 - anchor_version: `anchor_v2_20260411`
 - anchor_account: `0x39d0f1dca6fb7e5514858c1a337724a426764fe8`
 
 ## 3. 行为解读
 - 观察到 464 笔交易，覆盖 25 个活跃交易日（分析窗口内）。
-- 收益曲线形态： 全周期=smooth_up, 30d=insufficient_data, 7d=insufficient_data.
+- 收益曲线形态： 全周期=smooth_up, 30d=smooth_up, 7d=smooth_up.
 - 主要板块主题： us_politics, entertainment, geopolitics.
 
 ## 4. 跟单优势
@@ -32,12 +32,13 @@
 - 加权多子市场结构风险整体可控。
 - 可利用主题供给相对充分，具备筛选跟单空间。
 - 全周期收益曲线为平滑上行，策略一致性较好。
-- 可执行白名单主题：francisco, san, number, tsa, total, passengers.
+- 近 30 天收益曲线表现仍偏正向。
+- 可执行白名单主题：san, francisco, passengers, tsa, number, total.
 
 ## 5. 跟单风险
 - 递进型并发梯度比例偏高，结构管理负担较重。
-- 硬黑名单主题（应避免）：say, during, april, median, home, value.
-- 软黑名单主题（需更严格触发）：easter, bts, sales, album, debut, arirang.
+- 硬黑名单主题（应避免）：say, during, april, value, home, median.
+- 软黑名单主题（需更严格触发）：easter, arirang, bts, debut, sales, album.
 
 ## 6. 板块与关键词过滤
 ### 所属板块
@@ -46,15 +47,15 @@
 - geopolitics
 
 ### 白名单关键词
-- francisco
 - san
-- number
-- tsa
-- total
+- francisco
 - passengers
+- tsa
+- number
+- total
+- city
 - new
 - york
-- city
 - less
 - chicago
 - posts
@@ -63,28 +64,28 @@
 - say
 - during
 - april
-- median
-- home
 - value
+- home
+- median
 - week
 - between
 - conference
-- house
 - white
+- house
 - press
 
 ### 软黑名单关键词
 - easter
+- arirang
 - bts
+- debut
 - sales
 - album
-- debut
-- arirang
-- lunch
 - iran
 - wednesday
+- lunch
 - roll
-- egg
+- big
 - beautiful
 
 ## 7. 账户概览
@@ -92,8 +93,8 @@
 - trade_rows_used: `464`
 - total_buy_usdc: `5495.459735`
 - total_sell_usdc: `1695.322612`
-- traded_markets_count_api: `1773`
-- position_value_api: `1511.348400`
+- traded_markets_count_api: `1801`
+- position_value_api: `1190.022700`
 
 ## 8. 核心指标
 - dual_side_buy_usdc_ratio: `1.13%`
@@ -115,17 +116,17 @@
 ## 9. 收益曲线评估
 - all_time_shape: `平滑上行`
 - all_time_score: `12`
-- d30_shape: `数据不足`
-- d30_score: `0`
-- d7_shape: `数据不足`
-- d7_score: `0`
-- pnl_tag: `长期与近期均偏弱`
+- d30_shape: `平滑上行`
+- d30_score: `6`
+- d7_shape: `平滑上行`
+- d7_score: `2`
+- pnl_tag: `长期/中期/短期均偏强`
 
 ## 10. 评分拆解
 - copyability_score: `24.190000`
 - deployability_score: `20`
 - multi_market_structure_score: `9.800000`
-- pnl_curve_stability_score: `9.990000`
+- pnl_curve_stability_score: `28`
 - risk_penalty_adjustment: `-3.000000`
 - concentration_penalty: `0.000000`
 - low_frequency_cap: `n/a`
