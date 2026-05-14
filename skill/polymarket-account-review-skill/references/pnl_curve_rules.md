@@ -8,7 +8,7 @@ Evaluate three windows:
 - 7d
 
 Preferred data source order:
-1. `closed-positions` realized PnL timeline (official API)
+1. `closed-positions` realized PnL timeline (official API); all-time uses historical ASC pagination, while 7d/30d windows use recent DESC pagination so old high-volume rows cannot starve recent PnL.
 2. current `value` and `positions` snapshot as context
 3. local CSV-derived approximation if API data is missing
 
@@ -77,3 +77,4 @@ Map final 3-window result to one summary tag:
 - PnL score is an adjustment, not a replacement for behavior quality.
 - Bad structural behavior cannot be promoted solely by recent positive PnL.
 - Missing API data must be declared and scored as neutral (`0`).
+- Auto V3 also outputs `pnl_quality_score`, `closed_positions_recent_coverage_days`, and data-quality flags/caps when recent closed positions are missing or truncated.

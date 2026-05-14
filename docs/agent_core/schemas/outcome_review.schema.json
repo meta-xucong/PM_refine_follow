@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutcomeReview",
+  "type": "object",
+  "required": [
+    "account_address",
+    "horizon_days",
+    "outcome_verdict",
+    "confidence",
+    "summary",
+    "what_changed",
+    "false_positive_reason",
+    "lessons"
+  ],
+  "properties": {
+    "account_address": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$"
+    },
+    "horizon_days": {
+      "type": "integer",
+      "enum": [7, 30]
+    },
+    "outcome_verdict": {
+      "type": "string",
+      "enum": ["validated_good", "still_watchlist", "false_positive", "data_insufficient", "deteriorated"]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "summary": {
+      "type": "string"
+    },
+    "what_changed": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "false_positive_reason": {
+      "type": ["string", "null"]
+    },
+    "lessons": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}
+

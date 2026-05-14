@@ -20,7 +20,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
@@ -32,6 +32,19 @@ class FetchConfig:
     timeout_seconds: int = 30
     max_retries: int = 4
     retry_backoff_seconds: float = 1.5
+    request_sleep_seconds: float = 0.10
+    _last_request_at: float = field(default=0.0, init=False, repr=False)
+
+
+def wait_for_request_slot(cfg: FetchConfig) -> None:
+    interval = max(0.0, float(cfg.request_sleep_seconds))
+    if interval <= 0:
+        return
+    now = time.monotonic()
+    delay = interval - (now - cfg._last_request_at)
+    if delay > 0:
+        time.sleep(delay)
+    cfg._last_request_at = time.monotonic()
 
 
 def request_json(path: str, params: dict[str, Any], cfg: FetchConfig) -> Any:
@@ -46,6 +59,7 @@ def request_json(path: str, params: dict[str, Any], cfg: FetchConfig) -> Any:
 
     last_err: Exception | None = None
     for attempt in range(cfg.max_retries + 1):
+        wait_for_request_slot(cfg)
         try:
             with urllib.request.urlopen(req, timeout=cfg.timeout_seconds) as resp:
                 return json.loads(resp.read().decode("utf-8"))
@@ -72,6 +86,7 @@ def request_bytes(path: str, params: dict[str, Any], cfg: FetchConfig) -> bytes:
 
     last_err: Exception | None = None
     for attempt in range(cfg.max_retries + 1):
+        wait_for_request_slot(cfg)
         try:
             with urllib.request.urlopen(req, timeout=cfg.timeout_seconds) as resp:
                 return resp.read()
@@ -231,6 +246,16 @@ def filter_curve_by_days(curve: list[dict[str, Any]], days: int | None) -> list[
     return [p for p in curve if datetime.fromisoformat(p["date"]).date() >= cutoff]
 
 
+def recent_coverage_days(rows: list[dict[str, Any]]) -> float:
+    timestamps = [to_int(r.get("timestamp"), 0) for r in rows]
+    timestamps = [ts for ts in timestamps if ts > 0]
+    if not timestamps:
+        return 0.0
+    oldest_ts = min(timestamps)
+    now_ts = int(time.time())
+    return round(max(0.0, (now_ts - oldest_ts) / 86400.0), 3)
+
+
 def classify_curve(curve: list[dict[str, Any]], window_name: str) -> dict[str, Any]:
     if len(curve) < 2:
         return {
@@ -242,13 +267,26 @@ def classify_curve(curve: list[dict[str, Any]], window_name: str) -> dict[str, A
             "trend_slope": 0.0,
             "max_drawdown": 0.0,
             "daily_volatility": 0.0,
+            "drawdown_to_return_ratio": None,
+            "daily_volatility_to_return_ratio": None,
+            "largest_daily_gain": 0.0,
+            "largest_daily_loss": 0.0,
+            "largest_daily_abs_move": 0.0,
+            "largest_daily_gain_share": None,
+            "largest_daily_abs_move_to_return_ratio": None,
         }
 
     y = [to_float(p["cumulative_realized_pnl"]) for p in curve]
+    daily = [to_float(p.get("daily_realized_pnl"), 0.0) for p in curve]
     total_return = y[-1] - y[0]
     slope = linear_slope(y)
     mdd = max_drawdown(y)
     vol = daily_volatility(y)
+    largest_gain = max(daily, default=0.0)
+    largest_loss = min(daily, default=0.0)
+    largest_abs = max((abs(v) for v in daily), default=0.0)
+    positive_total = sum(v for v in daily if v > 0)
+    abs_return_base = max(abs(total_return), 1.0)
 
     significance = max(50.0, 0.03 * max(abs(y[-1]), 1.0))
 
@@ -275,6 +313,13 @@ def classify_curve(curve: list[dict[str, Any]], window_name: str) -> dict[str, A
         "trend_slope": round(slope, 6),
         "max_drawdown": round(mdd, 6),
         "daily_volatility": round(vol, 6),
+        "drawdown_to_return_ratio": round(mdd / abs_return_base, 6),
+        "daily_volatility_to_return_ratio": round(vol / abs_return_base, 6),
+        "largest_daily_gain": round(largest_gain, 6),
+        "largest_daily_loss": round(largest_loss, 6),
+        "largest_daily_abs_move": round(largest_abs, 6),
+        "largest_daily_gain_share": None if positive_total <= 0 else round(largest_gain / positive_total, 6),
+        "largest_daily_abs_move_to_return_ratio": round(largest_abs / abs_return_base, 6),
     }
 
 
@@ -286,6 +331,52 @@ def summarize_pnl_tag(all_time_shape: str, d30_shape: str, d7_shape: str) -> str
     if all_time_shape in {"flat", "down"} and d30_shape in {"smooth_up", "volatile_up"} and d7_shape in {"smooth_up", "volatile_up"}:
         return "long_moderate_recent_improving"
     return "long_and_recent_weak"
+
+
+def account_lifetime_activity_profile(closed_positions: list[dict[str, Any]]) -> dict[str, Any]:
+    timestamps = sorted(to_int(r.get("timestamp"), 0) for r in closed_positions)
+    timestamps = [ts for ts in timestamps if ts > 0]
+    if not timestamps:
+        return {
+            "first_closed_position_ts": None,
+            "first_closed_position_date": None,
+            "last_closed_position_ts": None,
+            "last_closed_position_date": None,
+            "account_age_days": None,
+            "closed_position_active_days": 0,
+            "closed_position_active_months": 0,
+            "account_lifetime_months": 0,
+            "closed_position_active_month_ratio": 0.0,
+            "closed_position_active_days_30d": 0,
+            "closed_position_active_days_90d": 0,
+        }
+
+    now_ts = int(time.time())
+    first_ts = timestamps[0]
+    last_ts = timestamps[-1]
+    active_dates = {
+        datetime.fromtimestamp(ts, tz=timezone.utc).date()
+        for ts in timestamps
+    }
+    active_months = {date.strftime("%Y-%m") for date in active_dates}
+    first_date = datetime.fromtimestamp(first_ts, tz=timezone.utc).date()
+    now_date = datetime.now(timezone.utc).date()
+    lifetime_months = max(1, (now_date.year - first_date.year) * 12 + (now_date.month - first_date.month) + 1)
+    cutoff_30 = now_date - timedelta(days=30)
+    cutoff_90 = now_date - timedelta(days=90)
+    return {
+        "first_closed_position_ts": first_ts,
+        "first_closed_position_date": first_date.isoformat(),
+        "last_closed_position_ts": last_ts,
+        "last_closed_position_date": datetime.fromtimestamp(last_ts, tz=timezone.utc).date().isoformat(),
+        "account_age_days": round(max(0.0, (now_ts - first_ts) / 86400.0), 3),
+        "closed_position_active_days": len(active_dates),
+        "closed_position_active_months": len(active_months),
+        "account_lifetime_months": lifetime_months,
+        "closed_position_active_month_ratio": round(len(active_months) / max(1, lifetime_months), 6),
+        "closed_position_active_days_30d": sum(1 for date in active_dates if date >= cutoff_30),
+        "closed_position_active_days_90d": sum(1 for date in active_dates if date >= cutoff_90),
+    }
 
 
 def fetch_account_summary(account: str, page_limit: int, max_closed_records: int, max_open_records: int, cfg: FetchConfig) -> dict[str, Any]:
@@ -309,6 +400,18 @@ def fetch_account_summary(account: str, page_limit: int, max_closed_records: int
         extra_params={"sortBy": "TIMESTAMP", "sortDirection": "ASC"},
     )
 
+    # Recent PnL must not be starved by old rows on high-activity accounts.
+    # Keep the historical ASC pull for compatibility, but calculate 7d/30d
+    # windows from a newest-first page set.
+    closed_positions_recent = fetch_paginated(
+        "/closed-positions",
+        user=account,
+        page_limit=page_limit,
+        max_records=max_closed_records,
+        cfg=cfg,
+        extra_params={"sortBy": "TIMESTAMP", "sortDirection": "DESC"},
+    )
+
     snapshot = None
     snapshot_error = None
     try:
@@ -325,19 +428,22 @@ def fetch_account_summary(account: str, page_limit: int, max_closed_records: int
     open_cash_pnl = sum(to_float(r.get("cashPnl"), 0.0) for r in open_positions)
     open_realized_pnl = sum(to_float(r.get("realizedPnl"), 0.0) for r in open_positions)
     closed_realized_total = sum(to_float(r.get("realizedPnl"), 0.0) for r in closed_positions)
+    account_total_pnl = closed_realized_total + open_cash_pnl + open_realized_pnl
 
     now_ts = int(time.time())
     ts_7d = now_ts - 7 * 24 * 3600
     ts_30d = now_ts - 30 * 24 * 3600
-    realized_7d = sum(to_float(r.get("realizedPnl"), 0.0) for r in closed_positions if to_int(r.get("timestamp"), 0) >= ts_7d)
-    realized_30d = sum(to_float(r.get("realizedPnl"), 0.0) for r in closed_positions if to_int(r.get("timestamp"), 0) >= ts_30d)
+    realized_7d = sum(to_float(r.get("realizedPnl"), 0.0) for r in closed_positions_recent if to_int(r.get("timestamp"), 0) >= ts_7d)
+    realized_30d = sum(to_float(r.get("realizedPnl"), 0.0) for r in closed_positions_recent if to_int(r.get("timestamp"), 0) >= ts_30d)
 
     curve = build_daily_realized_curve(closed_positions)
+    recent_curve = build_daily_realized_curve(closed_positions_recent)
     curve_all = classify_curve(curve, "all_time")
-    curve_30 = classify_curve(filter_curve_by_days(curve, 30), "d30")
-    curve_7 = classify_curve(filter_curve_by_days(curve, 7), "d7")
+    curve_30 = classify_curve(filter_curve_by_days(recent_curve, 30), "d30")
+    curve_7 = classify_curve(filter_curve_by_days(recent_curve, 7), "d7")
 
     summary_tag = summarize_pnl_tag(curve_all["shape"], curve_30["shape"], curve_7["shape"])
+    lifetime_profile = account_lifetime_activity_profile(closed_positions)
 
     return {
         "account_address": account,
@@ -356,9 +462,15 @@ def fetch_account_summary(account: str, page_limit: int, max_closed_records: int
             "open_positions_cash_pnl_sum": round(open_cash_pnl, 6),
             "open_positions_realized_pnl_sum": round(open_realized_pnl, 6),
             "closed_positions_count": len(closed_positions),
+            "closed_positions_recent_count": len(closed_positions_recent),
+            "closed_positions_incomplete": len(closed_positions) >= max_closed_records,
+            "closed_positions_recent_incomplete": len(closed_positions_recent) >= max_closed_records,
+            "closed_positions_recent_coverage_days": recent_coverage_days(closed_positions_recent),
             "closed_positions_realized_pnl_total": round(closed_realized_total, 6),
+            "account_total_pnl": round(account_total_pnl, 6),
             "closed_positions_realized_pnl_30d": round(realized_30d, 6),
             "closed_positions_realized_pnl_7d": round(realized_7d, 6),
+            **lifetime_profile,
         },
         "pnl_curve": {
             "all_time": curve_all,
@@ -381,12 +493,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-open-records", type=int, default=5000, help="Max open-position rows to fetch.")
     parser.add_argument("--timeout", type=int, default=30, help="HTTP timeout seconds.")
     parser.add_argument("--retries", type=int, default=4, help="Max retries per request.")
+    parser.add_argument("--request-sleep", type=float, default=0.10, help="Minimum seconds between summary API requests.")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    cfg = FetchConfig(timeout_seconds=args.timeout, max_retries=args.retries)
+    cfg = FetchConfig(timeout_seconds=args.timeout, max_retries=args.retries, request_sleep_seconds=args.request_sleep)
 
     summary = fetch_account_summary(
         account=args.account.lower(),

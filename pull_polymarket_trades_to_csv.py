@@ -45,6 +45,10 @@ class HighFrequencyAccountError(RuntimeError):
     pass
 
 
+class ActivityOffsetLimitError(RuntimeError):
+    pass
+
+
 def load_config(path: str) -> dict:
     with open(path, "r", encoding="utf-8-sig") as f:
         return json.load(f)
@@ -127,6 +131,71 @@ def sanitize_filename_part(text: str) -> str:
     return cleaned[:80] if cleaned else "account"
 
 
+def request_activity_page(
+    user: str,
+    start_ts: int,
+    end_ts: int,
+    limit: int,
+    offset: int,
+    timeout_seconds: int,
+    max_retries: int,
+    retry_sleep_seconds: float,
+) -> list[dict]:
+    params = {
+        "user": user,
+        "start": start_ts,
+        "end": end_ts,
+        "limit": limit,
+        "offset": offset,
+    }
+    url = BASE_URL + "?" + urllib.parse.urlencode(params)
+    print("Requesting:", url)
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json",
+        },
+    )
+
+    data = None
+    for attempt in range(max_retries + 1):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            break
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", errors="ignore")
+            print(f"\nHTTP Error {e.code}")
+            print("Response body:")
+            print(body)
+
+            if e.code == 400 and "max historical activity offset of 3000 exceeded" in body:
+                raise ActivityOffsetLimitError(body) from e
+
+            should_retry = e.code == 429 or e.code >= 500
+            if should_retry and attempt < max_retries:
+                sleep_s = retry_sleep_seconds * (attempt + 1)
+                print(f"Retrying after HTTP {e.code} in {sleep_s:.1f}s ({attempt + 1}/{max_retries})")
+                time.sleep(sleep_s)
+                continue
+            raise
+        except (TimeoutError, socket.timeout, urllib.error.URLError, http.client.IncompleteRead, OSError) as e:
+            if attempt < max_retries:
+                sleep_s = retry_sleep_seconds * (attempt + 1)
+                print(f"Transient error: {e}. Retry in {sleep_s:.1f}s ({attempt + 1}/{max_retries})")
+                time.sleep(sleep_s)
+                continue
+            raise RuntimeError(f"Request failed after {max_retries} retries: {url}") from e
+
+    if data is None:
+        raise RuntimeError(f"No response data after retries: {url}")
+    if not isinstance(data, list):
+        return []
+    return [row for row in data if isinstance(row, dict)]
+
+
 def fetch_chunk(
     user: str,
     start_ts: int,
@@ -137,103 +206,115 @@ def fetch_chunk(
     max_retries: int,
     retry_sleep_seconds: float,
     high_frequency_window_seconds: int,
+    historical_offset_limit: int = 3000,
+    offset_probe_after_rows: int = 0,
+    offset_probe_first: bool = False,
 ) -> list[dict]:
     rows = []
     offset = 0
+    offset_probe_done = False
+    offset_probe_enabled = historical_offset_limit > 0 and offset_probe_after_rows >= 0
+
+    def split_or_skip(reason: str) -> list[dict]:
+        if end_ts - start_ts <= high_frequency_window_seconds:
+            raise HighFrequencyAccountError(
+                f"{user} is high-frequency (offset>{historical_offset_limit} even within short window)."
+            )
+        if start_ts >= end_ts:
+            raise RuntimeError(
+                "Single-second data still exceeded historical offset limit. "
+                "Cannot split further."
+            )
+        mid_ts = (start_ts + end_ts) // 2
+        if mid_ts < start_ts or mid_ts >= end_ts:
+            raise RuntimeError(
+                "Time range cannot be split further while handling offset limit."
+            )
+        print(reason)
+        print(f"Chunk too large, split into [{start_ts}, {mid_ts}] and [{mid_ts + 1}, {end_ts}]")
+        left = fetch_chunk(
+            user,
+            start_ts,
+            mid_ts,
+            limit,
+            timeout_seconds,
+            page_sleep_seconds,
+            max_retries,
+            retry_sleep_seconds,
+            high_frequency_window_seconds,
+            historical_offset_limit,
+            offset_probe_after_rows,
+            True,
+        )
+        right = fetch_chunk(
+            user,
+            mid_ts + 1,
+            end_ts,
+            limit,
+            timeout_seconds,
+            page_sleep_seconds,
+            max_retries,
+            retry_sleep_seconds,
+            high_frequency_window_seconds,
+            historical_offset_limit,
+            offset_probe_after_rows,
+            True,
+        )
+        return left + right
+
+    def probe_offset_limit(reason: str) -> bool:
+        try:
+            probe_rows = request_activity_page(
+                user,
+                start_ts,
+                end_ts,
+                1,
+                historical_offset_limit,
+                timeout_seconds,
+                max_retries,
+                retry_sleep_seconds,
+            )
+        except ActivityOffsetLimitError:
+            return True
+        if page_sleep_seconds > 0:
+            time.sleep(page_sleep_seconds)
+        if probe_rows:
+            print(f"{reason}: found data at offset {historical_offset_limit}")
+            return True
+        return False
+
+    if offset_probe_enabled and offset_probe_first:
+        offset_probe_done = True
+        if probe_offset_limit("Offset probe before fetch"):
+            return split_or_skip(f"Offset probe hit historical activity cap at offset {historical_offset_limit}")
 
     while True:
-        params = {
-            "user": user,
-            "start": start_ts,
-            "end": end_ts,
-            "limit": limit,
-            "offset": offset,
-        }
-        url = BASE_URL + "?" + urllib.parse.urlencode(params)
-        print("Requesting:", url)
-
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "Mozilla/5.0",
-                "Accept": "application/json",
-            },
-        )
-
-        data = None
-        for attempt in range(max_retries + 1):
-            try:
-                with urllib.request.urlopen(req, timeout=timeout_seconds) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
-                break
-            except urllib.error.HTTPError as e:
-                body = e.read().decode("utf-8", errors="ignore")
-                print(f"\nHTTP Error {e.code}")
-                print("Response body:")
-                print(body)
-
-                if e.code == 400 and "max historical activity offset of 3000 exceeded" in body:
-                    if end_ts - start_ts <= high_frequency_window_seconds:
-                        raise HighFrequencyAccountError(
-                            f"{user} is high-frequency (offset>3000 even within short window)."
-                        )
-                    if start_ts >= end_ts:
-                        raise RuntimeError(
-                            "Single-second data still exceeded historical offset limit. "
-                            "Cannot split further."
-                        )
-                    mid_ts = (start_ts + end_ts) // 2
-                    if mid_ts < start_ts or mid_ts >= end_ts:
-                        raise RuntimeError(
-                            "Time range cannot be split further while handling offset limit."
-                        )
-                    print(f"Chunk too large, split into [{start_ts}, {mid_ts}] and [{mid_ts + 1}, {end_ts}]")
-                    left = fetch_chunk(
-                        user,
-                        start_ts,
-                        mid_ts,
-                        limit,
-                        timeout_seconds,
-                        page_sleep_seconds,
-                        max_retries,
-                        retry_sleep_seconds,
-                        high_frequency_window_seconds,
-                    )
-                    right = fetch_chunk(
-                        user,
-                        mid_ts + 1,
-                        end_ts,
-                        limit,
-                        timeout_seconds,
-                        page_sleep_seconds,
-                        max_retries,
-                        retry_sleep_seconds,
-                        high_frequency_window_seconds,
-                    )
-                    return left + right
-
-                should_retry = e.code >= 500
-                if should_retry and attempt < max_retries:
-                    sleep_s = retry_sleep_seconds * (attempt + 1)
-                    print(f"Retrying after HTTP {e.code} in {sleep_s:.1f}s ({attempt + 1}/{max_retries})")
-                    time.sleep(sleep_s)
-                    continue
-                raise
-            except (TimeoutError, socket.timeout, urllib.error.URLError, http.client.IncompleteRead, OSError) as e:
-                if attempt < max_retries:
-                    sleep_s = retry_sleep_seconds * (attempt + 1)
-                    print(f"Transient error: {e}. Retry in {sleep_s:.1f}s ({attempt + 1}/{max_retries})")
-                    time.sleep(sleep_s)
-                    continue
-                raise RuntimeError(f"Request failed after {max_retries} retries: {url}") from e
-
-        if data is None:
-            raise RuntimeError(f"No response data after retries: {url}")
+        try:
+            data = request_activity_page(
+                user,
+                start_ts,
+                end_ts,
+                limit,
+                offset,
+                timeout_seconds,
+                max_retries,
+                retry_sleep_seconds,
+            )
+        except ActivityOffsetLimitError:
+            return split_or_skip("HTTP offset cap hit while paging chunk")
 
         if not data:
             break
 
         rows.extend(data)
+        if (
+            offset_probe_enabled
+            and not offset_probe_done
+            and len(rows) >= offset_probe_after_rows
+            and probe_offset_limit("Offset probe after dense first pages")
+        ):
+            return split_or_skip(f"Offset probe hit historical activity cap at offset {historical_offset_limit}")
+        offset_probe_done = offset_probe_done or len(rows) >= offset_probe_after_rows
 
         if len(data) < limit:
             break
@@ -253,6 +334,9 @@ def fetch_account_trades(account: dict, start_ts: int, end_ts: int, req_cfg: dic
     max_retries = int(req_cfg.get("max_retries", 5))
     retry_sleep_seconds = float(req_cfg.get("retry_sleep_seconds", 1.5))
     high_frequency_window_seconds = int(req_cfg.get("high_frequency_window_seconds", 24 * 3600))
+    historical_offset_limit = int(req_cfg.get("historical_offset_limit", 3000))
+    offset_probe_enabled = bool(req_cfg.get("offset_probe_enabled", True))
+    offset_probe_after_rows = int(req_cfg.get("offset_probe_after_rows", 1000)) if offset_probe_enabled else -1
 
     if limit <= 0:
         raise ValueError("request.limit must be > 0.")
@@ -262,6 +346,10 @@ def fetch_account_trades(account: dict, start_ts: int, end_ts: int, req_cfg: dic
         raise ValueError("request.max_retries must be >= 0.")
     if high_frequency_window_seconds < 0:
         raise ValueError("request.high_frequency_window_seconds must be >= 0.")
+    if historical_offset_limit < 0:
+        raise ValueError("request.historical_offset_limit must be >= 0.")
+    if offset_probe_after_rows < -1:
+        raise ValueError("request.offset_probe_after_rows must be >= -1.")
 
     user = account["address"]
     account_name = account["name"]
@@ -284,6 +372,8 @@ def fetch_account_trades(account: dict, start_ts: int, end_ts: int, req_cfg: dic
             max_retries,
             retry_sleep_seconds,
             high_frequency_window_seconds,
+            historical_offset_limit,
+            offset_probe_after_rows,
         )
 
         for row in chunk_rows:
@@ -418,6 +508,8 @@ def fetch_account_summary_via_skill_script(account: dict, output_dir: str, summa
         str(int(summary_cfg.get("max_closed_records", 5000))),
         "--max-open-records",
         str(int(summary_cfg.get("max_open_records", 5000))),
+        "--request-sleep",
+        str(float(summary_cfg.get("request_sleep_seconds", 0.10))),
     ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     if proc.returncode != 0:

@@ -1,0 +1,302 @@
+let state = {};
+let configs = {};
+
+const $ = (id) => document.getElementById(id);
+
+function toast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+async function api(path, options = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  const data = await res.json();
+  if (!res.ok || data.error) throw new Error(data.error || res.statusText);
+  return data;
+}
+
+function setBadge(process) {
+  const badge = $("processBadge");
+  if (process.running) {
+    badge.textContent = `运行中 PID ${process.pid}`;
+    badge.className = "badge running";
+  } else {
+    badge.textContent = "未运行";
+    badge.className = "badge stopped";
+  }
+}
+
+function fmt(v) {
+  if (v === null || v === undefined || v === "") return "-";
+  if (typeof v === "number") return Number.isInteger(v) ? String(v) : v.toFixed(2);
+  return String(v);
+}
+
+function html(v) {
+  return fmt(v).replace(/[&<>"']/g, (ch) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[ch]));
+}
+
+function shortAddress(address) {
+  if (!address) return "-";
+  return address.length > 14 ? `${address.slice(0, 8)}...${address.slice(-6)}` : address;
+}
+
+function ageText(seconds) {
+  if (seconds === null || seconds === undefined) return "-";
+  if (seconds < 60) return `${Math.round(seconds)} 秒前`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)} 分钟前`;
+  return `${(seconds / 3600).toFixed(1)} 小时前`;
+}
+
+function renderStatus(data) {
+  state = data;
+  setBadge(data.process || {});
+  renderProgress(data.progress || {}, data.process || {});
+  const counts = data.auto?.candidate_counts || {};
+  const alertPushCounts = data.auto?.alert_push_counts || {};
+  $("candidateCounts").textContent = Object.entries(counts).map(([k, v]) => `${k}:${v}`).join("  ") || "0";
+  $("alertCount").textContent = `${fmt((data.excel?.sheet_counts || {}).alerts || 0)} / 待推送:${fmt(alertPushCounts.pending || 0)}`;
+  $("agentCount").textContent = fmt((data.agent?.counts || {}).agent_decisions || 0);
+  $("excelPath").textContent = data.excel?.excel_path || "-";
+
+  renderCycles(data.auto?.latest_cycles || []);
+  renderRuns(data.auto?.recent_runs || []);
+  renderAlerts(data.excel?.alerts || data.auto?.recent_alerts || []);
+  renderAgentReviews(data.excel?.agent_reviews || []);
+}
+
+function renderProgress(progress, process) {
+  const health = progress.health || (process.running ? "starting" : "stopped");
+  const leaderboard = progress.leaderboard || null;
+  $("statusDot").className = `status-dot ${health}`;
+  $("currentPhase").textContent = progress.phase_label || (process.running ? "运行中" : "未运行");
+  $("currentMessage").textContent = progress.message || "-";
+  $("currentCycle").textContent = `Cycle ${fmt(progress.cycle_id)}`;
+  $("heartbeatAge").textContent = progress.updated_at ? `心跳 ${ageText(progress.age_seconds)}` : "暂无心跳";
+
+  if (progress.current_account) {
+    const labelText = progress.current_label || "正在处理该地址";
+    const scanPrompt = progress.scan_prompt && !labelText.includes(progress.scan_prompt) ? ` · ${progress.scan_prompt}` : "";
+    $("currentTargetLarge").textContent = progress.current_account;
+    $("currentTargetHint").textContent = `${labelText}${scanPrompt} · ${progress.current_index ? `批次 ${fmt(progress.current_index)} / ${fmt(progress.batch_total)}` : "等待批次信息"}`;
+  } else if (leaderboard) {
+    $("currentTargetLarge").textContent = "正在扫描排行榜";
+    $("currentTargetHint").textContent = progress.current_target_hint || "当前在发现候选地址，还没有开始处理单个地址";
+  } else {
+    $("currentTargetLarge").textContent = fmt(progress.current_target);
+    $("currentTargetHint").textContent = progress.current_target_hint || "-";
+  }
+
+  if (leaderboard) {
+    const shardIndex = leaderboard.total_shards ? `${fmt(leaderboard.shard_index)} / ${fmt(leaderboard.total_shards)}` : "-";
+    const offsetEnd = Number(leaderboard.offset || 0) + Number(leaderboard.page_limit || 0);
+    const noNew = leaderboard.no_new_pages ? `，连续无新增 ${fmt(leaderboard.no_new_pages)} 页` : "";
+    const earlyStop = leaderboard.early_stop ? `，提前结束：${fmt(leaderboard.early_stop_reason)}` : "";
+    $("leaderboardProgress").textContent = `${fmt(leaderboard.shard)} (${shardIndex})`;
+    $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}，本页新增 ${fmt(leaderboard.new_candidates)}，累计 ${fmt(leaderboard.unique_candidates)}${noNew}${earlyStop}`;
+  } else {
+    $("leaderboardProgress").textContent = "-";
+    $("leaderboardHint").textContent = process.running ? "已离开扫榜阶段" : "-";
+  }
+
+  $("nextStep").textContent = progress.next_step || "-";
+  $("nextStepHint").textContent = progress.updated_at ? `最近心跳 ${ageText(progress.age_seconds)}` : "暂无心跳";
+
+  if (progress.current_account) {
+    $("currentAccount").textContent = `${progress.current_account} ${progress.current_label ? `(${progress.current_label})` : ""}`;
+  } else if (leaderboard) {
+    $("currentAccount").textContent = "扫榜阶段：尚无单个地址";
+  } else {
+    $("currentAccount").textContent = "-";
+  }
+  if (progress.batch_total) {
+    $("batchProgress").textContent = `${fmt(progress.current_index)} / ${fmt(progress.batch_total)} (${fmt(progress.percent)}%)`;
+  } else if (leaderboard && progress.percent !== null && progress.percent !== undefined) {
+    $("batchProgress").textContent = `扫榜 ${fmt(progress.percent)}%`;
+  } else {
+    $("batchProgress").textContent = progress.percent === 100 ? "100%" : "-";
+  }
+  const stats = progress.stats || {};
+  $("cycleStats").textContent = `扫:${fmt(stats.scanned)} 处理:${fmt(stats.processed)} 推送:${fmt(stats.alerts)} 跳过:${fmt(stats.skipped)}`;
+  $("lastAction").textContent = progress.auto_action || progress.alert_grade || (leaderboard ? `候选 ${fmt(leaderboard.unique_candidates)} / 新增 ${fmt(leaderboard.new_candidates)}` : (progress.phase || "-"));
+  $("progressFill").style.width = `${Number(progress.percent || 0)}%`;
+  renderTimeline(progress.history || []);
+}
+
+function renderTimeline(rows) {
+  $("timelineHint").textContent = rows.length ? `${rows.length} 条，5 秒自动刷新` : "暂无事件";
+  $("progressTimeline").innerHTML = rows.map((r) => {
+    const leaderboard = r.leaderboard || null;
+    const detail = r.current_account
+      ? `${shortAddress(r.current_account)}${r.current_label ? ` · ${r.current_label}` : ""}`
+      : (leaderboard ? `${fmt(leaderboard.shard)} offset ${fmt(leaderboard.offset)}` : "");
+    const when = r.updated_ts ? ageText(Math.max(0, (Date.now() / 1000) - Number(r.updated_ts))) : "-";
+    return `
+      <div class="timeline-item">
+        <div class="timeline-phase">${html(r.phase_label || r.phase)}</div>
+        <div class="timeline-message">${html(r.message || "")}</div>
+        <div class="timeline-account" title="${html(detail)}">${html(detail || when)}</div>
+      </div>
+    `;
+  }).join("") || `<div class="timeline-item"><div class="timeline-phase">暂无</div><div class="timeline-message">还没有收到进度心跳</div><div class="timeline-account">-</div></div>`;
+}
+
+function renderCycles(rows) {
+  $("cyclesBody").innerHTML = rows.map((r) => `
+    <tr><td>${html(r.id)}</td><td>${html(r.status)}</td><td>${html(r.started_at)}</td><td>${html(r.finished_at)}</td><td>${html(r.note)}</td></tr>
+  `).join("") || `<tr><td colspan="5">暂无周期</td></tr>`;
+}
+
+function renderRuns(rows) {
+  $("runsBody").innerHTML = rows.map((r) => `
+    <tr><td title="${html(r.address)}">${html(shortAddress(r.address))}</td><td>${html(r.status)}</td><td>${html(r.final_score)}</td><td>${html(r.alert_grade)}</td><td>${html(r.created_at)}</td></tr>
+  `).join("") || `<tr><td colspan="5">暂无任务</td></tr>`;
+}
+
+function renderAccounts(rows) {
+  $("accountsBody").innerHTML = rows.map((r) => `
+    <tr>
+      <td title="${html(r.address)}">${html(r.label)}<br><span class="muted">${html(shortAddress(r.address))}</span></td>
+      <td>${html(r.final_score)}</td>
+      <td>${html(r.alert_grade)}</td>
+      <td>${html(r.auto_action)}${r.scan_prompt ? `<br><span class="muted">${html(r.scan_prompt)}</span>` : ""}</td>
+      <td>${html(r.agent_verdict)}<br><span class="muted">${html(r.agent_confidence)}</span></td>
+      <td>${html(r.data_quality_score)}</td>
+      <td>${html(r.pnl_quality_score)}</td>
+      <td>${html(r.copy_capacity_score)}</td>
+      <td>${html(r.updated_at)}</td>
+    </tr>
+  `).join("") || `<tr><td colspan="9">暂无候选</td></tr>`;
+}
+
+function renderAlerts(rows) {
+  $("alertsList").innerHTML = rows.map((r) => `
+    <div class="list-item">
+      <div class="line1"><span>${html(r.account_label || r.account_address || r.address)}</span><span>${html(r.alert_grade)} ${html(r.final_score)}</span></div>
+      <div class="meta">${html([r.auto_action || r.title || "", r.push_status ? `推送状态: ${r.push_status}` : "", r.score_flags || r.message || ""].filter(Boolean).join("\n"))}</div>
+    </div>
+  `).join("") || `<div class="list-item">暂无告警</div>`;
+}
+
+function renderAgentReviews(rows) {
+  $("agentReviewsList").innerHTML = rows.map((r) => `
+    <div class="list-item">
+      <div class="line1"><span>${html(r.account_label || r.account_address)}</span><span>${html(r.agent_verdict)} / ${html(r.agent_confidence)}</span></div>
+      <div class="meta">${html(r.agent_reason)}\n${html(r.agent_risk_summary)}</div>
+    </div>
+  `).join("") || `<div class="list-item">暂无 Agent 复核</div>`;
+}
+
+function loadConfigForms(cfg) {
+  configs = cfg;
+  const auto = cfg.auto_config || {};
+  $("cfgMaxRank").value = auto.scan?.max_rank ?? 100000;
+  $("cfgBatch").value = auto.scan?.process_batch_size ?? 25;
+  $("cfgSleep").value = auto.scan?.cycle_sleep_seconds ?? 600;
+  $("cfgNoNewPages").value = auto.scan?.leaderboard_no_new_pages_stop ?? 40;
+  $("cfgAlertThreshold").value = auto.scoring?.alert_threshold ?? 40;
+  $("cfgAgentEnabled").checked = Boolean(auto.agent?.enabled);
+  $("cfgServerEnabled").checked = Boolean(auto.serverchan?.enabled);
+  $("cfgServerBatch").value = auto.serverchan?.batch_size ?? 10;
+  $("configEditor").value = JSON.stringify(cfg, null, 2);
+}
+
+function collectConfigFromForm() {
+  const full = JSON.parse($("configEditor").value);
+  const auto = full.auto_config || {};
+  auto.scan = auto.scan || {};
+  auto.scoring = auto.scoring || {};
+  auto.agent = auto.agent || {};
+  auto.serverchan = auto.serverchan || {};
+  auto.scan.max_rank = Number($("cfgMaxRank").value || auto.scan.max_rank || 100000);
+  auto.scan.process_batch_size = Number($("cfgBatch").value || auto.scan.process_batch_size || 25);
+  auto.scan.cycle_sleep_seconds = Number($("cfgSleep").value || auto.scan.cycle_sleep_seconds || 600);
+  auto.scan.leaderboard_no_new_pages_stop = Number($("cfgNoNewPages").value || auto.scan.leaderboard_no_new_pages_stop || 40);
+  auto.scoring.alert_threshold = Number($("cfgAlertThreshold").value || auto.scoring.alert_threshold || 40);
+  auto.agent.enabled = $("cfgAgentEnabled").checked;
+  auto.serverchan.enabled = $("cfgServerEnabled").checked;
+  auto.serverchan.batch_size = Number($("cfgServerBatch").value || auto.serverchan.batch_size || 10);
+  full.auto_config = auto;
+  return full;
+}
+
+async function refreshAll() {
+  const [status, config, accounts, proc] = await Promise.all([
+    api("/api/status"),
+    api("/api/config"),
+    api("/api/accounts?limit=80"),
+    api("/api/process"),
+  ]);
+  renderStatus(status);
+  renderAccounts(accounts.accounts || []);
+  $("logTail").textContent = proc.log_tail || "";
+  loadConfigForms(config);
+}
+
+async function startRun() {
+  const body = { dry_run_alerts: $("dryRunAlerts").checked };
+  const res = await api("/api/start", { method: "POST", body: JSON.stringify(body) });
+  toast(res.started ? `已启动 PID ${res.pid}` : `未启动：${res.reason}`);
+  await refreshProcessOnly();
+}
+
+async function runOnce() {
+  const body = {
+    limit_candidates: Number($("limitCandidates").value || 10),
+    process_limit: Number($("processLimit").value || 3),
+    dry_run_alerts: $("dryRunAlerts").checked,
+    prefilter_only: $("prefilterOnly").checked,
+  };
+  const res = await api("/api/run-once", { method: "POST", body: JSON.stringify(body) });
+  toast(res.started ? `单轮任务已启动 PID ${res.pid}` : `未启动：${res.reason}`);
+  await refreshProcessOnly();
+}
+
+async function stopRun() {
+  const res = await api("/api/stop", { method: "POST", body: "{}" });
+  toast(res.stopped ? "已停止" : `未停止：${res.reason}`);
+  await refreshProcessOnly();
+}
+
+async function saveConfig() {
+  const full = collectConfigFromForm();
+  await api("/api/config", { method: "POST", body: JSON.stringify(full) });
+  toast("配置已保存");
+  await refreshAll();
+}
+
+async function refreshProcessOnly() {
+  const proc = await api("/api/process");
+  setBadge(proc.process || {});
+  renderProgress(proc.progress || {}, proc.process || {});
+  $("logTail").textContent = proc.log_tail || "";
+}
+
+document.querySelectorAll(".tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach((x) => x.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach((x) => x.classList.remove("active"));
+    btn.classList.add("active");
+    $(btn.dataset.tab).classList.add("active");
+  });
+});
+
+$("refreshBtn").addEventListener("click", () => refreshAll().catch((e) => toast(e.message)));
+$("startBtn").addEventListener("click", () => startRun().catch((e) => toast(e.message)));
+$("runOnceBtn").addEventListener("click", () => runOnce().catch((e) => toast(e.message)));
+$("stopBtn").addEventListener("click", () => stopRun().catch((e) => toast(e.message)));
+$("saveConfigBtn").addEventListener("click", () => saveConfig().catch((e) => toast(e.message)));
+
+refreshAll().catch((e) => toast(e.message));
+setInterval(() => refreshProcessOnly().catch(() => {}), 5000);

@@ -91,6 +91,15 @@ def write_summary_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         "account_label",
         "raw_score",
         "anchored_score",
+        "score_version",
+        "legacy_v2_score",
+        "discovery_score",
+        "data_quality_score",
+        "pnl_quality_score",
+        "copy_capacity_score",
+        "alert_grade",
+        "auto_action",
+        "score_flags",
         "delta_vs_anchor_60",
         "delta_vs_anchor_raw",
         "final_score",
@@ -187,6 +196,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--live-api-retries", type=int, default=2, help="Retry count for analyze-stage live fallback.")
     parser.add_argument("--anchor-account", default=DEFAULT_ANCHOR_ACCOUNT, help="Anchor account address for 60-point baseline")
     parser.add_argument("--anchor-file", default=None, help="Path to frozen anchor baseline JSON")
+    parser.add_argument("--score-version", choices=["auto_v3", "v2_2"], default="auto_v3", help="Scoring version for analyze_account.py")
+    parser.add_argument("--auto-v3-anchor-file", default=None, help="Path to frozen Auto V3 anchor baseline JSON")
     parser.add_argument("--anchor-window-days", type=int, default=30, help="Fallback pull window days when anchor account is missing in CSV")
     parser.add_argument("--rebuild-anchor", action="store_true", help="Force rebuild anchor baseline before scoring")
     parser.add_argument("--limit-accounts", type=int, default=0, help="Optional limit for debug runs")
@@ -245,6 +256,11 @@ def main() -> None:
         if args.anchor_file
         else (script_dir.parent / "baseline" / "baseline_anchor.json").resolve()
     )
+    auto_v3_anchor_file = (
+        Path(args.auto_v3_anchor_file).resolve()
+        if args.auto_v3_anchor_file
+        else (script_dir.parent / "baseline" / "baseline_anchor_auto_v3.json").resolve()
+    )
     anchor_account = args.anchor_account.lower()
 
     anchor_file = ensure_anchor_baseline(
@@ -258,6 +274,9 @@ def main() -> None:
     run_anchor_file = output_dir / "baseline" / "baseline_anchor.json"
     run_anchor_file.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(anchor_file, run_anchor_file)
+    run_auto_v3_anchor_file = output_dir / "baseline" / "baseline_anchor_auto_v3.json"
+    if auto_v3_anchor_file.exists():
+        shutil.copy2(auto_v3_anchor_file, run_auto_v3_anchor_file)
 
     accounts = discover_accounts(csv_path)
     if not accounts:
@@ -303,6 +322,10 @@ def main() -> None:
             account,
             "--anchor-file",
             str(anchor_file),
+            "--score-version",
+            args.score_version,
+            "--auto-v3-anchor-file",
+            str(auto_v3_anchor_file),
             "--output-json",
             str(analysis_json),
             "--live-api-timeout",
@@ -350,6 +373,23 @@ def main() -> None:
             "account_label": analysis.get("account_label") or account,
             "raw_score": float(analysis.get("raw_score") or analysis.get("final_score") or 0.0),
             "anchored_score": float(analysis.get("anchored_score") or analysis.get("final_score") or 0.0),
+            "score_version": analysis.get("score_version") or args.score_version,
+            "legacy_v2_score": (
+                float(analysis.get("legacy_v2_score")) if analysis.get("legacy_v2_score") is not None else None
+            ),
+            "discovery_score": float(analysis.get("discovery_score") or 0.0),
+            "data_quality_score": (
+                float(analysis.get("data_quality_score")) if analysis.get("data_quality_score") is not None else None
+            ),
+            "pnl_quality_score": (
+                float(analysis.get("pnl_quality_score")) if analysis.get("pnl_quality_score") is not None else None
+            ),
+            "copy_capacity_score": (
+                float(analysis.get("copy_capacity_score")) if analysis.get("copy_capacity_score") is not None else None
+            ),
+            "alert_grade": analysis.get("alert_grade") or "none",
+            "auto_action": analysis.get("auto_action") or "store_only",
+            "score_flags": ",".join(analysis.get("score_flags") or []),
             "delta_vs_anchor_60": float(analysis.get("delta_vs_anchor_60") or 0.0),
             "delta_vs_anchor_raw": (
                 float(analysis.get("delta_vs_anchor_raw")) if analysis.get("delta_vs_anchor_raw") is not None else None
@@ -397,6 +437,9 @@ def main() -> None:
     print(f"Batch complete. Accounts analyzed: {len(rows)}")
     print(f"Anchor baseline (source): {anchor_file}")
     print(f"Anchor baseline (run copy): {run_anchor_file}")
+    if auto_v3_anchor_file.exists():
+        print(f"Auto V3 anchor baseline (source): {auto_v3_anchor_file}")
+        print(f"Auto V3 anchor baseline (run copy): {run_auto_v3_anchor_file}")
     print(f"Summary markdown: {summary_md_path}")
     print(f"Summary csv: {summary_csv_path}")
 

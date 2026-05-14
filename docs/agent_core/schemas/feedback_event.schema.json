@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FeedbackEvent",
+  "type": "object",
+  "required": [
+    "account_address",
+    "feedback_type",
+    "source"
+  ],
+  "properties": {
+    "account_address": {
+      "type": "string",
+      "pattern": "^0x[a-fA-F0-9]{40}$"
+    },
+    "feedback_type": {
+      "type": "string",
+      "enum": ["like", "dislike", "blacklist", "watch", "false_positive", "good_candidate", "neutral"]
+    },
+    "note": {
+      "type": ["string", "null"]
+    },
+    "source": {
+      "type": "string",
+      "enum": ["excel", "cli", "json", "manual"]
+    },
+    "source_ref": {
+      "type": ["string", "null"]
+    },
+    "created_at": {
+      "type": ["string", "null"]
+    }
+  },
+  "additionalProperties": false
+}
+

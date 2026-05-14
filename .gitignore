@@ -1,0 +1,14 @@
+# Python caches
+__pycache__/
+*.pyc
+
+# Generated auto-screening runtime data
+auto_screen_data/
+auto_screen_config.ui.json
+agent_core_config.ui.json
+
+# Local Codex/task and test scratch data
+.codex-longrun/
+.tmp_dashboard_tests/
+pytest_tmp_run/
+.pytest_cache/

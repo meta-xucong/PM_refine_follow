@@ -2,6 +2,8 @@
 
 This file defines deterministic scoring logic for the skill.
 
+Auto-screening runs now default to `score_version=auto_v3`. The legacy V2.2 score remains available through `--score-version v2_2` and is still emitted as `legacy_v2_score` when Auto V3 is used.
+
 ## 1) Score Dimensions
 
 Use five additive components plus concentration penalty:
@@ -128,3 +130,17 @@ Extra booster:
   - analysis first uses prefetched summary
   - if incomplete and live fallback enabled, fetch once live
   - if still missing, PnL contribution goes neutral and assumption is recorded
+
+## 10) Auto V3 Operational Layer
+
+Auto V3 adds an automation layer on top of the existing behavior metrics:
+
+- `discovery_score`: leaderboard-source priority score used for candidate ordering, not final copy quality.
+- `data_quality_score`: `0..10`, with caps for missing activity, missing summaries, recent closed-position truncation, and unknown PnL windows.
+- `pnl_quality_score`: `-20..25`, combining shape, normalized 30d return, 7d/30d momentum, and drawdown pressure.
+- `copy_capacity_score`: `0..10`, using BUY notional distribution, tiny-trade ratio, extreme-price ratio, and active-day frequency.
+- `automation_risk_penalty`: high-frequency, API cap, fast-token, and fast-sell penalties.
+- `alert_grade`: `A/B/C/none`, separating strong candidates from watchlist noise.
+- `auto_action`: `push_strong_candidate`, `push_selective_candidate`, `push_watchlist`, `defer_recheck`, `skip`, or `store_only`.
+
+Auto V3 uses `baseline/baseline_anchor_auto_v3.json` with `raw_base_score_v3`, keeping the same benchmark account targeted to 60 points without reusing V2.2's raw base.

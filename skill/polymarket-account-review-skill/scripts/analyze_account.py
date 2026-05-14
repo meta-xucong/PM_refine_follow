@@ -7,6 +7,7 @@ import json
 import re
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
+from pathlib import Path
 from statistics import median
 from typing import Any
 
@@ -51,6 +52,19 @@ def safe_ratio(num: float, den: float) -> float | None:
     return None if den <= 0 else (num / den)
 
 
+def percentile(values: list[float], q: float) -> float | None:
+    clean = sorted(v for v in values if v is not None)
+    if not clean:
+        return None
+    if len(clean) == 1:
+        return clean[0]
+    pos = (len(clean) - 1) * clamp(q, 0.0, 1.0)
+    lo = int(pos)
+    hi = min(lo + 1, len(clean) - 1)
+    frac = pos - lo
+    return clean[lo] * (1 - frac) + clean[hi] * frac
+
+
 def pct(x: float | None) -> str:
     return "n/a" if x is None else f"{x * 100:.2f}%"
 
@@ -80,6 +94,7 @@ def load_trades(csv_path: str) -> list[dict[str, Any]]:
                     "title": (raw.get("title") or "").strip(),
                     "size": to_float(raw.get("size"), 0.0),
                     "usdcSize": to_float(raw.get("usdcSize"), 0.0),
+                    "price": to_float(raw.get("price"), 0.0),
                     "asset": (raw.get("asset") or "").strip(),
                     "account_address": (raw.get("account_address") or "").lower().strip(),
                     "account_name": (raw.get("account_name") or "").strip(),
@@ -646,6 +661,24 @@ def activity_metrics(rows: list[dict[str, Any]]) -> dict[str, float]:
     }
 
 
+def capacity_metrics(rows: list[dict[str, Any]], total_buy_usdc: float) -> dict[str, Any]:
+    buy_rows = [r for r in rows if r["side"] == "BUY"]
+    buy_notional = [float(r["usdcSize"]) for r in buy_rows if float(r["usdcSize"]) > 0]
+    tiny_buy_usdc = sum(v for v in buy_notional if v < 2.0)
+    extreme_price_buy = sum(
+        float(r["usdcSize"])
+        for r in buy_rows
+        if 0.0 < float(r.get("price") or 0.0) <= 0.03 or float(r.get("price") or 0.0) >= 0.97
+    )
+    return {
+        "median_buy_notional": percentile(buy_notional, 0.50),
+        "p10_buy_notional": percentile(buy_notional, 0.10),
+        "p90_buy_notional": percentile(buy_notional, 0.90),
+        "tiny_trade_buy_ratio": safe_ratio(tiny_buy_usdc, total_buy_usdc),
+        "extreme_price_trade_ratio": safe_ratio(extreme_price_buy, total_buy_usdc),
+    }
+
+
 def tokenize(text: str) -> list[str]:
     tokens = re.findall(r"[a-zA-Z][a-zA-Z0-9_-]{2,}", text.lower())
     return [t for t in tokens if t not in STOPWORDS]
@@ -822,6 +855,16 @@ def load_anchor_config(path: str | None) -> dict[str, Any] | None:
         data = json.load(f)
     if not isinstance(data, dict):
         raise ValueError("Anchor config must be a JSON object")
+    return data
+
+
+def load_optional_json(path: str | None) -> dict[str, Any] | None:
+    if not path:
+        return None
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError(f"Expected JSON object: {path}")
     return data
 
 
@@ -1069,6 +1112,855 @@ def compute_scores(
     return breakdown, raw_score, anchored_score, decision, assumptions, anchor_context
 
 
+def rank_score(rank: Any, cap: int = 100000) -> float:
+    r = to_int(rank, 0)
+    if r <= 0:
+        return 0.0
+    cap = max(1, cap)
+    return clamp(1.0 - ((r - 1) / cap), 0.0, 1.0)
+
+
+def source_key(source: dict[str, Any]) -> str:
+    timeframe = str(source.get("timeframe") or source.get("period") or source.get("interval") or "").lower()
+    metric = str(source.get("metric") or source.get("sort_by") or source.get("sortBy") or "").lower()
+    if "month" in timeframe:
+        t = "month"
+    elif "week" in timeframe:
+        t = "week"
+    else:
+        t = timeframe
+    if "pnl" in metric or "profit" in metric:
+        m = "pnl"
+    elif "vol" in metric or "volume" in metric:
+        m = "vol"
+    else:
+        m = metric
+    return f"{t}_{m}".strip("_")
+
+
+def leaderboard_rank_from_context(context: dict[str, Any] | None, key: str) -> Any:
+    if not context:
+        return None
+    for name in [f"{key}_rank", key]:
+        if context.get(name) is not None:
+            return context.get(name)
+    best = None
+    for source in context.get("sources") or []:
+        if isinstance(source, dict) and source_key(source) == key:
+            rank = source.get("rank")
+            if rank is not None and (best is None or to_int(rank, 10**9) < to_int(best, 10**9)):
+                best = rank
+    return best
+
+
+def compute_discovery_score(context: dict[str, Any] | None) -> float:
+    if not context:
+        return 0.0
+    if context.get("discovery_score") is not None:
+        return round(clamp(to_float(context.get("discovery_score"), 0.0), 0.0, 100.0), 2)
+
+    cap = max(1, to_int(context.get("rank_cap") or context.get("max_rank"), 100000))
+    month_pnl = to_float(context.get("month_pnl_rank_score"), rank_score(leaderboard_rank_from_context(context, "month_pnl"), cap))
+    month_vol = to_float(context.get("month_vol_rank_score"), rank_score(leaderboard_rank_from_context(context, "month_vol"), cap))
+    week_pnl = to_float(context.get("week_pnl_rank_score"), rank_score(leaderboard_rank_from_context(context, "week_pnl"), cap))
+    week_vol = to_float(context.get("week_vol_rank_score"), rank_score(leaderboard_rank_from_context(context, "week_vol"), cap))
+    if context.get("category_diversity_score") is not None:
+        diversity = clamp(to_float(context.get("category_diversity_score"), 0.0), 0.0, 1.0)
+    else:
+        keys = {source_key(s) for s in context.get("sources") or [] if isinstance(s, dict)}
+        keys.update(str(x).lower() for x in (context.get("source_keys") or context.get("hit_keys") or []))
+        diversity = clamp(len({x for x in keys if x}) / 4.0, 0.0, 1.0)
+    score = 40 * month_pnl + 25 * month_vol + 20 * week_pnl + 10 * week_vol + 5 * diversity
+    return round(clamp(score, 0.0, 100.0), 2)
+
+
+def pnl_windows(api_summary: dict[str, Any] | None) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], str]:
+    pnl = api_summary.get("pnl_curve") if isinstance(api_summary, dict) else {}
+    pnl = pnl if isinstance(pnl, dict) else {}
+    return (
+        pnl.get("all_time") or {},
+        pnl.get("d30") or {},
+        pnl.get("d7") or {},
+        str(pnl.get("summary_tag") or "unknown"),
+    )
+
+
+def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[str, Any]) -> tuple[float, dict[str, Any]]:
+    all_node, d30_node, d7_node, pnl_tag = pnl_windows(api_summary)
+    shapes = [
+        str(all_node.get("shape") or "unknown"),
+        str(d30_node.get("shape") or "unknown"),
+        str(d7_node.get("shape") or "unknown"),
+    ]
+    available_windows = sum(1 for shape in shapes if shape not in {"unknown", "insufficient_data"})
+    pnl_confidence = {3: 1.0, 2: 0.75, 1: 0.45}.get(available_windows, 0.0)
+    summary = api_summary.get("summary") if isinstance(api_summary, dict) else {}
+    summary = summary if isinstance(summary, dict) else {}
+    coverage_days = to_float(summary.get("closed_positions_recent_coverage_days"), 0.0)
+    if coverage_days > 0 and coverage_days < 30:
+        pnl_confidence *= clamp(coverage_days / 30.0, 0.35, 1.0)
+    if summary.get("closed_positions_recent_incomplete"):
+        pnl_confidence *= 0.75
+
+    all_score = to_int(all_node.get("score"), 0)
+    d30_score = to_int(d30_node.get("score"), 0)
+    d7_score = to_int(d7_node.get("score"), 0)
+    shape_component = clamp((all_score + d30_score + d7_score) * 1.25 * pnl_confidence, -10.0, 12.0)
+
+    total_buy = to_float(metrics.get("total_buy_usdc"), 0.0)
+    realized_30d = to_float(summary.get("closed_positions_realized_pnl_30d"), to_float(d30_node.get("total_return"), 0.0))
+    realized_7d = to_float(summary.get("closed_positions_realized_pnl_7d"), to_float(d7_node.get("total_return"), 0.0))
+    pnl_per_volume = safe_ratio(realized_30d, total_buy) if total_buy > 0 else None
+    normalized_return = 0.0
+    if pnl_per_volume is not None:
+        if pnl_per_volume >= 0.08:
+            normalized_return = 10.0
+        elif pnl_per_volume >= 0.04:
+            normalized_return = 6.0
+        elif pnl_per_volume >= 0.015:
+            normalized_return = 3.0
+        elif pnl_per_volume >= -0.015:
+            normalized_return = 0.0
+        elif pnl_per_volume >= -0.05:
+            normalized_return = -4.0
+        else:
+            normalized_return = -8.0
+        if total_buy < 100:
+            normalized_return *= 0.5
+
+    if realized_30d > 0 and realized_7d > 0:
+        momentum = 5.0
+    elif realized_30d > 0 and abs(realized_7d) <= max(1.0, abs(realized_30d) * 0.03):
+        momentum = 3.0
+    elif realized_30d > 0:
+        momentum = 0.0
+    elif realized_30d < 0 and realized_7d > 0:
+        momentum = 1.0
+    elif realized_30d < 0 and realized_7d < 0:
+        momentum = -5.0
+    else:
+        momentum = 0.0
+
+    d30_return = to_float(d30_node.get("total_return"), realized_30d)
+    d30_drawdown = to_float(d30_node.get("max_drawdown"), 0.0)
+    if abs(d30_return) <= 1e-9:
+        dd_ratio = 0.0 if d30_drawdown <= 0 else 1.26
+    else:
+        dd_ratio = d30_drawdown / max(abs(d30_return), 1e-9)
+    if dd_ratio <= 0.35:
+        drawdown_component = 0.0
+    elif dd_ratio <= 0.75:
+        drawdown_component = -2.0
+    elif dd_ratio <= 1.25:
+        drawdown_component = -4.0
+    else:
+        drawdown_component = -5.0
+
+    total = clamp(shape_component + normalized_return + momentum + drawdown_component, -20.0, 25.0)
+    return round(total, 2), {
+        "pnl_shape_component": round(shape_component, 2),
+        "normalized_return_quality": round(normalized_return, 2),
+        "recent_momentum_component": round(momentum, 2),
+        "drawdown_component": round(drawdown_component, 2),
+        "pnl_confidence_v3": round(pnl_confidence, 3),
+        "pnl_windows_available": available_windows,
+        "pnl_per_volume_30d": None if pnl_per_volume is None else round(pnl_per_volume, 6),
+        "closed_positions_realized_pnl_30d": round(realized_30d, 6),
+        "closed_positions_realized_pnl_7d": round(realized_7d, 6),
+        "drawdown_to_return_ratio_30d": round(dd_ratio, 6),
+        "pnl_tag": pnl_tag,
+    }
+
+
+def compute_data_quality_score(api_summary: dict[str, Any] | None, metrics: dict[str, Any]) -> tuple[float, list[str], dict[str, Any]]:
+    flags: list[str] = []
+    score = 0.0
+    activity_incomplete = bool(metrics.get("activity_incomplete") or metrics.get("activity_cap_hit"))
+    if (metrics.get("trade_count") or 0) > 0 and not activity_incomplete:
+        score += 3
+    else:
+        flags.append("activity_incomplete")
+
+    summary = api_summary.get("summary") if isinstance(api_summary, dict) else None
+    has_summary = isinstance(summary, dict)
+    if has_summary and summary.get("positions_value") is not None and summary.get("traded_markets") is not None:
+        score += 2
+    else:
+        flags.append("summary_incomplete")
+
+    coverage_days = to_float(summary.get("closed_positions_recent_coverage_days"), 0.0) if has_summary else 0.0
+    if coverage_days >= 29:
+        score += 2
+    elif coverage_days >= 7:
+        score += 1
+        flags.append("pnl_recent_partial")
+    else:
+        flags.append("pnl_recent_missing")
+
+    if isinstance(api_summary, dict) and api_summary.get("snapshot_error") in {None, ""} and "snapshot" in api_summary:
+        score += 1
+
+    closed_incomplete = bool(
+        has_summary
+        and (
+            summary.get("closed_positions_incomplete")
+            or summary.get("closed_positions_recent_incomplete")
+        )
+    )
+    if not closed_incomplete and not activity_incomplete:
+        score += 2
+    else:
+        if closed_incomplete:
+            flags.append("closed_positions_incomplete")
+
+    if activity_incomplete:
+        score = min(score, 3.0)
+    if not has_summary:
+        score = min(score, 5.0)
+    if has_summary and summary.get("closed_positions_recent_incomplete"):
+        score = min(score, 6.0)
+
+    all_node, d30_node, d7_node, _ = pnl_windows(api_summary)
+    shapes = [
+        str(all_node.get("shape") or "unknown"),
+        str(d30_node.get("shape") or "unknown"),
+        str(d7_node.get("shape") or "unknown"),
+    ]
+    if all(shape in {"unknown", "insufficient_data"} for shape in shapes):
+        score = min(score, 6.0)
+        if "pnl_recent_missing" not in flags:
+            flags.append("pnl_recent_missing")
+    if score < 6:
+        flags.append("data_quality_low")
+
+    return round(clamp(score, 0.0, 10.0), 2), flags, {
+        "closed_positions_recent_coverage_days": round(coverage_days, 3),
+        "activity_incomplete": activity_incomplete,
+        "closed_positions_incomplete": closed_incomplete,
+    }
+
+
+def data_quality_adjustment(data_quality_score: float) -> float:
+    if data_quality_score >= 8:
+        return 3.0
+    if data_quality_score >= 6:
+        return 0.0
+    if data_quality_score >= 4:
+        return -4.0
+    return -10.0
+
+
+def compute_copy_capacity_score(metrics: dict[str, Any]) -> tuple[float, list[str], dict[str, Any]]:
+    score = 5.0
+    flags: list[str] = []
+    median_buy = metrics.get("median_buy_notional")
+    p90_buy = metrics.get("p90_buy_notional")
+    tiny_ratio = metrics.get("tiny_trade_buy_ratio") or 0.0
+    extreme_ratio = metrics.get("extreme_price_trade_ratio") or 0.0
+    avg_trades = metrics.get("avg_trades_per_active_day") or 0.0
+    fast_sell = metrics.get("sell_usdc_ratio_within_20m") or 0.0
+
+    if median_buy is not None:
+        median_buy = float(median_buy)
+        if 20 <= median_buy <= 2000:
+            score += 2
+        elif median_buy < 5:
+            score -= 2
+        elif median_buy > 5000:
+            score -= 1
+    if p90_buy is not None:
+        p90_buy = float(p90_buy)
+        if p90_buy <= 10000:
+            score += 1
+        elif p90_buy > 25000:
+            score -= 2
+        elif p90_buy > 15000:
+            score -= 1
+
+    if tiny_ratio > 0.40:
+        score -= 4
+        flags.append("copy_capacity_low")
+    elif tiny_ratio > 0.20:
+        score -= 2
+        flags.append("copy_capacity_low")
+    if extreme_ratio > 0.25:
+        score -= 4
+        flags.append("copy_capacity_low")
+    elif extreme_ratio > 0.10:
+        score -= 2
+    if fast_sell > 0.50:
+        score -= 2
+    if avg_trades > 600:
+        score -= 5
+        flags.append("hft_suspected")
+    elif avg_trades > 300:
+        score -= 4
+        flags.append("hft_suspected")
+    elif avg_trades > 150:
+        score -= 2
+        flags.append("hft_suspected")
+
+    score = round(clamp(score, 0.0, 10.0), 2)
+    if score < 4 and "copy_capacity_low" not in flags:
+        flags.append("copy_capacity_low")
+    return score, flags, {
+        "median_buy_notional": median_buy,
+        "p90_buy_notional": p90_buy,
+        "tiny_trade_buy_ratio": round(tiny_ratio, 6),
+        "extreme_price_trade_ratio": round(extreme_ratio, 6),
+    }
+
+
+def compute_leaderboard_consistency_adj(context: dict[str, Any] | None) -> tuple[float, list[str]]:
+    if not context:
+        return 0.0, []
+    keys = {str(x).lower() for x in (context.get("source_keys") or context.get("hit_keys") or [])}
+    keys.update(source_key(s) for s in context.get("sources") or [] if isinstance(s, dict))
+    keys = {x for x in keys if x}
+    adj = 0.0
+    flags: list[str] = []
+    if {"month_pnl", "month_vol"} <= keys:
+        adj += 2
+    if {"week_pnl", "month_pnl"} <= keys:
+        adj += 2
+    if len(keys) >= 3:
+        adj += 1
+        flags.append("multi_category_hit")
+
+    month_pnl_value = context.get("month_pnl") or context.get("month_profit")
+    week_pnl_value = context.get("week_pnl") or context.get("week_profit")
+    only_vol = keys and all("vol" in x for x in keys)
+    if only_vol and to_float(month_pnl_value, 0.0) < 0:
+        adj -= 3
+        flags.append("leaderboard_negative_pnl")
+    if to_float(month_pnl_value, 0.0) < 0 and to_float(week_pnl_value, 0.0) < 0:
+        adj -= 5
+        flags.append("leaderboard_negative_pnl")
+    return round(clamp(adj, -5.0, 5.0), 2), flags
+
+
+def optional_float(value: Any) -> float | None:
+    try:
+        if value is None:
+            return None
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def summary_node(api_summary: dict[str, Any] | None) -> dict[str, Any]:
+    summary = api_summary.get("summary") if isinstance(api_summary, dict) else {}
+    return summary if isinstance(summary, dict) else {}
+
+
+def pnl_curve_node(api_summary: dict[str, Any] | None) -> dict[str, Any]:
+    curve = api_summary.get("pnl_curve") if isinstance(api_summary, dict) else {}
+    return curve if isinstance(curve, dict) else {}
+
+
+def infer_account_total_pnl(api_summary: dict[str, Any] | None) -> float | None:
+    summary = summary_node(api_summary)
+    explicit = optional_float(summary.get("account_total_pnl"))
+    if explicit is not None:
+        return explicit
+    closed_total = optional_float(summary.get("closed_positions_realized_pnl_total"))
+    open_cash = optional_float(summary.get("open_positions_cash_pnl_sum")) or 0.0
+    open_realized = optional_float(summary.get("open_positions_realized_pnl_sum")) or 0.0
+    if closed_total is not None:
+        return closed_total + open_cash + open_realized
+    all_time = pnl_curve_node(api_summary).get("all_time") or {}
+    return optional_float(all_time.get("total_return")) if isinstance(all_time, dict) else None
+
+
+def infer_account_age_days(api_summary: dict[str, Any] | None) -> float | None:
+    summary = summary_node(api_summary)
+    age = optional_float(summary.get("account_age_days"))
+    if age is not None:
+        return age
+    first_ts = optional_float(summary.get("first_closed_position_ts"))
+    if first_ts is not None and first_ts > 0:
+        return max(0.0, (datetime.now(timezone.utc).timestamp() - first_ts) / 86400.0)
+    daily_points = pnl_curve_node(api_summary).get("daily_points") or []
+    if isinstance(daily_points, list) and daily_points:
+        first_date = str((daily_points[0] or {}).get("date") or "")
+        try:
+            first_dt = datetime.fromisoformat(first_date).replace(tzinfo=timezone.utc)
+            return max(0.0, (datetime.now(timezone.utc) - first_dt).total_seconds() / 86400.0)
+        except ValueError:
+            return None
+    return None
+
+
+def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict[str, Any]) -> tuple[float, list[str], dict[str, Any], list[str]]:
+    summary = summary_node(api_summary)
+    curve = pnl_curve_node(api_summary)
+    all_time = curve.get("all_time") or {}
+    all_time = all_time if isinstance(all_time, dict) else {}
+    flags: list[str] = []
+    hard_blocks: list[str] = []
+
+    total_pnl = infer_account_total_pnl(api_summary)
+    if total_pnl is not None and total_pnl < 0:
+        hard_blocks.append("negative_total_pnl")
+        flags.append("negative_total_pnl")
+
+    account_age_days = infer_account_age_days(api_summary)
+    if account_age_days is None:
+        hard_blocks.append("account_age_unknown")
+        flags.append("account_age_unknown")
+    elif account_age_days < 270:
+        hard_blocks.append("account_age_under_9m")
+        flags.append("account_age_under_9m")
+
+    shape = str(all_time.get("shape") or "unknown")
+    total_return = optional_float(all_time.get("total_return"))
+    pnl_base = abs(total_pnl) if total_pnl is not None else abs(total_return or 0.0)
+    pnl_base = max(pnl_base, 1.0)
+    max_drawdown_value = optional_float(all_time.get("max_drawdown")) or 0.0
+    drawdown_ratio = optional_float(all_time.get("drawdown_to_return_ratio"))
+    if drawdown_ratio is None:
+        drawdown_ratio = max_drawdown_value / pnl_base
+    largest_move_ratio = optional_float(all_time.get("largest_daily_abs_move_to_return_ratio"))
+    daily_vol_ratio = optional_float(all_time.get("daily_volatility_to_return_ratio"))
+    largest_gain_share = optional_float(all_time.get("largest_daily_gain_share"))
+
+    smoothness_adj = 0.0
+    if shape == "smooth_up" and (total_pnl is None or total_pnl > 0):
+        smoothness_adj += 3.0
+        flags.append("pnl_smooth_up")
+    elif shape == "volatile_up":
+        flags.append("pnl_curve_volatile")
+    elif shape == "flat":
+        smoothness_adj -= 2.0
+        flags.append("pnl_curve_flat")
+    elif shape == "down":
+        smoothness_adj -= 6.0
+        flags.append("pnl_curve_down")
+
+    if total_pnl is not None and total_pnl > 0:
+        if drawdown_ratio <= 0.25:
+            smoothness_adj += 2.0
+        elif drawdown_ratio <= 0.60:
+            pass
+        elif drawdown_ratio <= 1.0:
+            smoothness_adj -= 2.0
+            flags.append("pnl_drawdown_high")
+        else:
+            smoothness_adj -= 4.0
+            flags.append("pnl_drawdown_high")
+
+    if largest_move_ratio is not None:
+        if largest_move_ratio > 0.60:
+            smoothness_adj -= 4.0
+            flags.append("pnl_spiky")
+        elif largest_move_ratio > 0.35:
+            smoothness_adj -= 2.0
+            flags.append("pnl_spiky")
+    if largest_gain_share is not None:
+        if largest_gain_share > 0.70:
+            smoothness_adj -= 3.0
+            flags.append("pnl_single_spike")
+        elif largest_gain_share > 0.50:
+            smoothness_adj -= 1.5
+            flags.append("pnl_single_spike")
+    if daily_vol_ratio is not None:
+        if daily_vol_ratio > 0.35:
+            smoothness_adj -= 3.0
+            flags.append("pnl_daily_volatility_high")
+        elif daily_vol_ratio > 0.20:
+            smoothness_adj -= 1.5
+            flags.append("pnl_daily_volatility_high")
+    smoothness_adj = clamp(smoothness_adj, -10.0, 6.0)
+
+    active_days = optional_float(summary.get("closed_position_active_days")) or 0.0
+    active_month_ratio = optional_float(summary.get("closed_position_active_month_ratio")) or 0.0
+    active_months = optional_float(summary.get("closed_position_active_months")) or 0.0
+    active_days_30d = optional_float(summary.get("closed_position_active_days_30d")) or 0.0
+    recent_trade_days = max(active_days_30d, to_float(metrics.get("active_trading_days"), 0.0))
+    lifetime_adj = 0.0
+    if account_age_days is not None and account_age_days >= 540 and active_month_ratio >= 0.55 and active_days >= 90:
+        lifetime_adj += 4.0
+        flags.append("long_consistent_activity")
+    elif account_age_days is not None and account_age_days >= 270 and active_month_ratio >= 0.35 and active_days >= 35:
+        lifetime_adj += 2.0
+        flags.append("consistent_activity")
+
+    dormant_recent_spike = (
+        account_age_days is not None
+        and account_age_days >= 270
+        and active_month_ratio < 0.20
+        and recent_trade_days >= 8
+    )
+    if dormant_recent_spike:
+        lifetime_adj -= 3.0
+        flags.append("dormant_recent_spike")
+    elif account_age_days is not None and account_age_days >= 270 and active_month_ratio < 0.15 and active_months <= 2:
+        lifetime_adj -= 1.5
+        flags.append("sparse_lifetime_activity")
+    lifetime_adj = clamp(lifetime_adj, -5.0, 5.0)
+
+    total_adj = round(clamp(smoothness_adj + lifetime_adj, -12.0, 9.0), 2)
+    return total_adj, flags, {
+        "account_total_pnl": None if total_pnl is None else round(total_pnl, 6),
+        "account_age_days": None if account_age_days is None else round(account_age_days, 3),
+        "minimum_account_age_days": 270,
+        "lifetime_hard_blocks": hard_blocks,
+        "pnl_smoothness_adjustment": round(smoothness_adj, 2),
+        "lifetime_activity_adjustment": round(lifetime_adj, 2),
+        "lifetime_pnl_adjustment": total_adj,
+        "pnl_drawdown_to_total_pnl_ratio": None if drawdown_ratio is None else round(drawdown_ratio, 6),
+        "pnl_largest_daily_abs_move_to_return_ratio": None if largest_move_ratio is None else round(largest_move_ratio, 6),
+        "pnl_largest_daily_gain_share": None if largest_gain_share is None else round(largest_gain_share, 6),
+        "pnl_daily_volatility_to_return_ratio": None if daily_vol_ratio is None else round(daily_vol_ratio, 6),
+        "closed_position_active_days": round(active_days, 3),
+        "closed_position_active_months": round(active_months, 3),
+        "closed_position_active_month_ratio": round(active_month_ratio, 6),
+        "closed_position_active_days_30d": round(active_days_30d, 3),
+    }, hard_blocks
+
+
+def compute_scores_auto_v3(
+    metrics: dict[str, Any],
+    api_summary: dict[str, Any] | None,
+    anchor_cfg: dict[str, Any] | None,
+    legacy_breakdown: dict[str, Any],
+    legacy_raw_score: float,
+    legacy_anchored_score: float,
+    leaderboard_context: dict[str, Any] | None,
+) -> dict[str, Any]:
+    dual_side = metrics.get("dual_side_buy_usdc_ratio") or 0.0
+    dual_side_1h = metrics.get("dual_side_buy_usdc_ratio_1h") or 0.0
+    excl_conc = metrics.get("exclusive_concurrent_leg_ratio") or 0.0
+    nested_conc = metrics.get("nested_concurrent_leg_ratio") or 0.0
+    weighted_risk = metrics.get("weighted_multi_market_risk_ratio") or 0.0
+    noncopy_buy = metrics.get("noncopyable_token_fast_buy_ratio") or 0.0
+    noncopy_sell = metrics.get("noncopyable_token_fast_sell_ratio") or 0.0
+    noncopy_token = metrics.get("noncopyable_token_fast_token_ratio") or 0.0
+    deployable = metrics.get("deployable_event_equivalent") or 0.0
+    density = metrics.get("deployable_event_density") or 0.0
+    event_rebalance_ratio = metrics.get("event_rebalance_20m_event_ratio") or 0.0
+    trade_count = metrics.get("trade_count") or 0.0
+    active_days = metrics.get("active_trading_days") or 0.0
+    active_day_ratio = metrics.get("active_day_ratio") or 0.0
+    avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
+
+    copyability = 30.0
+    copyability -= dual_side * 20
+    copyability -= noncopy_buy * 24
+    copyability -= excl_conc * 26
+    copyability -= nested_conc * 10
+    copyability -= weighted_risk * 12
+    if noncopy_sell > 0.35:
+        copyability -= (noncopy_sell - 0.35) * 8
+    if noncopy_token > 0.30:
+        copyability -= (noncopy_token - 0.30) * 6
+    if dual_side_1h > 0.20:
+        copyability -= 3
+    copyability = clamp(copyability, 0.0, 30.0)
+
+    deployability = min(8.0, deployable * 1.25)
+    deployability += min(4.0, density * 16.0)
+    deployability += min(2.0, active_days * 0.18)
+    deployability += min(1.0, active_day_ratio * 2.0)
+    deployability = clamp(deployability, 0.0, 15.0)
+
+    structure = 15.0
+    structure -= excl_conc * 22
+    structure -= nested_conc * 12
+    structure -= (metrics.get("unknown_multi_market_buy_ratio") or 0.0) * 7
+    structure -= min(3.0, (metrics.get("exclusive_sequential_switch_count") or 0) * 0.15)
+    structure -= min(2.5, (metrics.get("nested_sequential_roll_count") or 0) * 0.10)
+    if event_rebalance_ratio > 0.25:
+        structure -= 2
+    if event_rebalance_ratio > 0.45:
+        structure -= 2
+    structure = clamp(structure, 0.0, 15.0)
+
+    pnl_quality, pnl_details = compute_pnl_quality_score(api_summary, metrics)
+    data_quality, data_flags, dq_details = compute_data_quality_score(api_summary, metrics)
+    data_adj = data_quality_adjustment(data_quality)
+    copy_capacity, capacity_flags, capacity_details = compute_copy_capacity_score(metrics)
+    capacity_adj = (copy_capacity - 5.0) * 2.0
+    discovery_score = compute_discovery_score(leaderboard_context)
+    leaderboard_adj, leaderboard_flags = compute_leaderboard_consistency_adj(leaderboard_context)
+    lifetime_adj, lifetime_flags, lifetime_details, lifetime_hard_blocks = compute_lifetime_pnl_rules(api_summary, metrics)
+    lifetime_hard_block = bool(lifetime_hard_blocks)
+
+    automation_risk_penalty = 0.0
+    score_flags: list[str] = []
+    if avg_trades_per_active_day > 600:
+        automation_risk_penalty -= 25
+        score_flags.append("hft_suspected")
+    elif avg_trades_per_active_day > 300:
+        automation_risk_penalty -= 15
+        score_flags.append("hft_suspected")
+    elif avg_trades_per_active_day > 150:
+        automation_risk_penalty -= 6
+        score_flags.append("hft_suspected")
+    if metrics.get("activity_incomplete") or metrics.get("activity_cap_hit"):
+        automation_risk_penalty -= 8
+    summary = api_summary.get("summary") if isinstance(api_summary, dict) else {}
+    summary = summary if isinstance(summary, dict) else {}
+    if summary.get("closed_positions_incomplete") or summary.get("closed_positions_recent_incomplete"):
+        automation_risk_penalty -= 6
+    if noncopy_buy > 0.40:
+        automation_risk_penalty -= 8
+    if (metrics.get("sell_usdc_ratio_within_20m") or 0.0) > 0.50:
+        automation_risk_penalty -= 6
+    automation_risk_penalty = clamp(automation_risk_penalty, -25.0, 0.0)
+
+    concentration_penalty = 0.0
+    if (metrics.get("top1_event_buy_ratio") or 0.0) > 0.50 and deployable < 5:
+        concentration_penalty += 4
+    if (metrics.get("top3_event_buy_ratio") or 0.0) > 0.80 and deployable < 8:
+        concentration_penalty += 4
+    if (metrics.get("top1_event_buy_ratio") or 0.0) > 0.65 and deployable < 8:
+        concentration_penalty += 2
+    concentration_penalty = clamp(concentration_penalty, 0.0, 10.0)
+
+    raw_before_cap = (
+        copyability
+        + deployability
+        + structure
+        + pnl_quality
+        + capacity_adj
+        + data_adj
+        + leaderboard_adj
+        + lifetime_adj
+        + automation_risk_penalty
+        - concentration_penalty
+    )
+    raw_before_cap = clamp(raw_before_cap, 0.0, 100.0)
+
+    low_freq_cap = None
+    if deployable < 3 or density < 0.10 or active_days < 4 or trade_count < 40:
+        low_freq_cap = 48
+    elif deployable < 5 or density < 0.17 or active_days < 8 or trade_count < 100:
+        low_freq_cap = 56
+    elif deployable < 8 or density < 0.26 or active_days < 12 or trade_count < 180:
+        low_freq_cap = 64
+
+    raw_score = raw_before_cap
+    applied_caps: list[str] = []
+    if low_freq_cap is not None:
+        raw_score = min(raw_score, float(low_freq_cap))
+        applied_caps.append(f"low_frequency_{low_freq_cap}")
+    if data_quality < 4:
+        raw_score = min(raw_score, 39.0)
+        applied_caps.append("data_quality_39")
+    elif data_quality < 6:
+        raw_score = min(raw_score, 58.0)
+        applied_caps.append("data_quality_58")
+    if avg_trades_per_active_day > 300:
+        raw_score = min(raw_score, 64.0)
+        applied_caps.append("high_frequency_64")
+    elif avg_trades_per_active_day > 150:
+        raw_score = min(raw_score, 72.0)
+        applied_caps.append("high_frequency_72")
+    if lifetime_hard_block:
+        raw_score = min(raw_score, 39.0)
+        applied_caps.extend(f"lifetime_{reason}_39" for reason in lifetime_hard_blocks)
+    raw_score = round(clamp(raw_score, 0.0, 100.0), 2)
+
+    severe_risk_gate = (
+        excl_conc > 0.62
+        or (nested_conc > 0.75 and event_rebalance_ratio >= 0.25)
+        or (weighted_risk > 0.75 and (excl_conc > 0.35 or nested_conc > 0.50))
+        or noncopy_buy > 0.50
+        or noncopy_sell > 0.82
+        or dual_side > 0.62
+        or dual_side_1h > 0.38
+    )
+    caution_risk_gate = (
+        excl_conc > 0.45
+        or (nested_conc > 0.60 and event_rebalance_ratio >= 0.20)
+        or (weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35))
+        or noncopy_buy > 0.30
+        or noncopy_sell > 0.70
+        or dual_side > 0.45
+        or dual_side_1h > 0.25
+    )
+
+    anchor_offset = 0.0
+    anchor_target = 60.0
+    anchor_version = "none"
+    anchor_account = None
+    anchor_raw_base = None
+    calibration_scale = 0.65
+    anchor_enabled = False
+    if anchor_cfg:
+        anchor_enabled = True
+        anchor_offset = float(anchor_cfg.get("score_offset") or 0.0)
+        anchor_target = float(anchor_cfg.get("target_anchor_score") or 60.0)
+        anchor_version = str(anchor_cfg.get("anchor_version") or "anchor_auto_v3")
+        anchor_account = anchor_cfg.get("anchor_account")
+        anchor_raw_base = (
+            anchor_cfg.get("raw_base_score_v3")
+            if anchor_cfg.get("raw_base_score_v3") is not None
+            else anchor_cfg.get("raw_base_score_auto_v3")
+        )
+        calibration_scale = float(anchor_cfg.get("calibration_scale") or calibration_scale)
+
+    if anchor_enabled and anchor_raw_base is not None:
+        anchored_score = round(
+            clamp(anchor_target + (raw_score - float(anchor_raw_base)) * calibration_scale, 0, 100),
+            2,
+        )
+    else:
+        anchored_score = round(clamp(raw_score + anchor_offset, 0, 100), 2)
+
+    final_score = anchored_score
+    final_caps: list[str] = []
+    if data_quality < 4:
+        final_score = min(final_score, 39.0)
+        final_caps.append("data_quality_39")
+    elif data_quality < 6:
+        final_score = min(final_score, 58.0)
+        final_caps.append("data_quality_58")
+    if avg_trades_per_active_day > 300:
+        final_score = min(final_score, 64.0)
+        final_caps.append("high_frequency_64")
+    elif avg_trades_per_active_day > 150:
+        final_score = min(final_score, 72.0)
+        final_caps.append("high_frequency_72")
+    if lifetime_hard_block:
+        final_score = min(final_score, 39.0)
+        final_caps.extend(f"lifetime_{reason}_39" for reason in lifetime_hard_blocks)
+    final_score = round(clamp(final_score, 0.0, 100.0), 2)
+
+    skipped_by_hft = avg_trades_per_active_day > 600
+    if final_score >= 78 and not caution_risk_gate and not severe_risk_gate and data_quality >= 8 and copy_capacity >= 7 and pnl_quality >= 4:
+        decision = "relative_copyable"
+    elif final_score >= 40 and data_quality >= 4 and not skipped_by_hft and not severe_risk_gate and not lifetime_hard_block:
+        decision = "selective_copying_only"
+    else:
+        decision = "not_recommended"
+    if severe_risk_gate or lifetime_hard_block:
+        decision = "not_recommended"
+    if final_score < 32:
+        decision = "not_recommended"
+
+    alert_grade = "none"
+    if final_score >= 78 and not caution_risk_gate and not severe_risk_gate and data_quality >= 8 and copy_capacity >= 7:
+        alert_grade = "A"
+    elif final_score >= 65 and not severe_risk_gate and data_quality >= 7 and copy_capacity >= 5:
+        alert_grade = "B"
+    elif final_score > 40 and data_quality >= 4 and not skipped_by_hft:
+        alert_grade = "C"
+    if caution_risk_gate and alert_grade == "A":
+        alert_grade = "B"
+    if data_quality < 6 and alert_grade in {"A", "B"}:
+        alert_grade = "C"
+    if avg_trades_per_active_day > 300 and alert_grade in {"A", "B"}:
+        alert_grade = "C"
+    if severe_risk_gate or lifetime_hard_block:
+        alert_grade = "none"
+
+    if skipped_by_hft or severe_risk_gate or lifetime_hard_block:
+        auto_action = "skip"
+    elif data_quality < 4 and discovery_score >= 50:
+        auto_action = "defer_recheck"
+    elif alert_grade == "A":
+        auto_action = "push_strong_candidate"
+    elif alert_grade == "B":
+        auto_action = "push_selective_candidate"
+    elif alert_grade == "C":
+        auto_action = "push_watchlist"
+    else:
+        auto_action = "store_only"
+
+    if caution_risk_gate:
+        score_flags.append("caution_risk_gate")
+    if severe_risk_gate:
+        score_flags.append("severe_risk_gate")
+    if dual_side > 0.30:
+        score_flags.append("high_dual_side")
+    if noncopy_buy > 0.25:
+        score_flags.append("high_noncopyable_fast")
+    if pnl_details.get("closed_positions_realized_pnl_30d", 0.0) > 0 and pnl_details.get("closed_positions_realized_pnl_7d", 0.0) > 0:
+        score_flags.append("strong_recent_pnl")
+    score_flags.extend(data_flags)
+    score_flags.extend(capacity_flags)
+    score_flags.extend(leaderboard_flags)
+    score_flags.extend(lifetime_flags)
+    score_flags = sorted(set(score_flags))
+
+    breakdown = {
+        "copyability_score": round(copyability, 2),
+        "copyability_score_v3": round(copyability, 2),
+        "deployability_score": round(deployability, 2),
+        "deployability_score_v3": round(deployability, 2),
+        "multi_market_structure_score": round(structure, 2),
+        "structure_score_v3": round(structure, 2),
+        "pnl_curve_stability_score": pnl_quality,
+        "pnl_quality_score": pnl_quality,
+        "copy_capacity_score": copy_capacity,
+        "copy_capacity_adjustment": round(capacity_adj, 2),
+        "data_quality_score": data_quality,
+        "data_quality_adjustment": round(data_adj, 2),
+        "leaderboard_consistency_adj": leaderboard_adj,
+        "lifetime_pnl_adjustment": lifetime_adj,
+        "automation_risk_penalty": round(automation_risk_penalty, 2),
+        "concentration_penalty": round(concentration_penalty, 2),
+        "concentration_penalty_v3": round(concentration_penalty, 2),
+        "low_frequency_cap": low_freq_cap,
+        "raw_before_cap": round(raw_before_cap, 2),
+        "raw_score_v3": raw_score,
+        "anchored_score_v3": anchored_score,
+        "final_score": final_score,
+        "alert_grade": alert_grade,
+        "auto_action": auto_action,
+        "applied_raw_caps": applied_caps,
+        "applied_final_caps": final_caps,
+        "decision_score_basis": "auto_v3_final_score",
+        "anchor_offset": round(anchor_offset, 6),
+        "anchor_target_score": anchor_target,
+        "anchor_calibration_scale": round(calibration_scale, 6),
+        "anchor_enabled": anchor_enabled,
+        "caution_risk_gate_triggered": caution_risk_gate,
+        "severe_risk_gate_triggered": severe_risk_gate,
+        "lifetime_hard_block_triggered": lifetime_hard_block,
+        "skipped_by_hft": skipped_by_hft,
+        "discovery_score": discovery_score,
+        "legacy_v2_raw_score": legacy_raw_score,
+        "legacy_v2_score": legacy_anchored_score,
+        "legacy_v2_breakdown": legacy_breakdown,
+        **pnl_details,
+        **dq_details,
+        **capacity_details,
+        **lifetime_details,
+    }
+
+    anchor_context = {
+        "anchor_enabled": anchor_enabled,
+        "anchor_version": anchor_version,
+        "anchor_account": anchor_account,
+        "anchor_target_score": anchor_target,
+        "anchor_offset": round(anchor_offset, 6),
+        "anchor_raw_base_score_v3": anchor_raw_base,
+        "anchor_calibration_scale": round(calibration_scale, 6),
+    }
+
+    return {
+        "score_version": "auto_v3",
+        "legacy_v2_score": legacy_anchored_score,
+        "legacy_v2_raw_score": legacy_raw_score,
+        "discovery_score": discovery_score,
+        "raw_score_v3": raw_score,
+        "anchored_score_v3": anchored_score,
+        "final_score": final_score,
+        "data_quality_score": data_quality,
+        "pnl_quality_score": pnl_quality,
+        "copy_capacity_score": copy_capacity,
+        "alert_grade": alert_grade,
+        "auto_action": auto_action,
+        "score_breakdown_v3": breakdown,
+        "score_flags": score_flags,
+        "decision": decision,
+        "anchor_context": anchor_context,
+    }
+
+
 def build_narrative(
     final_score: float,
     decision: str,
@@ -1253,6 +2145,7 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
     struct_m, event_records, event_buy_by_slug = event_structure_metrics(rows, dual_side_conditions, noncopy_rows, rebalance_candidates, total_buy_usdc)
     hold_m = holding_metrics(rows, total_sell_usdc)
     act_m = activity_metrics(rows)
+    cap_m = capacity_metrics(rows, total_buy_usdc)
 
     metrics: dict[str, Any] = {}
     metrics.update(dual_m)
@@ -1261,6 +2154,9 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
     metrics.update(struct_m)
     metrics.update(hold_m)
     metrics.update(act_m)
+    metrics.update(cap_m)
+    metrics["total_buy_usdc"] = total_buy_usdc
+    metrics["total_sell_usdc"] = total_sell_usdc
 
     api_summary = load_api_summary(args.api_summary)
     api_summary = ensure_api_summary(
@@ -1281,6 +2177,29 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         anchor_context,
     ) = compute_scores(metrics, api_summary, anchor_cfg)
     assumptions.extend(score_assumptions)
+
+    leaderboard_context = load_optional_json(args.leaderboard_context)
+    score_version = str(args.score_version or "auto_v3")
+    auto_v3_result: dict[str, Any] | None = None
+    if score_version == "auto_v3":
+        auto_anchor_path = args.auto_v3_anchor_file
+        if not auto_anchor_path:
+            auto_anchor_path = str(Path(__file__).resolve().parents[1] / "baseline" / "baseline_anchor_auto_v3.json")
+        auto_anchor_cfg = None if args.disable_anchor else load_anchor_config(auto_anchor_path)
+        auto_v3_result = compute_scores_auto_v3(
+            metrics=metrics,
+            api_summary=api_summary,
+            anchor_cfg=auto_anchor_cfg,
+            legacy_breakdown=breakdown,
+            legacy_raw_score=raw_score,
+            legacy_anchored_score=anchored_score,
+            leaderboard_context=leaderboard_context,
+        )
+        breakdown = auto_v3_result["score_breakdown_v3"]
+        raw_score = auto_v3_result["raw_score_v3"]
+        anchored_score = auto_v3_result["anchored_score_v3"]
+        decision = auto_v3_result["decision"]
+        anchor_context = auto_v3_result["anchor_context"]
 
     if hold_m.get("median_holding_time_sec") is None:
         assumptions.append("No matched SELL inventory found; holding-time metrics unavailable")
@@ -1308,7 +2227,8 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         api_rollup["positions_value"] = api_summary["summary"].get("positions_value")
         api_rollup["traded_markets"] = api_summary["summary"].get("traded_markets")
 
-    decision_score = float(anchored_score)
+    final_score_value = float((auto_v3_result or {}).get("final_score", anchored_score))
+    decision_score = final_score_value
     narrative = build_narrative(
         decision_score,
         decision,
@@ -1326,7 +2246,9 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         keyword_profile=kw_profile,
     )
     display_name, name_meta = pick_display_name(rows, account)
-    anchor_raw_base = (anchor_context.get("anchor_raw_base_score") if isinstance(anchor_context, dict) else None)
+    anchor_raw_base = None
+    if isinstance(anchor_context, dict):
+        anchor_raw_base = anchor_context.get("anchor_raw_base_score_v3", anchor_context.get("anchor_raw_base_score"))
     delta_vs_anchor_raw = None
     try:
         if anchor_raw_base is not None:
@@ -1338,6 +2260,7 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         "account_address": account,
         "account_label": display_name,
         "account_name_meta": name_meta,
+        "score_version": score_version,
         "analysis_window": analysis_window,
         "trade_rows_used": len(rows),
         "total_buy_usdc": round(total_buy_usdc, 6),
@@ -1348,11 +2271,23 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         "token_fast_candidates_count": len(token_candidates),
         "noncopyable_token_fast_count": len(noncopyable),
         "score_breakdown": breakdown,
+        "score_breakdown_v3": (auto_v3_result or {}).get("score_breakdown_v3"),
         "raw_score": raw_score,
         "anchored_score": anchored_score,
-        "delta_vs_anchor_60": round(anchored_score - 60.0, 2),
+        "legacy_v2_raw_score": (auto_v3_result or {}).get("legacy_v2_raw_score"),
+        "legacy_v2_score": (auto_v3_result or {}).get("legacy_v2_score"),
+        "discovery_score": (auto_v3_result or {}).get("discovery_score", 0.0),
+        "raw_score_v3": (auto_v3_result or {}).get("raw_score_v3"),
+        "anchored_score_v3": (auto_v3_result or {}).get("anchored_score_v3"),
+        "data_quality_score": (auto_v3_result or {}).get("data_quality_score"),
+        "pnl_quality_score": (auto_v3_result or {}).get("pnl_quality_score"),
+        "copy_capacity_score": (auto_v3_result or {}).get("copy_capacity_score"),
+        "alert_grade": (auto_v3_result or {}).get("alert_grade", "none"),
+        "auto_action": (auto_v3_result or {}).get("auto_action", "store_only"),
+        "score_flags": (auto_v3_result or {}).get("score_flags", []),
+        "delta_vs_anchor_60": round(final_score_value - 60.0, 2),
         "delta_vs_anchor_raw": delta_vs_anchor_raw,
-        "final_score": anchored_score,
+        "final_score": final_score_value,
         "decision": decision,
         "anchor_context": anchor_context,
         "pnl_curve": pnl_section,
@@ -1365,10 +2300,17 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Analyze account-level trade CSV with V2.2 rules.")
+    parser = argparse.ArgumentParser(description="Analyze account-level trade CSV with V2.2 or Auto V3 rules.")
     parser.add_argument("--csv", required=True, help="Path to trade CSV (single-account or merged).")
     parser.add_argument("--account", required=False, help="Target account address if CSV has multiple accounts.")
     parser.add_argument("--api-summary", required=False, help="Path to summary JSON from fetch_polymarket_summary.py.")
+    parser.add_argument(
+        "--score-version",
+        choices=["auto_v3", "v2_2"],
+        default="auto_v3",
+        help="Scoring version. auto_v3 is the automation/default mode; v2_2 preserves the legacy skill score.",
+    )
+    parser.add_argument("--leaderboard-context", required=False, help="Optional JSON with leaderboard shard/rank metadata.")
     parser.add_argument(
         "--allow-live-api-fallback",
         action=argparse.BooleanOptionalAction,
@@ -1378,6 +2320,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--live-api-timeout", type=int, default=30, help="Timeout seconds for live API fallback.")
     parser.add_argument("--live-api-retries", type=int, default=2, help="Retry count for live API fallback.")
     parser.add_argument("--anchor-file", required=False, help="Path to frozen anchor baseline JSON.")
+    parser.add_argument("--auto-v3-anchor-file", required=False, help="Path to frozen Auto V3 anchor baseline JSON.")
     parser.add_argument("--disable-anchor", action="store_true", help="Disable anchored-score adjustment and use raw score only.")
     parser.add_argument("--output-json", required=True, help="Output JSON path.")
     return parser.parse_args()

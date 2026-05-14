@@ -21,16 +21,29 @@
 - 锚点版本: `{anchor_version}`
 - 锚点账户: `{anchor_account}`
 
-## 3. 行为解读
+## 3. Auto V3 自动筛选快照
+- 评分版本: `{score_version}`
+- V2 兼容分: `{legacy_v2_score}`
+- 发现优先分: `{discovery_score}`
+- 数据质量分: `{data_quality_score}`
+- 收益质量分: `{pnl_quality_score}`
+- 跟单容量分: `{copy_capacity_score}`
+- 推送等级: `{alert_grade}`
+- 自动动作: `{auto_action}`
+
+### 评分标记
+{score_flags_bullets}
+
+## 4. 行为解读
 {behavior_points_bullets}
 
-## 4. 跟单优势
+## 5. 跟单优势
 {strength_points_bullets}
 
-## 5. 跟单风险
+## 6. 跟单风险
 {risk_points_bullets}
 
-## 6. 板块与关键词过滤
+## 7. 板块与关键词过滤
 ### 主要板块标签
 {sector_tags_bullets}
 
@@ -43,7 +56,7 @@
 ### 软黑名单关键词（严格触发才可跟）
 {soft_blacklist_keywords_bullets}
 
-## 7. 账户概览
+## 8. 账户概览
 - 分析时间窗口: `{analysis_window}`
 - 有效交易记录数: `{trade_rows_used}`
 - 买入总金额（USDC）: `{total_buy_usdc}`
@@ -51,7 +64,7 @@
 - 官方累计交易市场数: `{traded_markets_count_api}`
 - 官方当前持仓估值: `{position_value_api}`
 
-## 8. 核心指标
+## 9. 核心指标
 - 双边买入金额占比: `{dual_side_buy_usdc_ratio}`
 - 1小时内双边买入占比: `{dual_side_buy_usdc_ratio_1h}`
 - 20分钟快交易买入占比: `{token_fast_20m_buy_usdc_ratio}`
@@ -68,7 +81,7 @@
 - 交易总笔数: `{trade_count}`
 - 活跃日均交易笔数: `{avg_trades_per_active_day}`
 
-## 9. 收益曲线评估
+## 10. 收益曲线评估
 - 全周期曲线形态: `{pnl_all_time_shape}`
 - 全周期曲线得分: `{pnl_all_time_score}`
 - 近30天曲线形态: `{pnl_30d_shape}`
@@ -77,7 +90,7 @@
 - 近7天曲线得分: `{pnl_7d_score}`
 - 收益曲线综合标签: `{pnl_tag}`
 
-## 10. 评分拆解
+## 11. 评分拆解
 - 可复制性得分: `{copyability_score}`
 - 可部署性得分: `{deployability_score}`
 - 多子市场结构得分: `{multi_market_structure_score}`
@@ -86,5 +99,5 @@
 - 集中度惩罚项: `{concentration_penalty}`
 - 低频封顶分: `{low_frequency_cap}`
 
-## 11. 数据质量与假设
+## 12. 数据质量与假设
 {assumptions_bullets}

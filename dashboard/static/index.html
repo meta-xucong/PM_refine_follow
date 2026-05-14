@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Polymarket 筛选控制台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>Polymarket 筛选控制台</h1>
+        <p id="subtitle">auto_screen + Agent Core</p>
+      </div>
+      <div class="top-actions">
+        <button id="refreshBtn" class="icon-btn" title="刷新状态">刷新</button>
+        <span id="processBadge" class="badge neutral">读取中</span>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="band controls">
+        <div class="control-block">
+          <label>候选上限</label>
+          <input id="limitCandidates" type="number" min="1" max="100000" value="10" />
+        </div>
+        <div class="control-block">
+          <label>处理账号数</label>
+          <input id="processLimit" type="number" min="1" max="1000" value="3" />
+        </div>
+        <label class="toggle">
+          <input id="dryRunAlerts" type="checkbox" />
+          <span>推送测试模式（不发送）</span>
+        </label>
+        <label class="toggle">
+          <input id="prefilterOnly" type="checkbox" />
+          <span>只做预筛</span>
+        </label>
+        <button id="runOnceBtn" class="primary">单轮运行</button>
+        <button id="startBtn">启动常驻</button>
+        <button id="stopBtn" class="danger">停止</button>
+      </section>
+
+      <section class="status-panel" id="runStatusPanel">
+        <div class="status-main">
+          <span id="statusDot" class="status-dot neutral"></span>
+          <div class="status-copy">
+            <h2 id="currentPhase">读取状态</h2>
+            <p id="currentMessage">-</p>
+          </div>
+          <div class="status-right">
+            <span id="currentCycle">Cycle -</span>
+            <span id="heartbeatAge">-</span>
+          </div>
+        </div>
+        <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+        <div class="live-grid">
+          <div class="live-card live-wide">
+            <span>当前目标地址</span>
+            <strong id="currentTargetLarge">-</strong>
+            <p id="currentTargetHint">-</p>
+          </div>
+          <div class="live-card">
+            <span>排行榜分片</span>
+            <strong id="leaderboardProgress">-</strong>
+            <p id="leaderboardHint">-</p>
+          </div>
+          <div class="live-card">
+            <span>下一步</span>
+            <strong id="nextStep">-</strong>
+            <p id="nextStepHint">-</p>
+          </div>
+        </div>
+        <div class="status-grid">
+          <div><span>当前账号</span><strong id="currentAccount">-</strong></div>
+          <div><span>批次进度</span><strong id="batchProgress">-</strong></div>
+          <div><span>本轮统计</span><strong id="cycleStats">-</strong></div>
+          <div><span>最近动作</span><strong id="lastAction">-</strong></div>
+        </div>
+        <div class="timeline-wrap">
+          <div class="timeline-head">
+            <h2>最近任务流</h2>
+            <span id="timelineHint">-</span>
+          </div>
+          <div id="progressTimeline" class="timeline"></div>
+        </div>
+      </section>
+
+      <section class="metrics">
+        <div class="metric"><span>候选总览</span><strong id="candidateCounts">-</strong></div>
+        <div class="metric"><span>最近告警</span><strong id="alertCount">-</strong></div>
+        <div class="metric"><span>Agent 决策</span><strong id="agentCount">-</strong></div>
+        <div class="metric"><span>Excel 输出</span><strong id="excelPath">-</strong></div>
+      </section>
+
+      <nav class="tabs" aria-label="视图切换">
+        <button class="tab active" data-tab="overview">总览</button>
+        <button class="tab" data-tab="candidates">候选账号</button>
+        <button class="tab" data-tab="alerts">告警与 Agent</button>
+        <button class="tab" data-tab="config">配置</button>
+        <button class="tab" data-tab="logs">日志</button>
+      </nav>
+
+      <section id="overview" class="tab-panel active">
+        <div class="grid two">
+          <section class="panel">
+            <h2>运行周期</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>ID</th><th>状态</th><th>开始</th><th>结束</th><th>备注</th></tr></thead>
+                <tbody id="cyclesBody"></tbody>
+              </table>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>最近任务</h2>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>账号</th><th>状态</th><th>分数</th><th>等级</th><th>时间</th></tr></thead>
+                <tbody id="runsBody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="candidates" class="tab-panel">
+        <section class="panel">
+          <h2>候选账号</h2>
+          <div class="table-wrap tall">
+            <table>
+              <thead>
+                <tr>
+                  <th>账号</th><th>分数</th><th>等级</th><th>动作</th><th>Agent</th><th>数据</th><th>PnL</th><th>容量</th><th>更新时间</th>
+                </tr>
+              </thead>
+              <tbody id="accountsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="alerts" class="tab-panel">
+        <div class="grid two">
+          <section class="panel">
+            <h2>最近推送</h2>
+            <div id="alertsList" class="list"></div>
+          </section>
+          <section class="panel">
+            <h2>Agent 复核</h2>
+            <div id="agentReviewsList" class="list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="config" class="tab-panel">
+        <div class="grid two">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>auto_screen 配置</h2>
+              <button id="saveConfigBtn" class="primary">保存配置</button>
+            </div>
+            <div class="form-grid">
+              <label>max_rank<input id="cfgMaxRank" type="number" min="1" /></label>
+              <label>每批处理数<input id="cfgBatch" type="number" min="1" /></label>
+              <label>cycle_sleep_seconds<input id="cfgSleep" type="number" min="1" /></label>
+              <label>no_new_pages_stop<input id="cfgNoNewPages" type="number" min="0" /></label>
+              <label>alert_threshold<input id="cfgAlertThreshold" type="number" min="0" max="100" /></label>
+              <label>ServerChan批量数<input id="cfgServerBatch" type="number" min="1" /></label>
+              <label class="toggle wide"><input id="cfgAgentEnabled" type="checkbox" /><span>启用 Agent 复核</span></label>
+              <label class="toggle wide"><input id="cfgServerEnabled" type="checkbox" /><span>启用 ServerChan</span></label>
+            </div>
+          </section>
+          <section class="panel">
+            <h2>JSON 高级配置</h2>
+            <textarea id="configEditor" spellcheck="false"></textarea>
+          </section>
+        </div>
+      </section>
+
+      <section id="logs" class="tab-panel">
+        <section class="panel">
+          <h2>运行日志</h2>
+          <pre id="logTail"></pre>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <script src="/app.js"></script>
+  </body>
+</html>

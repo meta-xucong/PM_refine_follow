@@ -21,16 +21,29 @@
 - anchor_version: `{anchor_version}`
 - anchor_account: `{anchor_account}`
 
-## 3. Behavior Interpretation
+## 3. Auto V3 Screening Snapshot
+- score_version: `{score_version}`
+- legacy_v2_score: `{legacy_v2_score}`
+- discovery_score: `{discovery_score}`
+- data_quality_score: `{data_quality_score}`
+- pnl_quality_score: `{pnl_quality_score}`
+- copy_capacity_score: `{copy_capacity_score}`
+- alert_grade: `{alert_grade}`
+- auto_action: `{auto_action}`
+
+### Score Flags
+{score_flags_bullets}
+
+## 4. Behavior Interpretation
 {behavior_points_bullets}
 
-## 4. Copy-Trading Strengths
+## 5. Copy-Trading Strengths
 {strength_points_bullets}
 
-## 5. Copy-Trading Risks
+## 6. Copy-Trading Risks
 {risk_points_bullets}
 
-## 6. Sector and Keyword Filters
+## 7. Sector and Keyword Filters
 ### Sector Tags
 {sector_tags_bullets}
 
@@ -43,7 +56,7 @@
 ### Soft Blacklist Keywords
 {soft_blacklist_keywords_bullets}
 
-## 7. Account Overview
+## 8. Account Overview
 - analysis_window: `{analysis_window}`
 - trade_rows_used: `{trade_rows_used}`
 - total_buy_usdc: `{total_buy_usdc}`
@@ -51,7 +64,7 @@
 - traded_markets_count_api: `{traded_markets_count_api}`
 - position_value_api: `{position_value_api}`
 
-## 8. Core Metrics
+## 9. Core Metrics
 - dual_side_buy_usdc_ratio: `{dual_side_buy_usdc_ratio}`
 - dual_side_buy_usdc_ratio_1h: `{dual_side_buy_usdc_ratio_1h}`
 - token_fast_20m_buy_usdc_ratio: `{token_fast_20m_buy_usdc_ratio}`
@@ -68,7 +81,7 @@
 - trade_count: `{trade_count}`
 - avg_trades_per_active_day: `{avg_trades_per_active_day}`
 
-## 9. PnL Curve Evaluation
+## 10. PnL Curve Evaluation
 - all_time_shape: `{pnl_all_time_shape}`
 - all_time_score: `{pnl_all_time_score}`
 - d30_shape: `{pnl_30d_shape}`
@@ -77,7 +90,7 @@
 - d7_score: `{pnl_7d_score}`
 - pnl_tag: `{pnl_tag}`
 
-## 10. Score Breakdown
+## 11. Score Breakdown
 - copyability_score: `{copyability_score}`
 - deployability_score: `{deployability_score}`
 - multi_market_structure_score: `{multi_market_structure_score}`
@@ -86,5 +99,5 @@
 - concentration_penalty: `{concentration_penalty}`
 - low_frequency_cap: `{low_frequency_cap}`
 
-## 11. Data Quality and Assumptions
+## 12. Data Quality and Assumptions
 {assumptions_bullets}

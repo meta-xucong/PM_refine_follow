@@ -2,9 +2,18 @@
 
 This skill uses official Polymarket documentation and endpoints for account-level data.
 
+## CLOB V2 Boundary
+
+Polymarket CLOB V2 is live as of 2026-04-28, but this skill does not call CLOB trading endpoints and does not import `py-clob-client` or `py-clob-client-v2`.
+
+The current workflow uses the public Data API only. No CLOB SDK, wallet signer, L1/L2 credentials, order signing, order posting, cancellation, builder code, or V2 Exchange contract integration is required for the existing screening reports.
+
+If future work adds trading behavior, use the V2 SDK (`py-clob-client-v2`) and follow the official CLOB V2 migration guide before adding any order-management code.
+
 ## Official Docs
 
 - API introduction: https://docs.polymarket.com/api-reference/introduction
+- CLOB V2 migration guide: https://docs.polymarket.com/v2-migration
 - User activity: https://docs.polymarket.com/api-reference/core/get-user-activity
 - Current positions: https://docs.polymarket.com/api-reference/core/get-current-positions-for-a-user
 - Closed positions: https://docs.polymarket.com/api-reference/core/get-closed-positions-for-a-user

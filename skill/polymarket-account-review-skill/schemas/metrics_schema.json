@@ -69,6 +69,13 @@
         "active_trading_days": { "type": ["number", "null"] },
         "active_day_ratio": { "type": ["number", "null"] },
         "avg_trades_per_active_day": { "type": ["number", "null"] },
+        "median_buy_notional": { "type": ["number", "null"] },
+        "p10_buy_notional": { "type": ["number", "null"] },
+        "p90_buy_notional": { "type": ["number", "null"] },
+        "tiny_trade_buy_ratio": { "type": ["number", "null"] },
+        "extreme_price_trade_ratio": { "type": ["number", "null"] },
+        "total_buy_usdc": { "type": ["number", "null"] },
+        "total_sell_usdc": { "type": ["number", "null"] },
         "top1_event_buy_ratio": { "type": ["number", "null"] },
         "top3_event_buy_ratio": { "type": ["number", "null"] }
       },
