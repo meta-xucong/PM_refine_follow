@@ -1,0 +1,82 @@
+{
+  "data_dir": "__DATA_DIR__/auto_screen_data",
+  "state_db": "__DATA_DIR__/state.sqlite3",
+  "excel_path": "__DATA_DIR__/polymarket_candidates.xlsx",
+  "progress_path": "__DATA_DIR__/progress.json",
+  "scan": {
+    "max_rank": 100000,
+    "page_limit": 50,
+    "sleep_seconds": 0.2,
+    "cycle_sleep_seconds": 600,
+    "failure_sleep_seconds": 60,
+    "process_batch_size": 25,
+    "process_all_candidates_per_cycle": true,
+    "leaderboard_progress_pages": 20,
+    "leaderboard_no_new_pages_stop": 40,
+    "api_error_cooldown_threshold": 3,
+    "api_error_cooldown_seconds": 120
+  },
+  "leaderboard": {
+    "endpoint": "/v1/leaderboard",
+    "shards": [
+      { "name": "month_pnl", "params": { "period": "month", "sortBy": "PNL" } },
+      { "name": "month_vol", "params": { "period": "month", "sortBy": "VOLUME" } },
+      { "name": "week_pnl", "params": { "period": "week", "sortBy": "PNL" } },
+      { "name": "week_vol", "params": { "period": "week", "sortBy": "VOLUME" } }
+    ]
+  },
+  "prefilter": {
+    "activity_limit": 300,
+    "skip_avg_trades_per_day": 600,
+    "warn_avg_trades_per_day": 300,
+    "min_recent_trades": 5
+  },
+  "collector": {
+    "lookback_days": 30,
+    "request": {
+      "limit": 500,
+      "days_per_chunk": 7,
+      "timeout_seconds": 30,
+      "page_sleep_seconds": 0.5,
+      "chunk_sleep_seconds": 0.8,
+      "max_retries": 5,
+      "retry_sleep_seconds": 3.0,
+      "offset_probe_enabled": true,
+      "offset_probe_after_rows": 1000,
+      "historical_offset_limit": 3000,
+      "high_frequency_window_seconds": 86400
+    },
+    "summary_fetch": {
+      "page_limit": 500,
+      "max_closed_records": 5000,
+      "max_open_records": 5000,
+      "timeout_seconds": 30,
+      "max_retries": 5,
+      "request_sleep_seconds": 0.4
+    }
+  },
+  "scoring": {
+    "score_version": "auto_v3",
+    "alert_threshold": 50,
+    "skill_dir": "__APP_DIR__/skill/polymarket-account-review-skill"
+  },
+  "serverchan": {
+    "enabled": true,
+    "sendkey_env": "SCT_SENDKEY",
+    "sendkey_file": "__CONFIG_DIR__/secrets/serverchan_sendkey.txt",
+    "dry_run": false,
+    "batch_size": 10,
+    "required_message_markers": [
+      "累计收益：||总PnL:",
+      "账号已运行：||账号年龄天数:",
+      "收益曲线平滑度：||PnL平滑调整:",
+      "长期活跃表现：||长期活跃调整:"
+    ]
+  },
+  "agent": {
+    "enabled": false,
+    "config_path": "__CONFIG_DIR__/agent_core_config.json",
+    "dry_run": false,
+    "fail_open": true
+  }
+}

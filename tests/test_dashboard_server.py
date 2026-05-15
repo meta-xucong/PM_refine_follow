@@ -298,6 +298,29 @@ class DashboardServerTests(unittest.TestCase):
             ["once", "--limit-candidates", "10", "--process-limit", "3", "--dry-run-alerts", "--prefilter-only"],
         )
 
+    def test_autostart_auto_screen_honors_env_flag(self) -> None:
+        with (
+            patch.dict(os.environ, {"PM_AUTOSTART_SCAN": "1"}, clear=False),
+            patch.object(dashboard_server, "read_process_state", return_value={"running": False}),
+            patch.object(dashboard_server, "launch_auto_screen", return_value={"started": True, "pid": 1234}) as launch,
+        ):
+            result = dashboard_server.autostart_auto_screen_if_requested()
+
+        self.assertTrue(result["autostart"])
+        self.assertEqual(result["pid"], 1234)
+        launch.assert_called_once_with(["run"], "run")
+
+    def test_autostart_auto_screen_stays_disabled_by_default(self) -> None:
+        with (
+            patch.dict(os.environ, {}, clear=True),
+            patch.object(dashboard_server, "launch_auto_screen") as launch,
+        ):
+            result = dashboard_server.autostart_auto_screen_if_requested()
+
+        self.assertFalse(result["autostart"])
+        self.assertEqual(result["reason"], "disabled")
+        launch.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

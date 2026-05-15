@@ -1,0 +1,28 @@
+[Unit]
+Description=PM Refine Follow dashboard
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=__RUN_USER__
+Group=__RUN_GROUP__
+WorkingDirectory=__APP_DIR__
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONUTF8=1
+Environment=PYTHONIOENCODING=utf-8
+Environment=PM_APP_ROOT=__APP_DIR__
+Environment=PM_DATA_DIR=__DATA_DIR__
+Environment=PM_UI_DIR=__DATA_DIR__/dashboard
+Environment=PM_AUTO_CONFIG=__CONFIG_DIR__/auto_screen_config.json
+Environment=PM_AGENT_CONFIG=__CONFIG_DIR__/agent_core_config.json
+Environment=PM_DASHBOARD_AUTO_LOG=__LOG_DIR__/auto_screen.log
+Environment=PM_AUTOSTART_SCAN=__AUTOSTART_SCAN__
+ExecStart=__APP_DIR__/.venv/bin/python -m dashboard.server --host 127.0.0.1 --port __DASHBOARD_PORT__
+Restart=always
+RestartSec=5
+KillMode=control-group
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

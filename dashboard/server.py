@@ -15,16 +15,21 @@ from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 
-ROOT = Path(__file__).resolve().parents[1]
+def env_path(name: str, default: str | Path) -> Path:
+    value = os.environ.get(name)
+    return Path(value).expanduser().resolve() if value else Path(default).expanduser().resolve()
+
+
+ROOT = env_path("PM_APP_ROOT", Path(__file__).resolve().parents[1])
 STATIC_DIR = Path(__file__).resolve().parent / "static"
-DATA_DIR = ROOT / "auto_screen_data"
-UI_DIR = DATA_DIR / "dashboard"
-AUTO_CONFIG = ROOT / "auto_screen_config.ui.json"
-AGENT_CONFIG = ROOT / "agent_core_config.ui.json"
-AUTO_CONFIG_EXAMPLE = ROOT / "auto_screen_config.example.json"
-AGENT_CONFIG_EXAMPLE = ROOT / "agent_core_config.example.json"
+DATA_DIR = env_path("PM_DATA_DIR", ROOT / "auto_screen_data")
+UI_DIR = env_path("PM_UI_DIR", DATA_DIR / "dashboard")
+AUTO_CONFIG = env_path("PM_AUTO_CONFIG", ROOT / "auto_screen_config.ui.json")
+AGENT_CONFIG = env_path("PM_AGENT_CONFIG", ROOT / "agent_core_config.ui.json")
+AUTO_CONFIG_EXAMPLE = env_path("PM_AUTO_CONFIG_EXAMPLE", ROOT / "auto_screen_config.example.json")
+AGENT_CONFIG_EXAMPLE = env_path("PM_AGENT_CONFIG_EXAMPLE", ROOT / "agent_core_config.example.json")
 PID_FILE = UI_DIR / "auto_screen_process.json"
-LOG_FILE = UI_DIR / "auto_screen.log"
+LOG_FILE = env_path("PM_DASHBOARD_AUTO_LOG", UI_DIR / "auto_screen.log")
 
 
 def ensure_ui_files() -> None:
@@ -131,6 +136,22 @@ def launch_auto_screen(args: list[str], mode: str) -> dict[str, Any]:
     }
     write_json(PID_FILE, state)
     return {"started": True, **state}
+
+
+def env_truthy(name: str, default: bool = False) -> bool:
+    value = os.environ.get(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def autostart_auto_screen_if_requested() -> dict[str, Any]:
+    if not env_truthy("PM_AUTOSTART_SCAN", False):
+        return {"autostart": False, "reason": "disabled"}
+    state = read_process_state()
+    if state.get("running"):
+        return {"autostart": False, "reason": "already_running", "pid": state.get("pid")}
+    return {"autostart": True, **launch_auto_screen(["run"], "run")}
 
 
 def build_auto_screen_args(action: str, body: dict[str, Any]) -> list[str]:
@@ -645,8 +666,11 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     ensure_ui_files()
+    autostart = autostart_auto_screen_if_requested()
     server = ThreadingHTTPServer((args.host, args.port), DashboardHandler)
     print(f"Dashboard: http://{args.host}:{args.port}")
+    if autostart.get("autostart"):
+        print(f"Auto screen autostarted: pid={autostart.get('pid')}")
     server.serve_forever()
 
 
