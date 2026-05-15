@@ -1,5 +1,11 @@
 let state = {};
 let configs = {};
+let processRefreshInFlight = false;
+let fullRefreshInFlight = false;
+let lastFullRefreshAt = 0;
+
+const PROCESS_REFRESH_MS = 2000;
+const FULL_REFRESH_MS = 15000;
 
 const $ = (id) => document.getElementById(id);
 
@@ -8,6 +14,17 @@ function toast(message) {
   el.textContent = message;
   el.classList.add("show");
   setTimeout(() => el.classList.remove("show"), 2600);
+}
+
+function setRefreshStatus(text, className = "") {
+  const el = $("refreshStatus");
+  if (!el) return;
+  el.textContent = text;
+  el.className = `refresh-status ${className}`.trim();
+}
+
+function refreshTimeText() {
+  return new Date().toLocaleTimeString("zh-CN", { hour12: false });
 }
 
 async function api(path, options = {}) {
@@ -332,6 +349,8 @@ async function refreshAll() {
   $("logTail").textContent = proc.log_tail || "";
   loadConfigForms(config);
   renderServerchanKey(sendkey);
+  lastFullRefreshAt = Date.now();
+  setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
 
 async function refreshDashboardData() {
@@ -345,6 +364,8 @@ async function refreshDashboardData() {
   renderAccounts(accounts.accounts || []);
   $("logTail").textContent = proc.log_tail || "";
   renderServerchanKey(sendkey);
+  lastFullRefreshAt = Date.now();
+  setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
 
 async function startRun() {
@@ -402,6 +423,35 @@ async function refreshProcessOnly() {
   setBadge(proc.process || {});
   renderProgress(proc.progress || {}, proc.process || {});
   $("logTail").textContent = proc.log_tail || "";
+  setRefreshStatus(`已更新 ${refreshTimeText()}`);
+}
+
+async function autoRefreshTick() {
+  if (document.hidden) return;
+  if (processRefreshInFlight) return;
+  processRefreshInFlight = true;
+  setRefreshStatus("更新中...", "updating");
+  try {
+    await refreshProcessOnly();
+  } catch (_) {
+    setRefreshStatus("自动刷新失败", "error");
+  } finally {
+    processRefreshInFlight = false;
+  }
+}
+
+async function autoFullRefreshTick() {
+  if (document.hidden) return;
+  if (fullRefreshInFlight) return;
+  if (Date.now() - lastFullRefreshAt < FULL_REFRESH_MS - 500) return;
+  fullRefreshInFlight = true;
+  try {
+    await refreshDashboardData();
+  } catch (_) {
+    setRefreshStatus("自动刷新失败", "error");
+  } finally {
+    fullRefreshInFlight = false;
+  }
 }
 
 document.querySelectorAll(".tab").forEach((btn) => {
@@ -413,7 +463,13 @@ document.querySelectorAll(".tab").forEach((btn) => {
   });
 });
 
-$("refreshBtn").addEventListener("click", () => refreshAll().catch((e) => toast(e.message)));
+$("refreshBtn").addEventListener("click", () => {
+  setRefreshStatus("更新中...", "updating");
+  refreshAll().catch((e) => {
+    setRefreshStatus("刷新失败", "error");
+    toast(e.message);
+  });
+});
 $("startBtn").addEventListener("click", () => startRun().catch((e) => toast(e.message)));
 $("runOnceBtn").addEventListener("click", () => runOnce().catch((e) => toast(e.message)));
 $("stopBtn").addEventListener("click", () => stopRun().catch((e) => toast(e.message)));
@@ -426,5 +482,12 @@ document.addEventListener("click", (event) => {
   copyText(button.dataset.copy).then(() => toast("已复制地址")).catch((e) => toast(`复制失败：${e.message}`));
 });
 
-refreshAll().catch((e) => toast(e.message));
-setInterval(() => refreshDashboardData().catch(() => {}), 5000);
+refreshAll().catch((e) => {
+  setRefreshStatus("刷新失败", "error");
+  toast(e.message);
+});
+setInterval(autoRefreshTick, PROCESS_REFRESH_MS);
+setInterval(autoFullRefreshTick, FULL_REFRESH_MS);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) refreshDashboardData().catch(() => {});
+});
