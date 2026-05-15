@@ -4,8 +4,8 @@ let processRefreshInFlight = false;
 let fullRefreshInFlight = false;
 let lastFullRefreshAt = 0;
 
-const PROCESS_REFRESH_MS = 2000;
-const FULL_REFRESH_MS = 15000;
+const PROCESS_REFRESH_MS = 10000;
+const FULL_REFRESH_MS = 60000;
 
 const $ = (id) => document.getElementById(id);
 
