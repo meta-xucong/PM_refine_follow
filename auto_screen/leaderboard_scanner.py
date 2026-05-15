@@ -44,6 +44,39 @@ def discovery_from_context(context: dict[str, Any], cap: int) -> float:
     return round(40 * month_pnl + 25 * month_vol + 20 * week_pnl + 10 * week_vol + 5 * diversity, 2)
 
 
+def explicit_page_ranks(rows: list[dict[str, Any]]) -> list[int]:
+    ranks: list[int] = []
+    for row in rows:
+        if row.get("rank") is None:
+            continue
+        rank = to_int(row.get("rank"), 0)
+        if rank > 0:
+            ranks.append(rank)
+    return ranks
+
+
+def leaderboard_api_cap_info(rows: list[dict[str, Any]], offset: int) -> dict[str, Any]:
+    ranks = explicit_page_ranks(rows)
+    if not ranks:
+        return {
+            "first_rank": None,
+            "last_rank": None,
+            "expected_start_rank": offset + 1,
+            "api_cap_detected": False,
+            "api_cap_rank": None,
+        }
+    last_rank = max(ranks)
+    expected_start_rank = offset + 1
+    detected = offset > 0 and expected_start_rank > last_rank
+    return {
+        "first_rank": ranks[0],
+        "last_rank": last_rank,
+        "expected_start_rank": expected_start_rank,
+        "api_cap_detected": detected,
+        "api_cap_rank": last_rank if detected else None,
+    }
+
+
 def extract_address(row: dict[str, Any]) -> str | None:
     candidates = [
         row.get("proxyWallet"),
@@ -113,6 +146,7 @@ def scan_candidates(
     page_limit = min(50, max(1, int(scan_cfg.get("page_limit", 50))))
     progress_pages = max(1, int(scan_cfg.get("leaderboard_progress_pages", 20)))
     no_new_pages_stop = max(0, int(scan_cfg.get("leaderboard_no_new_pages_stop", 40)))
+    api_cap_stop_enabled = bool(scan_cfg.get("leaderboard_api_cap_stop_enabled", True))
     shards = lb_cfg.get("shards") or []
     endpoint = lb_cfg.get("endpoint") or "/v1/leaderboard"
     candidates: dict[str, AccountCandidate] = {}
@@ -145,6 +179,27 @@ def scan_candidates(
                             "early_stop": True,
                             "early_stop_reason": "empty_page",
                         }
+                )
+                break
+            cap_info = leaderboard_api_cap_info(rows, offset)
+            if api_cap_stop_enabled and cap_info.get("api_cap_detected"):
+                if progress_callback:
+                    progress_callback(
+                        {
+                            "shard": shard_name,
+                            "shard_index": shard_index,
+                            "total_shards": len(shards),
+                            "offset": offset,
+                            "page_limit": page_limit,
+                            "rows": len(rows),
+                            "new_candidates": 0,
+                            "no_new_pages": no_new_pages,
+                            "unique_candidates": len(candidates),
+                            "max_rank": max_rank,
+                            "early_stop": True,
+                            "early_stop_reason": "api_rank_cap",
+                            **cap_info,
+                        }
                     )
                 break
             for idx, row in enumerate(rows):
@@ -173,6 +228,7 @@ def scan_candidates(
                         "max_rank": max_rank,
                         "early_stop": early_stop,
                         "early_stop_reason": "no_new_candidates" if early_stop else "",
+                        **cap_info,
                     }
                 )
             if len(rows) < page_limit:

@@ -239,6 +239,41 @@ class DashboardServerTests(unittest.TestCase):
             self.assertEqual(summary["phase"], "sleeping")
             self.assertEqual(summary["percent"], 100)
 
+    def test_progress_summary_exposes_leaderboard_api_cap(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            progress_path = root / "auto_screen_data" / "progress.json"
+            progress_path.parent.mkdir(parents=True)
+            progress_path.write_text(
+                json.dumps(
+                    {
+                        "phase": "leaderboard_scanned",
+                        "phase_label": "排行榜扫描完成",
+                        "message": "发现 10050 个候选账号",
+                        "updated_at": "2026-05-15T12:00:00+00:00",
+                        "updated_ts": 9999999999,
+                        "cycle_id": 9,
+                        "leaderboard_scan": {
+                            "requested_rank_cap": 100000,
+                            "api_cap_detected": True,
+                            "api_visible_cap_rank": 10050,
+                            "unique_candidates": 10050,
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with patch.object(dashboard_server, "ROOT", root):
+                summary = dashboard_server.progress_summary(
+                    {"progress_path": "auto_screen_data/progress.json"},
+                    {"running": True},
+                    {"latest_cycles": [{"id": 9, "status": "running"}]},
+                )
+
+            self.assertTrue(summary["leaderboard_scan"]["api_cap_detected"])
+            self.assertEqual(summary["leaderboard_scan"]["api_visible_cap_rank"], 10050)
+
     def test_launch_auto_screen_uses_detached_safe_stdio(self) -> None:
         class FakeProcess:
             pid = 4321

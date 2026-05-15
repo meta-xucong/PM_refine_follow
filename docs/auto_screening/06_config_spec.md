@@ -108,6 +108,12 @@ auto_screen_config.json
 - `include_day_shards`: `false`
 - `per_shard_rank_cap`: `10001`
 - `leaderboard_no_new_pages_stop`: `40`
+- `leaderboard_api_cap_stop_enabled`: `true`，当请求 offset 已超过接口返回 rank 时，判定官方 leaderboard shard 已触顶并停止继续翻页。
+- `candidate_sources.enabled`: `true`，启用官方多来源候选池。
+- `candidate_sources.official_only`: `true`，候选发现默认只使用官方公开信源。
+- `candidate_sources.market_discovery.limit`: `25`，每轮先从 Gamma API 获取的热门市场数。
+- `candidate_sources.market_trades.markets_limit`: `10`，每轮最多对 10 个热门市场拉 trades。
+- `candidate_sources.holders.markets_limit`: `10`，每轮最多对 10 个热门市场拉 holders。
 - `process_batch_size`: `25`，仅表示单次内部处理批次大小。
 - `process_all_candidates_per_cycle`: `true`，常驻模式会处理完整个 pending 候选池后才进入下一轮。
 - `analysis_window_days`: `30`
@@ -128,6 +134,8 @@ auto_screen_config.json
 
 - 如果 API 限流明显，降低 `max_requests_per_second` 到 `1`。
 - 如果某个 leaderboard 分片连续很多页没有新增唯一账号，保持 `leaderboard_no_new_pages_stop=40` 可以避免扫到 100000 offset 但候选池不增长；设为 `0` 可关闭提前停止。
+- 如果前端显示“官方榜单可见上限”明显低于 `max_rank`，说明官方接口没有暴露更深排名；此时不要继续提高 `max_rank`，应增加 shard 或接入 `12_candidate_source_expansion_plan.md` 中的市场交易/持仓候选源。
+- 如果候选池扩容后 API 压力偏高，优先降低 `candidate_sources.market_discovery.limit`、`market_trades.markets_limit`、`holders.markets_limit`，不要先降低评分标准。
 - 如果跳过账号太多，调高 `max_trades_per_active_day` 或 `sample_max_records`。
 - 如果完整评分太慢，先降低 `candidate_pool_target` 做小规模运行。
 - 如果 ServerChan 消息太多，增加 `serverchan.batch_size`、增加 `dedupe_days` 或提高 `alert_score_threshold`。

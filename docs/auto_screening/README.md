@@ -19,11 +19,15 @@
 | `09_operations_runbook.md` | 启停、恢复、日志、告警和日常运维 |
 | `10_scoring_review_and_optimization.md` | 当前评分机制评估、标准总结、优化方向 |
 | `11_scoring_v3_target_spec.md` | Auto V3 目标评分机制规格，程序和 skill 落地时按此实现 |
+| `12_candidate_source_expansion_plan.md` | 突破单一 leaderboard 上限的多来源候选池扩容方案 |
+| `13_official_candidate_sources_development.md` | 官方可信信源候选池的开发规格、配置、模块清单和验收标准 |
 
 ## 核心决策
 
 - 候选来源采用多 shard 发现，而不是单一 `MONTH + PNL + OVERALL` 月榜。
 - 单 shard 官方 leaderboard 当前无法可靠暴露完整前 10 万名，因此系统目标定义为“从官方 leaderboard 多周期、多分类、多排序 shard 中发现最多 10 万个近期优秀且活跃的唯一账号”。
+- 扫榜时会检测官方接口触顶位置，并在前端显示“官方榜单可见上限”和多榜合并候选数量，避免把 10 万目标误读成官方接口已完整返回 10 万。
+- 候选池扩容优先使用官方可信信源：Gamma `markets`、Data API `trades`、Data API `holders`。这些来源只负责发现候选，不绕过预筛和 Auto V3 评分。
 - 初版严格只读 Data API，不接 CLOB 交易端点。
 - 初版评分通过 subprocess 复用现有 `analyze_account.py`，降低评分漂移风险。
 - SQLite 是运行状态源，Excel 是人工查看表。

@@ -14,6 +14,7 @@ from auto_screen.excel_store import ExcelStore
 from auto_screen.leaderboard_scanner import scan_candidates
 from auto_screen.models import AccountCandidate, PrefilterResult, ScoringResult
 from auto_screen.notifier import format_alert_batch, format_candidate_message, send_serverchan
+from auto_screen.official_sources import scan_candidates as scan_official_candidates
 from auto_screen.prefilter import prefilter_account
 from auto_screen.progress import ProgressReporter
 from auto_screen.state_store import StateStore
@@ -44,6 +45,91 @@ class FakeClient:
         ]
 
 
+class FakeCappedLeaderboardClient:
+    def __init__(self):
+        self.calls = []
+
+    def get(self, path, params):
+        self.calls.append((path, dict(params)))
+        offset = int(params.get("offset", 0))
+        pages = {
+            0: [
+                {"rank": 1, "proxyWallet": "0x1111111111111111111111111111111111111111", "pnl": 100},
+                {"rank": 2, "proxyWallet": "0x2222222222222222222222222222222222222222", "pnl": 90},
+            ],
+            2: [
+                {"rank": 3, "proxyWallet": "0x3333333333333333333333333333333333333333", "pnl": 80},
+                {"rank": 4, "proxyWallet": "0x4444444444444444444444444444444444444444", "pnl": 70},
+            ],
+            4: [
+                {"rank": 3, "proxyWallet": "0x5555555555555555555555555555555555555555", "pnl": 60},
+                {"rank": 4, "proxyWallet": "0x6666666666666666666666666666666666666666", "pnl": 50},
+            ],
+        }
+        return pages.get(offset, [])
+
+
+class FakeOfficialDataClient:
+    def __init__(self):
+        self.trade_calls = []
+        self.holder_calls = []
+
+    def fetch_trades(self, params):
+        self.trade_calls.append(dict(params))
+        return [
+            {
+                "proxyWallet": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                "name": "TradeAlpha",
+                "size": 120,
+                "price": 0.5,
+                "conditionId": params["market"],
+                "slug": "official-market",
+            },
+            {
+                "proxyWallet": "0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                "pseudonym": "TradeBeta",
+                "size": 80,
+                "price": 0.75,
+                "conditionId": params["market"],
+                "slug": "official-market",
+            },
+        ]
+
+    def fetch_holders(self, params):
+        self.holder_calls.append(dict(params))
+        return [
+            {
+                "token": "token-1",
+                "holders": [
+                    {
+                        "proxyWallet": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                        "name": "TradeAlpha",
+                        "amount": 2000,
+                    },
+                    {
+                        "proxyWallet": "0xcccccccccccccccccccccccccccccccccccccccc",
+                        "pseudonym": "HolderGamma",
+                        "amount": 300,
+                    },
+                ],
+            }
+        ]
+
+
+class FakeGammaClient:
+    def fetch_markets(self, params):
+        return [
+            {
+                "conditionId": "0x1111111111111111111111111111111111111111111111111111111111111111",
+                "slug": "official-market",
+                "question": "Official market?",
+                "volume24hr": "250000",
+                "liquidity": "5000",
+                "enableOrderBook": True,
+            }
+        ]
+
+
 class AutoScreenModuleTests(unittest.TestCase):
     def test_load_config_merges_defaults(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -66,6 +152,47 @@ class AutoScreenModuleTests(unittest.TestCase):
         self.assertEqual(progress[0]["shard"], "month_pnl")
         self.assertEqual(progress[0]["unique_candidates"], 1)
         self.assertEqual(progress[0]["new_candidates"], 1)
+
+    def test_leaderboard_scanner_detects_api_rank_cap_and_skips_capped_page(self):
+        cfg = load_config(None)
+        cfg["scan"]["max_rank"] = 100
+        cfg["scan"]["page_limit"] = 2
+        cfg["scan"]["leaderboard_progress_pages"] = 1
+        cfg["leaderboard"]["shards"] = [{"name": "month_pnl", "params": {"period": "month"}}]
+        progress = []
+        client = FakeCappedLeaderboardClient()
+
+        candidates = scan_candidates(cfg, client, progress_callback=progress.append)
+
+        self.assertEqual([call[1]["offset"] for call in client.calls], [0, 2, 4])
+        self.assertEqual(len(candidates), 4)
+        self.assertNotIn("0x5555555555555555555555555555555555555555", {c.address for c in candidates})
+        self.assertTrue(progress[-1]["api_cap_detected"])
+        self.assertEqual(progress[-1]["api_cap_rank"], 4)
+        self.assertEqual(progress[-1]["early_stop_reason"], "api_rank_cap")
+
+    def test_official_sources_add_trade_and_holder_candidates(self):
+        cfg = load_config(None)
+        cfg["candidate_sources"]["leaderboard_enabled"] = False
+        cfg["candidate_sources"]["market_discovery"]["limit"] = 1
+        cfg["candidate_sources"]["market_trades"]["markets_limit"] = 1
+        cfg["candidate_sources"]["holders"]["markets_limit"] = 1
+        progress = []
+
+        with patch("auto_screen.official_sources.GammaApiClient", return_value=FakeGammaClient()):
+            candidates = scan_official_candidates(cfg, FakeOfficialDataClient(), progress_callback=progress.append)
+
+        by_address = {candidate.address: candidate for candidate in candidates}
+        self.assertIn("0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", by_address)
+        self.assertIn("0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", by_address)
+        self.assertIn("0xcccccccccccccccccccccccccccccccccccccccc", by_address)
+        alpha = by_address["0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+        self.assertEqual(alpha.source_keys, ["holders", "market_trades"])
+        self.assertEqual(alpha.leaderboard_context["official_source_count"], 2)
+        self.assertGreater(alpha.leaderboard_context["official_trade_usdc"], 0)
+        self.assertGreater(alpha.leaderboard_context["official_holder_balance"], 0)
+        self.assertIn("official_trades", {item["source_type"] for item in progress})
+        self.assertIn("official_holders", {item["source_type"] for item in progress})
 
     def test_prefilter_detects_hft(self):
         cfg = load_config(None)

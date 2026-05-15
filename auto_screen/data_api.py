@@ -75,6 +75,36 @@ class DataApiClient:
         payload = self.get("/activity", params)
         return extract_rows(payload)
 
+    def fetch_trades(self, params: dict[str, Any]) -> list[dict[str, Any]]:
+        payload = self.get("/trades", params)
+        return extract_rows(payload)
+
+    def fetch_holders(self, params: dict[str, Any]) -> list[dict[str, Any]]:
+        payload = self.get("/holders", params)
+        return extract_rows(payload)
+
+
+class GammaApiClient(DataApiClient):
+    def __init__(
+        self,
+        base_url: str = "https://gamma-api.polymarket.com",
+        timeout_seconds: int = 30,
+        max_retries: int = 3,
+        sleep_seconds: float = 0.2,
+        session: requests.Session | None = None,
+    ) -> None:
+        super().__init__(
+            base_url=base_url,
+            timeout_seconds=timeout_seconds,
+            max_retries=max_retries,
+            sleep_seconds=sleep_seconds,
+            session=session,
+        )
+
+    def fetch_markets(self, params: dict[str, Any]) -> list[dict[str, Any]]:
+        payload = self.get("/markets", params)
+        return extract_rows(payload)
+
 
 def extract_rows(payload: Any) -> list[dict[str, Any]]:
     if isinstance(payload, list):

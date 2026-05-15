@@ -110,6 +110,15 @@ function ageText(seconds) {
   return `${(seconds / 3600).toFixed(1)} 小时前`;
 }
 
+function leaderboardStopText(reason) {
+  const mapping = {
+    api_rank_cap: "官方接口已到可见末尾",
+    no_new_candidates: "连续多页没有新增账号",
+    empty_page: "接口返回空页",
+  };
+  return mapping[reason] || reason || "";
+}
+
 function renderStatus(data) {
   state = data;
   setBadge(data.process || {});
@@ -131,6 +140,8 @@ function renderStatus(data) {
 function renderProgress(progress, process) {
   const health = progress.health || (process.running ? "starting" : "stopped");
   const leaderboard = progress.leaderboard || null;
+  const candidateSource = progress.candidate_source || null;
+  const leaderboardScan = progress.leaderboard_scan || {};
   $("statusDot").className = `status-dot ${health}`;
   $("currentPhase").textContent = progress.phase_label || (process.running ? "运行中" : "未运行");
   $("currentMessage").textContent = progress.message || "-";
@@ -154,12 +165,36 @@ function renderProgress(progress, process) {
     const shardIndex = leaderboard.total_shards ? `${fmt(leaderboard.shard_index)} / ${fmt(leaderboard.total_shards)}` : "-";
     const offsetEnd = Number(leaderboard.offset || 0) + Number(leaderboard.page_limit || 0);
     const noNew = leaderboard.no_new_pages ? `，连续无新增 ${fmt(leaderboard.no_new_pages)} 页` : "";
-    const earlyStop = leaderboard.early_stop ? `，提前结束：${fmt(leaderboard.early_stop_reason)}` : "";
+    const rankRange = leaderboard.first_rank ? `，返回排名 ${fmt(leaderboard.first_rank)}-${fmt(leaderboard.last_rank)}` : "";
+    const cap = leaderboard.api_cap_detected ? `，官方可见上限约 ${fmt(leaderboard.api_cap_rank)} 名` : "";
+    const earlyStop = leaderboard.early_stop ? `，提前结束：${leaderboardStopText(leaderboard.early_stop_reason)}` : "";
     $("leaderboardProgress").textContent = `${fmt(leaderboard.shard)} (${shardIndex})`;
-    $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}，本页新增 ${fmt(leaderboard.new_candidates)}，累计 ${fmt(leaderboard.unique_candidates)}${noNew}${earlyStop}`;
+    $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}${rankRange}，本页新增 ${fmt(leaderboard.new_candidates)}，累计 ${fmt(leaderboard.unique_candidates)}${noNew}${cap}${earlyStop}`;
   } else {
     $("leaderboardProgress").textContent = "-";
-    $("leaderboardHint").textContent = process.running ? "已离开扫榜阶段" : "-";
+    $("leaderboardHint").textContent = process.running ? "已离开排行榜扫榜阶段" : "-";
+  }
+
+  if (candidateSource) {
+    const marketText = candidateSource.market_slug ? ` · ${fmt(candidateSource.market_slug)}` : "";
+    const indexText = candidateSource.total_markets ? ` (${fmt(candidateSource.market_index)} / ${fmt(candidateSource.total_markets)})` : "";
+    $("leaderboardProgress").textContent = `${fmt(candidateSource.source)}${indexText}`;
+    $("leaderboardHint").textContent = `官方信源${marketText}，返回 ${fmt(candidateSource.rows || candidateSource.markets || 0)} 条，新增 ${fmt(candidateSource.new_candidates || 0)}，累计 ${fmt(candidateSource.unique_candidates || 0)} 个候选`;
+  }
+
+  const requestedCap = leaderboardScan.requested_rank_cap || leaderboard?.max_rank;
+  const visibleCap = leaderboardScan.api_visible_cap_rank || leaderboard?.api_cap_rank;
+  const uniqueCandidates = leaderboardScan.unique_candidates || leaderboard?.unique_candidates;
+  const capDetected = Boolean(leaderboardScan.api_cap_detected || leaderboard?.api_cap_detected);
+  if (capDetected) {
+    $("leaderboardCap").textContent = `约 ${fmt(visibleCap)} 名`;
+    $("leaderboardCapHint").textContent = `目标 ${fmt(requestedCap)} 名；官方接口已触顶，多榜合并候选 ${fmt(uniqueCandidates)} 个`;
+  } else if (requestedCap) {
+    $("leaderboardCap").textContent = `目标 ${fmt(requestedCap)} 名`;
+    $("leaderboardCapHint").textContent = uniqueCandidates ? `当前已发现 ${fmt(uniqueCandidates)} 个候选，尚未检测到接口触顶` : "等待扫榜进度";
+  } else {
+    $("leaderboardCap").textContent = "-";
+    $("leaderboardCapHint").textContent = process.running ? "等待扫榜进度" : "-";
   }
 
   $("nextStep").textContent = progress.next_step || "-";
@@ -192,7 +227,7 @@ function renderTimeline(rows) {
     const leaderboard = r.leaderboard || null;
     const detail = r.current_account
       ? `${shortAddress(r.current_account)}${r.current_label ? ` · ${r.current_label}` : ""}`
-      : (leaderboard ? `${fmt(leaderboard.shard)} offset ${fmt(leaderboard.offset)}` : "");
+      : (leaderboard ? `${fmt(leaderboard.shard)} offset ${fmt(leaderboard.offset)}` : (r.candidate_source ? `${fmt(r.candidate_source.source)} ${fmt(r.candidate_source.market_slug || "")}` : ""));
     const when = r.updated_ts ? ageText(Math.max(0, (Date.now() / 1000) - Number(r.updated_ts))) : "-";
     return `
       <div class="timeline-item">

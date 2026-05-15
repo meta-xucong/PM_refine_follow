@@ -9,9 +9,9 @@ from .collector import CollectionSkipped, collect_account_files
 from .config import resolve_path
 from .data_api import DataApiClient
 from .excel_store import ExcelStore
-from .leaderboard_scanner import scan_candidates
 from .models import AccountCandidate
 from .notifier import format_alert_batch, format_candidate_message, send_serverchan
+from .official_sources import scan_candidates
 from .prefilter import prefilter_account
 from .progress import ProgressReporter
 from .scorer import score_account
@@ -310,28 +310,68 @@ def run_once(
             stats=stats,
         )
         reporter.update("scanning_leaderboard", "正在按排行榜分片发现候选账号", cycle_id=cycle_id, stats=stats)
+        leaderboard_caps: list[dict[str, Any]] = []
+        latest_leaderboard_info: dict[str, Any] = {}
+
         def report_leaderboard_progress(info: dict[str, Any]) -> None:
-            message = (
-                f"{info.get('shard')} offset {info.get('offset')}，"
-                f"新增 {info.get('new_candidates', 0)}，累计 {info.get('unique_candidates')} 个候选"
-            )
-            if info.get("early_stop"):
-                message += f"，提前结束分片：{info.get('early_stop_reason')}"
+            is_leaderboard_event = bool(info.get("shard"))
+            if is_leaderboard_event:
+                latest_leaderboard_info.clear()
+                latest_leaderboard_info.update(info)
+            if is_leaderboard_event and info.get("api_cap_detected"):
+                leaderboard_caps.append(
+                    {
+                        "shard": info.get("shard"),
+                        "api_cap_rank": info.get("api_cap_rank"),
+                        "offset": info.get("offset"),
+                        "expected_start_rank": info.get("expected_start_rank"),
+                    }
+                )
+            if is_leaderboard_event:
+                message = (
+                    f"{info.get('shard')} offset {info.get('offset')}，"
+                    f"新增 {info.get('new_candidates', 0)}，累计 {info.get('unique_candidates')} 个候选"
+                )
+                if info.get("api_cap_detected"):
+                    message += f"，官方接口触顶：约 {info.get('api_cap_rank')} 名"
+                if info.get("early_stop"):
+                    message += f"，提前结束分片：{info.get('early_stop_reason')}"
+                progress_fields = {"leaderboard": info}
+            else:
+                message = str(
+                    info.get("message")
+                    or f"{info.get('source')} 官方信源，新增 {info.get('new_candidates', 0)}，累计 {info.get('unique_candidates')} 个候选"
+                )
+                progress_fields = {"candidate_source": info}
             reporter.update(
                 "scanning_leaderboard",
                 message,
                 cycle_id=cycle_id,
-                leaderboard=info,
                 stats=stats,
+                **progress_fields,
             )
 
         candidates = scan_candidates(config, client, limit=limit_candidates, progress_callback=report_leaderboard_progress)
         stats["scanned"] = len(candidates)
+        api_cap_ranks = [
+            int(item["api_cap_rank"])
+            for item in leaderboard_caps
+            if item.get("api_cap_rank") is not None
+        ]
+        leaderboard_scan_summary = {
+            "requested_rank_cap": int((config.get("scan") or {}).get("max_rank", 100000)),
+            "api_cap_detected": bool(api_cap_ranks),
+            "api_visible_cap_rank": max(api_cap_ranks) if api_cap_ranks else None,
+            "api_cap_shards": leaderboard_caps,
+            "unique_candidates": len(candidates),
+            "latest": dict(latest_leaderboard_info),
+        }
         reporter.update(
             "leaderboard_scanned",
             f"发现 {len(candidates)} 个候选账号",
             cycle_id=cycle_id,
             scanned=len(candidates),
+            leaderboard_scan=leaderboard_scan_summary,
             stats=stats,
         )
         reporter.update(

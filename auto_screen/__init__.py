@@ -4,6 +4,7 @@ __all__ = [
     "config",
     "data_api",
     "leaderboard_scanner",
+    "official_sources",
     "prefilter",
     "state_store",
     "excel_store",

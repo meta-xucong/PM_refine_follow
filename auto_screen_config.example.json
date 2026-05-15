@@ -11,7 +11,8 @@
     "process_batch_size": 25,
     "process_all_candidates_per_cycle": true,
     "leaderboard_progress_pages": 20,
-    "leaderboard_no_new_pages_stop": 40
+    "leaderboard_no_new_pages_stop": 40,
+    "leaderboard_api_cap_stop_enabled": true
   },
   "leaderboard": {
     "endpoint": "/v1/leaderboard",
@@ -21,6 +22,45 @@
       { "name": "week_pnl", "params": { "period": "week", "sortBy": "PNL" } },
       { "name": "week_vol", "params": { "period": "week", "sortBy": "VOLUME" } }
     ]
+  },
+  "candidate_sources": {
+    "enabled": true,
+    "official_only": true,
+    "leaderboard_enabled": true,
+    "gamma": {
+      "base_url": "https://gamma-api.polymarket.com",
+      "timeout_seconds": 30,
+      "max_retries": 3,
+      "sleep_seconds": 0.25
+    },
+    "market_discovery": {
+      "enabled": true,
+      "limit": 25,
+      "active": true,
+      "closed": false,
+      "order": "volume24hr",
+      "ascending": false,
+      "min_volume_24h": 1000,
+      "min_liquidity": 100,
+      "require_orderbook": true,
+      "categories": []
+    },
+    "market_trades": {
+      "enabled": true,
+      "markets_limit": 10,
+      "limit_per_market": 100,
+      "filter_type": "CASH",
+      "min_cash": 25,
+      "min_address_cash": 50,
+      "max_address_trades_per_market": 80
+    },
+    "holders": {
+      "enabled": true,
+      "markets_limit": 10,
+      "limit_per_market": 20,
+      "min_balance": 10,
+      "max_balance": 250000
+    }
   },
   "prefilter": {
     "activity_limit": 300,

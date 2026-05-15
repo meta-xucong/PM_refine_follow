@@ -11,6 +11,7 @@ auto_screen/
   models.py
   state_store.py
   leaderboard_scanner.py
+  official_sources.py
   prefilter.py
   collector.py
   scoring_features.py
@@ -94,6 +95,16 @@ auto_screen_config.example.json
 - 合并候选。
 - 检测 API cap。
 - 计算优先级。
+
+### `official_sources.py`
+
+职责：
+
+- 汇总官方可信候选源。
+- 通过 Gamma `/markets` 发现热门开放市场。
+- 通过 Data API `/trades` 从热门市场成交反推活跃钱包。
+- 通过 Data API `/holders` 从热门市场持仓反推中等规模持仓钱包。
+- 合并多来源候选证据，输出统一 `AccountCandidate`。
 
 ### `prefilter.py`
 

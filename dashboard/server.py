@@ -367,7 +367,10 @@ def leaderboard_percent(leaderboard: dict[str, Any]) -> float | None:
         page_limit = float(leaderboard.get("page_limit") or 0)
         if max_rank <= 0:
             return None
-        shard_fraction = min(1.0, max(0.0, (offset + page_limit) / max_rank))
+        if leaderboard.get("early_stop") or leaderboard.get("api_cap_detected"):
+            shard_fraction = 1.0
+        else:
+            shard_fraction = min(1.0, max(0.0, (offset + page_limit) / max_rank))
         total_shards = int(leaderboard.get("total_shards") or 0)
         shard_index = int(leaderboard.get("shard_index") or 0)
         if total_shards > 0 and shard_index > 0:
@@ -410,6 +413,16 @@ def progress_summary(auto_cfg: dict[str, Any], process: dict[str, Any], auto_sta
     phase_label = progress.get("phase_label") or ("运行中" if running else "未运行")
     stats = progress.get("stats") or {}
     leaderboard = progress.get("leaderboard")
+    candidate_source = progress.get("candidate_source")
+    leaderboard_scan = progress.get("leaderboard_scan") or {}
+    if isinstance(leaderboard, dict) and leaderboard.get("api_cap_detected") and not leaderboard_scan:
+        leaderboard_scan = {
+            "requested_rank_cap": leaderboard.get("max_rank"),
+            "api_cap_detected": True,
+            "api_visible_cap_rank": leaderboard.get("api_cap_rank"),
+            "unique_candidates": leaderboard.get("unique_candidates"),
+            "latest": leaderboard,
+        }
     batch_total = progress.get("batch_total")
     current_index = progress.get("current_index")
     percent = None
@@ -457,6 +470,8 @@ def progress_summary(auto_cfg: dict[str, Any], process: dict[str, Any], auto_sta
         "seen_before": progress.get("seen_before"),
         "scan_prompt": progress.get("scan_prompt"),
         "leaderboard": leaderboard,
+        "leaderboard_scan": leaderboard_scan,
+        "candidate_source": candidate_source,
         "next_step": progress_next_step(phase, running),
         "history": list(reversed((progress.get("history") or [])[-20:])),
     }
