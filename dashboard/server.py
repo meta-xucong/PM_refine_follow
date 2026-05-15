@@ -324,9 +324,11 @@ def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
             counts[row["status"]] = row["n"]
         for row in sqlite_rows(db_path, "SELECT push_status, count(*) AS n FROM alerts GROUP BY push_status"):
             alert_push_counts[row.get("push_status") or "unknown"] = row["n"]
+    candidate_total_count = sum(int(value or 0) for value in counts.values())
     return {
         "db_path": str(db_path),
         "candidate_counts": counts,
+        "candidate_total_count": candidate_total_count,
         "alert_push_counts": alert_push_counts,
         "latest_cycles": sqlite_rows(db_path, "SELECT * FROM cycles ORDER BY id DESC LIMIT 8"),
         "recent_runs": sqlite_rows(db_path, "SELECT * FROM runs ORDER BY id DESC LIMIT 20"),
@@ -464,6 +466,8 @@ def progress_summary(auto_cfg: dict[str, Any], process: dict[str, Any], auto_sta
         "batch_total": batch_total,
         "percent": percent,
         "stats": stats,
+        "candidate_total_count": auto_state.get("candidate_total_count", 0),
+        "candidate_counts": auto_state.get("candidate_counts", {}),
         "final_score": progress.get("final_score"),
         "alert_grade": progress.get("alert_grade"),
         "auto_action": progress.get("auto_action"),

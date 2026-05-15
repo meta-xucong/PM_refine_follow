@@ -330,7 +330,7 @@ def run_once(
             if is_leaderboard_event:
                 message = (
                     f"{info.get('shard')} offset {info.get('offset')}，"
-                    f"新增 {info.get('new_candidates', 0)}，累计 {info.get('unique_candidates')} 个候选"
+                    f"新增 {info.get('new_candidates', 0)}，本轮候选 {info.get('unique_candidates')} 个"
                 )
                 if info.get("api_cap_detected"):
                     message += f"，官方接口触顶：约 {info.get('api_cap_rank')} 名"
@@ -340,7 +340,7 @@ def run_once(
             else:
                 message = str(
                     info.get("message")
-                    or f"{info.get('source')} 官方信源，新增 {info.get('new_candidates', 0)}，累计 {info.get('unique_candidates')} 个候选"
+                    or f"{info.get('source')} 官方信源，新增 {info.get('new_candidates', 0)}，本轮候选 {info.get('unique_candidates')} 个"
                 )
                 progress_fields = {"candidate_source": info}
             reporter.update(

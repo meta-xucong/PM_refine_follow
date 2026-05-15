@@ -124,8 +124,10 @@ function renderStatus(data) {
   setBadge(data.process || {});
   renderProgress(data.progress || {}, data.process || {});
   const counts = data.auto?.candidate_counts || {};
+  const totalCount = data.auto?.candidate_total_count ?? Object.values(counts).reduce((sum, value) => sum + Number(value || 0), 0);
   const alertPushCounts = data.auto?.alert_push_counts || {};
-  $("candidateCounts").textContent = Object.entries(counts).map(([k, v]) => `${k}:${v}`).join("  ") || "0";
+  const statusText = Object.entries(counts).map(([k, v]) => `${k}:${v}`).join("  ");
+  $("candidateCounts").textContent = `总地址:${fmt(totalCount)}${statusText ? `  ${statusText}` : ""}`;
   $("alertCount").textContent = `${fmt((data.excel?.sheet_counts || {}).alerts || 0)} / 待推送:${fmt(alertPushCounts.pending || 0)}`;
   $("agentCount").textContent = fmt((data.agent?.counts || {}).agent_decisions || 0);
   $("excelPath").textContent = data.excel?.excel_path || "-";
@@ -168,8 +170,9 @@ function renderProgress(progress, process) {
     const rankRange = leaderboard.first_rank ? `，返回排名 ${fmt(leaderboard.first_rank)}-${fmt(leaderboard.last_rank)}` : "";
     const cap = leaderboard.api_cap_detected ? `，官方可见上限约 ${fmt(leaderboard.api_cap_rank)} 名` : "";
     const earlyStop = leaderboard.early_stop ? `，提前结束：${leaderboardStopText(leaderboard.early_stop_reason)}` : "";
+    const storedTotal = progress.candidate_total_count !== undefined ? `，已入库总地址 ${fmt(progress.candidate_total_count)}` : "";
     $("leaderboardProgress").textContent = `${fmt(leaderboard.shard)} (${shardIndex})`;
-    $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}${rankRange}，本页新增 ${fmt(leaderboard.new_candidates)}，累计 ${fmt(leaderboard.unique_candidates)}${noNew}${cap}${earlyStop}`;
+    $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}${rankRange}，本页新增 ${fmt(leaderboard.new_candidates)}，本轮候选 ${fmt(leaderboard.unique_candidates)}${storedTotal}${noNew}${cap}${earlyStop}`;
   } else {
     $("leaderboardProgress").textContent = "-";
     $("leaderboardHint").textContent = process.running ? "已离开排行榜扫榜阶段" : "-";
@@ -178,8 +181,9 @@ function renderProgress(progress, process) {
   if (candidateSource) {
     const marketText = candidateSource.market_slug ? ` · ${fmt(candidateSource.market_slug)}` : "";
     const indexText = candidateSource.total_markets ? ` (${fmt(candidateSource.market_index)} / ${fmt(candidateSource.total_markets)})` : "";
+    const storedTotal = progress.candidate_total_count !== undefined ? `，已入库总地址 ${fmt(progress.candidate_total_count)}` : "";
     $("leaderboardProgress").textContent = `${fmt(candidateSource.source)}${indexText}`;
-    $("leaderboardHint").textContent = `官方信源${marketText}，返回 ${fmt(candidateSource.rows || candidateSource.markets || 0)} 条，新增 ${fmt(candidateSource.new_candidates || 0)}，累计 ${fmt(candidateSource.unique_candidates || 0)} 个候选`;
+    $("leaderboardHint").textContent = `官方信源${marketText}，返回 ${fmt(candidateSource.rows || candidateSource.markets || 0)} 条，新增 ${fmt(candidateSource.new_candidates || 0)}，本轮候选 ${fmt(candidateSource.unique_candidates || 0)}${storedTotal}`;
   }
 
   const requestedCap = leaderboardScan.requested_rank_cap || leaderboard?.max_rank;
@@ -188,10 +192,10 @@ function renderProgress(progress, process) {
   const capDetected = Boolean(leaderboardScan.api_cap_detected || leaderboard?.api_cap_detected);
   if (capDetected) {
     $("leaderboardCap").textContent = `约 ${fmt(visibleCap)} 名`;
-    $("leaderboardCapHint").textContent = `目标 ${fmt(requestedCap)} 名；官方接口已触顶，多榜合并候选 ${fmt(uniqueCandidates)} 个`;
+    $("leaderboardCapHint").textContent = `目标 ${fmt(requestedCap)} 名；官方接口已触顶，本轮多榜合并候选 ${fmt(uniqueCandidates)} 个，已入库总地址 ${fmt(progress.candidate_total_count)}`;
   } else if (requestedCap) {
     $("leaderboardCap").textContent = `目标 ${fmt(requestedCap)} 名`;
-    $("leaderboardCapHint").textContent = uniqueCandidates ? `当前已发现 ${fmt(uniqueCandidates)} 个候选，尚未检测到接口触顶` : "等待扫榜进度";
+    $("leaderboardCapHint").textContent = uniqueCandidates ? `本轮已发现 ${fmt(uniqueCandidates)} 个候选，已入库总地址 ${fmt(progress.candidate_total_count)}，尚未检测到接口触顶` : `等待扫榜进度，已入库总地址 ${fmt(progress.candidate_total_count)}`;
   } else {
     $("leaderboardCap").textContent = "-";
     $("leaderboardCapHint").textContent = process.running ? "等待扫榜进度" : "-";
@@ -216,7 +220,7 @@ function renderProgress(progress, process) {
   }
   const stats = progress.stats || {};
   $("cycleStats").textContent = `扫:${fmt(stats.scanned)} 处理:${fmt(stats.processed)} 推送:${fmt(stats.alerts)} 跳过:${fmt(stats.skipped)}`;
-  $("lastAction").textContent = progress.auto_action || progress.alert_grade || (leaderboard ? `候选 ${fmt(leaderboard.unique_candidates)} / 新增 ${fmt(leaderboard.new_candidates)}` : (progress.phase || "-"));
+  $("lastAction").textContent = progress.auto_action || progress.alert_grade || (leaderboard ? `本轮候选 ${fmt(leaderboard.unique_candidates)} / 入库总地址 ${fmt(progress.candidate_total_count)}` : (progress.phase || "-"));
   $("progressFill").style.width = `${Number(progress.percent || 0)}%`;
   renderTimeline(progress.history || []);
 }
