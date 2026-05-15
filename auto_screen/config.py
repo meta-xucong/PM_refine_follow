@@ -13,6 +13,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "progress_path": "auto_screen_data/progress.json",
     "scan": {
         "max_rank": 100000,
+        "candidate_discovery_limit": 100000,
         "page_limit": 50,
         "sleep_seconds": 0.20,
         "cycle_sleep_seconds": 600,

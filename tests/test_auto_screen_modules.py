@@ -398,6 +398,23 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual({row["push_status"] for row in rows}, {"sent"})
             self.assertEqual(len({row["push_batch_id"] for row in rows}), 1)
 
+    def test_run_once_uses_configured_candidate_discovery_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = load_config(None)
+            cfg["data_dir"] = str(root / "data")
+            cfg["state_db"] = str(root / "state.sqlite3")
+            cfg["excel_path"] = str(root / "candidates.xlsx")
+            cfg["progress_path"] = str(root / "progress.json")
+            cfg["scan"]["candidate_discovery_limit"] = 123
+            reporter = ProgressReporter(root / "progress.json", emit_log=False)
+
+            with patch.object(scheduler, "scan_candidates", return_value=[]) as scan:
+                stats = scheduler.run_once(cfg, dry_run_alerts=True, reporter=reporter)
+
+            self.assertEqual(stats["scanned"], 0)
+            self.assertEqual(scan.call_args.kwargs["limit"], 123)
+
     def test_run_once_does_not_queue_serverchan_alert_at_or_below_threshold(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -300,6 +300,11 @@ def run_once(
     cycle_id = store.start_cycle()
     stats = {"cycle_id": cycle_id, "scanned": 0, "processed": 0, "alerts": 0, "skipped": 0, "refresh_score": 0}
     try:
+        scan_cfg = config.get("scan") or {}
+        discovery_limit = limit_candidates
+        if discovery_limit is None:
+            configured_limit = int(scan_cfg.get("candidate_discovery_limit") or 0)
+            discovery_limit = configured_limit if configured_limit > 0 else None
         reporter.update("cycle_started", "开始新一轮扫描", cycle_id=cycle_id, stats=stats)
         maybe_send_alert_batches(
             store,
@@ -351,7 +356,7 @@ def run_once(
                 **progress_fields,
             )
 
-        candidates = scan_candidates(config, client, limit=limit_candidates, progress_callback=report_leaderboard_progress)
+        candidates = scan_candidates(config, client, limit=discovery_limit, progress_callback=report_leaderboard_progress)
         stats["scanned"] = len(candidates)
         api_cap_ranks = [
             int(item["api_cap_rank"])
@@ -360,6 +365,7 @@ def run_once(
         ]
         leaderboard_scan_summary = {
             "requested_rank_cap": int((config.get("scan") or {}).get("max_rank", 100000)),
+            "requested_candidate_limit": discovery_limit,
             "api_cap_detected": bool(api_cap_ranks),
             "api_visible_cap_rank": max(api_cap_ranks) if api_cap_ranks else None,
             "api_cap_shards": leaderboard_caps,
@@ -393,7 +399,6 @@ def run_once(
                 stats=stats,
             )
 
-        scan_cfg = config.get("scan") or {}
         batch_size = max(1, int(scan_cfg.get("process_batch_size", 25)))
         process_all = bool(scan_cfg.get("process_all_candidates_per_cycle", False)) and process_limit is None
         max_attempts = None if process_all else (process_limit or batch_size)
