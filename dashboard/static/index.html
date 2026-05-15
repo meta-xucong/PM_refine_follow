@@ -97,6 +97,7 @@
         <button class="tab active" data-tab="overview">总览</button>
         <button class="tab" data-tab="candidates">候选账号</button>
         <button class="tab" data-tab="alerts">告警与 Agent</button>
+        <button class="tab" data-tab="pushed">推送历史</button>
         <button class="tab" data-tab="config">配置</button>
         <button class="tab" data-tab="logs">日志</button>
       </nav>
@@ -153,6 +154,25 @@
         </div>
       </section>
 
+      <section id="pushed" class="tab-panel">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>已推送账号</h2>
+            <span id="pushedHistoryHint" class="muted">-</span>
+          </div>
+          <div class="table-wrap tall">
+            <table class="pushed-table">
+              <thead>
+                <tr>
+                  <th>账号</th><th>推送轮数</th><th>最近 3 轮分数</th><th>更多历史</th><th>最近推送时间</th>
+                </tr>
+              </thead>
+              <tbody id="pushedHistoryBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
       <section id="config" class="tab-panel">
         <div class="grid two">
           <section class="panel">
@@ -165,10 +185,24 @@
               <label>每批处理数<input id="cfgBatch" type="number" min="1" /></label>
               <label>cycle_sleep_seconds<input id="cfgSleep" type="number" min="1" /></label>
               <label>no_new_pages_stop<input id="cfgNoNewPages" type="number" min="0" /></label>
-              <label>alert_threshold<input id="cfgAlertThreshold" type="number" min="0" max="100" /></label>
+              <label>推送分数阈值<input id="cfgAlertThreshold" type="number" min="0" max="100" /></label>
               <label>ServerChan批量数<input id="cfgServerBatch" type="number" min="1" /></label>
               <label class="toggle wide"><input id="cfgAgentEnabled" type="checkbox" /><span>启用 Agent 复核</span></label>
               <label class="toggle wide"><input id="cfgServerEnabled" type="checkbox" /><span>启用 ServerChan</span></label>
+              <div class="sendkey-box wide">
+                <div class="sendkey-head">
+                  <div>
+                    <strong>ServerChan SendKey</strong>
+                    <p id="serverchanKeyStatus">读取中</p>
+                    <p id="serverchanKeyPath" class="muted">-</p>
+                  </div>
+                  <button id="refreshSendkeyBtn" type="button">刷新密钥状态</button>
+                </div>
+                <div class="sendkey-actions">
+                  <input id="serverchanSendkeyInput" type="password" placeholder="输入新的 ServerChan SendKey" autocomplete="off" />
+                  <button id="saveSendkeyBtn" type="button" class="primary">保存 SendKey</button>
+                </div>
+              </div>
             </div>
           </section>
           <section class="panel">

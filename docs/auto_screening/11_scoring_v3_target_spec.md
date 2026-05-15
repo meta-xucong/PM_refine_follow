@@ -14,6 +14,48 @@ Auto V3 要解决的问题：
 - 对高频、快交易、临近结算、极端价格交易做更强约束。
 - 把“分数高于 40 要推送”拆成不同推送等级，减少噪音。
 
+## 2026-05-15 跟单质量规则优化
+
+本轮优化把评分目标从“近期榜单表现好”进一步收敛为“适合持续跟单”。人工校准样本：
+
+| 地址 | 人工判断 | 新规则目标 |
+| --- | --- | --- |
+| `0x0f9bf99cb7f86d70704edab6c7a234bc09bf7829` | 长期活跃、平滑盈利、资金规模适中 | `70+`，B 级以上 |
+| `0x2f1aecd1f297a3549e86ee0259c2be3156b6bfa2` | 长期沉睡后近期爆发、资金规模偏小 | `40..50`，C 级 |
+| `0x1537ed4d534ec88634af690b9b03145dbcaec480` | 近期突然盈利、最近 7d 亏损、曲线剧烈波动 | `40..52`，C 级 |
+| `0x43b4e4bfbab5ba1b70d2cc223ff6f412572aec9c` | 资金适中、整体盈利较稳，活跃期偏短但波动较少 | `55..65`，C/B 边界 |
+
+核心变化：
+
+1. 榜单命中只保留轻量加分，不能再把差账号推高。
+2. 近期收益质量按资金规模降权，30d 买入额过小即使收益率高也不能吃满分。
+3. 资金规模进入 `copy_capacity_score`，过小、过大都扣分。
+4. 账号“有效活跃期”进入生命周期规则。长期账号如果大部分有效活跃集中在近 90 天，视为 `late_activity_ramp`。
+5. 近期亏损、生命周期大回撤、单日巨大波动、长期稀疏活跃不再只是扣分，而是触发最终分封顶。
+6. 修复 `/closed-positions` 分页：当 API 静默把 `limit=500` 限成 50 行时，继续用观测到的行数推进 offset，避免把 50 条历史误判为完整 lifetime。
+
+### 新增封顶规则
+
+封顶规则作用在 `final_score`，优先级高于综合加分：
+
+| 条件 | 封顶 | flag |
+| --- | ---: | --- |
+| 30d PnL 与 7d PnL 都为负 | 45 | `recent_pnl_negative_45` |
+| 30d 为正但 7d 为负，且 7d 亏损超过 30d 盈利 30% | 48 | `recent_7d_loss_heavy_48` |
+| 30d 为正但 7d 为负，且 7d 亏损超过 30d 盈利 10% | 55 | `recent_7d_loss_material_55` |
+| 30d 为负但 7d 为正 | 50 | `recent_30d_loss_50` |
+| lifetime 回撤 / 总 PnL > 1.25 | 52 | `lifetime_drawdown_extreme_52` |
+| lifetime 回撤 / 总 PnL > 0.75 | 58 | `lifetime_drawdown_high_58` |
+| lifetime 日波动 / 总 PnL > 0.50 | 52 | `lifetime_daily_volatility_extreme_52` |
+| lifetime 单日绝对波动 / 总 PnL > 1.0 | 52 | `single_day_move_extreme_52` |
+| 长账号、活跃月份覆盖 < 45%、活跃天数 < 45、近 90 天活跃天数占比 >= 65% | 58 | `late_activity_ramp_58` |
+| 上述 late ramp 且 30d 买入额 < 20000、容量分 < 4 或活跃天数 < 30 | 48 | `late_activity_ramp_small_scale_48` |
+| 长期沉睡后近期突然活跃 | 50 | `dormant_recent_spike_50` |
+| 可跟单容量分 < 4 | 48 | `copy_capacity_low_48` |
+| 30d 买入额 < 5000 | 45 | `capital_scale_too_small_45` |
+| 30d 买入额 < 20000 且当前仓位价值 < 5000 | 48 | `capital_scale_small_48` |
+| closed positions 历史/近期分页不完整 | 58 | `closed_positions_incomplete_58` |
+
 ## 输出字段
 
 Auto V3 评分输出必须包含：
@@ -543,23 +585,18 @@ not_recommended:
 
 ## Alert Grade
 
-ServerChan 推送仍按用户要求：`final_score > 40`。
+ServerChan 推送按用户要求：只推 `final_score > 50` 的账号。
 
 但推送必须分级：
 
 | 等级 | 条件 | 含义 |
 |---|---|---|
-| `A` | `final_score >= 78`, no caution/severe gate, `data_quality >= 8`, `copy_capacity >= 7` | 强候选，可重点人工复核 |
-| `B` | `final_score >= 65`, no severe gate, `data_quality >= 7`, `copy_capacity >= 5` | 较强筛选跟单候选 |
-| `C` | `final_score > 40`, `data_quality >= 4`, not skipped | 观察名单，只能筛着看 |
+| `A` | `final_score > 70` | 强候选，可重点人工复核 |
+| `B` | `final_score > 55` | 较强筛选跟单候选 |
+| `C` | `final_score > 45` | 观察名单，只能筛着看 |
 | `none` | 其他 | 不推送 |
 
-等级上限：
-
-- caution gate: 最高 B。
-- `data_quality < 6`: 最高 C。
-- `avg_trades_per_active_day > 300`: 最高 C。
-- severe gate: 最高 C，且必须在消息里高亮。
+严重风险或长期硬性剔除仍直接为 `none`，因为这类账号的最终分通常已被封顶或强制跳过。
 
 ## Auto Action
 
@@ -572,7 +609,7 @@ ServerChan 推送仍按用户要求：`final_score > 40`。
 | `alert_grade=C` | `push_watchlist` |
 | `data_quality < 4` 且 discovery 高 | `defer_recheck` |
 | 高频 skip 或 severe dirty | `skip` |
-| `final_score <= 40` | `store_only` |
+| `final_score <= 45` | `store_only` |
 
 ## Score Flags
 

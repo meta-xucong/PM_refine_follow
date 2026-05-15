@@ -52,6 +52,7 @@ class AutoScreenModuleTests(unittest.TestCase):
             cfg = load_config(path)
             self.assertEqual(cfg["scan"]["max_rank"], 123)
             self.assertIn("prefilter", cfg)
+            self.assertEqual(cfg["scoring"]["alert_threshold"], 50)
 
     def test_leaderboard_scanner_merges_candidate_context(self):
         cfg = load_config(None)
@@ -176,6 +177,19 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual(row["push_status"], "sent")
             self.assertEqual(pending, 0)
 
+    def test_state_store_archives_pending_alerts_at_or_below_score_threshold(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = StateStore(Path(tmp) / "state.sqlite3")
+            store.record_alert("0x1111111111111111111111111111111111111111", 50, "C", "low", "low", push_status="pending")
+            store.record_alert("0x2222222222222222222222222222222222222222", 50.01, "C", "ok", "ok", push_status="pending")
+            archived = store.archive_pending_alerts_at_or_below_score(50, "archived_below_alert_threshold")
+            rows = [dict(row) for row in store.conn.execute("SELECT address, push_status FROM alerts ORDER BY id")]
+            store.close()
+
+            self.assertEqual(archived, 1)
+            self.assertEqual(rows[0]["push_status"], "archived")
+            self.assertEqual(rows[1]["push_status"], "pending")
+
     def _run_alert_batch_scenario(self, root: Path, candidate_count: int):
         cfg = load_config(None)
         cfg["data_dir"] = str(root / "data")
@@ -247,13 +261,62 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual(stats["alerts"], 10)
             self.assertEqual(send.call_count, 1)
             title, message, _cfg = send.call_args.args
-            self.assertIn("10个", title)
-            self.assertIn("本批已凑满 10 个高分候选", message)
-            self.assertIn("本批包含 10 个具体地址如下", message)
+            self.assertIn("10 个", title)
+            self.assertIn("本批已凑满 10 个可关注账号", message)
+            self.assertIn("## 10 个地址", message)
             for i in range(1, 11):
                 self.assertIn(f"0x{i:040x}", message)
+                self.assertIn(f"0x{i:040x} ｜ 分数：55.00 分", message)
+            self.assertIn("只适合筛选后谨慎跟单", message)
             self.assertEqual({row["push_status"] for row in rows}, {"sent"})
             self.assertEqual(len({row["push_batch_id"] for row in rows}), 1)
+
+    def test_run_once_does_not_queue_serverchan_alert_at_or_below_threshold(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = load_config(None)
+            cfg["data_dir"] = str(root / "data")
+            cfg["state_db"] = str(root / "state.sqlite3")
+            cfg["excel_path"] = str(root / "candidates.xlsx")
+            cfg["progress_path"] = str(root / "progress.json")
+            cfg["scan"]["process_batch_size"] = 1
+            candidate = AccountCandidate(address="0x1111111111111111111111111111111111111111", display_name="A1", discovery_score=99)
+            reporter = ProgressReporter(root / "progress.json", emit_log=False)
+
+            def fake_score(address, *_args):
+                return ScoringResult(
+                    address=address,
+                    final_score=48,
+                    decision="selective_copying_only",
+                    alert_grade="C",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "analysis.json"),
+                    payload={
+                        "account_address": address,
+                        "account_label": address,
+                        "final_score": 48,
+                        "decision": "selective_copying_only",
+                        "alert_grade": "C",
+                        "auto_action": "push_watchlist",
+                    },
+                )
+
+            with (
+                patch.object(scheduler, "scan_candidates", return_value=[candidate]),
+                patch.object(scheduler, "prefilter_account", return_value=PrefilterResult(candidate.address, True, "passed")),
+                patch.object(scheduler, "collect_account_files", return_value=(root / "trades.csv", root / "summary.json")),
+                patch.object(scheduler, "score_account", side_effect=fake_score),
+                patch.object(scheduler, "send_serverchan") as send,
+            ):
+                stats = scheduler.run_once(cfg, dry_run_alerts=False, reporter=reporter)
+
+            store = StateStore(root / "state.sqlite3")
+            alert_count = store.conn.execute("SELECT COUNT(*) AS n FROM alerts").fetchone()["n"]
+            store.close()
+
+            self.assertEqual(stats["alerts"], 0)
+            self.assertEqual(alert_count, 0)
+            self.assertEqual(send.call_count, 0)
 
     def test_run_once_archives_legacy_pending_alerts_before_batching(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -572,6 +635,11 @@ class AutoScreenModuleTests(unittest.TestCase):
         }
         title, message = format_candidate_message(analysis)
         self.assertIn("Alpha", title)
+        self.assertIn("一句话结论", message)
+        self.assertIn("系统建议", message)
+        self.assertNotIn("final_score", message)
+        self.assertNotIn("auto_action", message)
+        self.assertNotIn("selective_copying_only", message)
         result = send_serverchan(title, message, {"enabled": True, "dry_run": True})
         self.assertEqual(result["reason"], "dry_run")
 
@@ -582,14 +650,27 @@ class AutoScreenModuleTests(unittest.TestCase):
                 "final_score": 55,
                 "alert_grade": "C",
                 "title": "Polymarket候选 C | 55 | Alpha",
-                "message": "结论: selective_copying_only\n自动动作: push_watchlist",
+                "message": (
+                    "结论: selective_copying_only\n"
+                    "自动动作: push_watchlist\n"
+                    "总PnL: 1000\n"
+                    "账号年龄天数: 400\n"
+                    "数据质量: 8\n"
+                    "收益质量: 20\n"
+                    "跟单容量: 5\n"
+                    "标记: multi_category_hit"
+                ),
             }
             for _ in range(10)
         ]
         title, message = format_alert_batch(rows)
-        self.assertIn("10个", title)
+        self.assertIn("10 个", title)
+        self.assertIn("0x1111111111111111111111111111111111111111 ｜ 分数：55.00 分", message)
         self.assertIn("Alpha", message)
-        self.assertIn("selective_copying_only", message)
+        self.assertIn("只适合筛选后谨慎跟单", message)
+        self.assertIn("覆盖多个题材", message)
+        self.assertNotIn("selective_copying_only", message)
+        self.assertNotIn("push_watchlist", message)
 
     def test_notifier_parses_serverchan_success(self):
         class FakeResponse:

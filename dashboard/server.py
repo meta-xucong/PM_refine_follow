@@ -52,6 +52,15 @@ def write_json(path: Path, value: Any) -> None:
 def pid_running(pid: int | None) -> bool:
     if not pid or pid <= 0:
         return False
+    if os.name == "nt":
+        proc = subprocess.run(
+            ["tasklist", "/FI", f"PID eq {pid}", "/FO", "CSV", "/NH"],
+            capture_output=True,
+            text=True,
+        )
+        if proc.returncode != 0:
+            return False
+        return f'"{pid}"' in proc.stdout
     try:
         os.kill(pid, 0)
         return True
@@ -159,6 +168,132 @@ def resolve_auto_path(auto_cfg: dict[str, Any], key: str, default: str) -> Path:
     return ROOT / value
 
 
+def mask_secret(value: str | None) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return "未设置"
+    if len(text) <= 8:
+        return "*" * len(text)
+    return f"{text[:4]}...{text[-4:]}"
+
+
+def serverchan_sendkey_file(auto_cfg: dict[str, Any]) -> Path:
+    serverchan_cfg = auto_cfg.get("serverchan") or {}
+    value = Path(str(serverchan_cfg.get("sendkey_file") or "~/.codex/secrets/serverchan_sendkey.txt")).expanduser()
+    if value.is_absolute():
+        return value
+    return ROOT / value
+
+
+def serverchan_key_info(auto_cfg: dict[str, Any]) -> dict[str, Any]:
+    serverchan_cfg = auto_cfg.get("serverchan") or {}
+    env_name = str(serverchan_cfg.get("sendkey_env") or "SCT_SENDKEY")
+    env_value = os.environ.get(env_name, "").strip()
+    file_path = serverchan_sendkey_file(auto_cfg)
+    file_value = ""
+    if file_path.exists():
+        file_value = file_path.read_text(encoding="utf-8").strip()
+    if env_value:
+        active_source = "环境变量"
+        active_masked = mask_secret(env_value)
+        note = f"当前优先使用环境变量 {env_name}；保存文件不会覆盖正在生效的环境变量。"
+    elif file_value:
+        active_source = "本地文件"
+        active_masked = mask_secret(file_value)
+        note = "当前使用本地 SendKey 文件。"
+    else:
+        active_source = "未设置"
+        active_masked = "未设置"
+        note = "请输入 SendKey 并保存。"
+    return {
+        "env_name": env_name,
+        "env_present": bool(env_value),
+        "env_masked": mask_secret(env_value),
+        "file_path": str(file_path),
+        "file_exists": file_path.exists(),
+        "file_masked": mask_secret(file_value),
+        "active_source": active_source,
+        "active_masked": active_masked,
+        "note": note,
+    }
+
+
+def save_serverchan_key(auto_cfg: dict[str, Any], sendkey: str) -> dict[str, Any]:
+    value = str(sendkey or "").strip()
+    if not value:
+        raise ValueError("SendKey 不能为空")
+    path = serverchan_sendkey_file(auto_cfg)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(value, encoding="utf-8")
+    info = serverchan_key_info(auto_cfg)
+    info["saved"] = True
+    return info
+
+
+def _alert_label(row: dict[str, Any]) -> str:
+    title = str(row.get("title") or "")
+    if "｜" in title:
+        label = title.split("｜")[-1].strip()
+        if label:
+            return label
+    if "|" in title:
+        label = title.split("|")[-1].strip()
+        if label:
+            return label
+    return str(row.get("address") or "")
+
+
+def pushed_accounts_summary(db_path: Path) -> list[dict[str, Any]]:
+    rows = sqlite_rows(
+        db_path,
+        """
+        SELECT id, address, final_score, alert_grade, title, created_at, pushed_at, push_batch_id
+        FROM alerts
+        WHERE push_status='sent'
+        ORDER BY COALESCE(pushed_at, created_at) DESC, id DESC
+        """,
+    )
+    grouped: dict[str, dict[str, Any]] = {}
+    ordered_addresses: list[str] = []
+    for row in rows:
+        address = str(row.get("address") or "").lower()
+        if not address:
+            continue
+        if address not in grouped:
+            ordered_addresses.append(address)
+            grouped[address] = {
+                "address": address,
+                "label": _alert_label(row),
+                "push_count": 0,
+                "latest_score": row.get("final_score"),
+                "latest_grade": row.get("alert_grade"),
+                "latest_pushed_at": row.get("pushed_at") or row.get("created_at"),
+                "rounds": [],
+            }
+        grouped[address]["rounds"].append(
+            {
+                "score": row.get("final_score"),
+                "grade": row.get("alert_grade"),
+                "created_at": row.get("created_at"),
+                "pushed_at": row.get("pushed_at") or row.get("created_at"),
+                "batch_id": row.get("push_batch_id"),
+            }
+        )
+
+    result: list[dict[str, Any]] = []
+    for address in ordered_addresses:
+        item = grouped[address]
+        rounds = item["rounds"]
+        total = len(rounds)
+        for index, round_item in enumerate(rounds):
+            round_item["round_number"] = total - index
+        item["push_count"] = total
+        item["recent_rounds"] = rounds[:3]
+        item["hidden_rounds"] = rounds[3:]
+        result.append(item)
+    return result
+
+
 def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
     db_path = resolve_auto_path(auto_cfg, "state_db", "auto_screen_data/state.sqlite3")
     counts = {}
@@ -175,6 +310,7 @@ def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
         "latest_cycles": sqlite_rows(db_path, "SELECT * FROM cycles ORDER BY id DESC LIMIT 8"),
         "recent_runs": sqlite_rows(db_path, "SELECT * FROM runs ORDER BY id DESC LIMIT 20"),
         "recent_alerts": sqlite_rows(db_path, "SELECT * FROM alerts ORDER BY id DESC LIMIT 20"),
+        "pushed_accounts": pushed_accounts_summary(db_path),
     }
 
 
@@ -429,6 +565,9 @@ class DashboardHandler(SimpleHTTPRequestHandler):
         if path == "/api/config":
             self.write_json({"auto_config": auto_cfg, "agent_config": agent_cfg, "paths": {"auto_config": str(AUTO_CONFIG), "agent_config": str(AGENT_CONFIG)}})
             return
+        if path == "/api/serverchan-key":
+            self.write_json(serverchan_key_info(auto_cfg))
+            return
         if path == "/api/status":
             process = read_process_state()
             auto_state = auto_state_summary(auto_cfg)
@@ -467,6 +606,12 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             if "agent_config" in body:
                 write_json(AGENT_CONFIG, body["agent_config"])
             self.write_json({"saved": True, "paths": {"auto_config": str(AUTO_CONFIG), "agent_config": str(AGENT_CONFIG)}})
+            return
+        if path == "/api/serverchan-key":
+            try:
+                self.write_json(save_serverchan_key(read_json(AUTO_CONFIG, {}) or {}, str(body.get("sendkey") or "")))
+            except ValueError as exc:
+                self.write_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
             return
         if path == "/api/start":
             args = build_auto_screen_args("run", body)

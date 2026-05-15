@@ -15,6 +15,30 @@ This is the implemented scoring spec for the auto leaderboard screening workflow
 - Add `alert_grade` and `auto_action`.
 - Rebuild a new `baseline_anchor_auto_v3.json`; do not reuse the V2.2 raw anchor base.
 
+## 2026-05-15 Follow-Copy Quality Tightening
+
+Auto V3 now treats the final score as a follow-copy suitability score, not a pure recent leaderboard score. The practical calibration target is:
+
+- Stable, long-lived, smooth, medium-scale accounts can score `70+`.
+- Accounts that were old but only became meaningfully active recently should be capped around `40..58`.
+- Accounts with material recent 7d loss, extreme lifetime drawdown, or obvious spiky PnL should not reach B grade.
+- Small-capital recent outperformers should remain watchlist/C unless they prove longer, smoother activity.
+
+Implemented rule changes:
+
+- `/closed-positions` pagination continues through API-silent 50-row page caps before treating lifetime history as complete.
+- `leaderboard_consistency_adj` is capped at `+2`; discovery/leaderboard strength is mostly for ordering, not final copy quality.
+- `normalized_return_quality` is discounted when 30d buy notional is below `20,000` USDC.
+- `copy_capacity_score` includes 30d buy notional and current positions value.
+- `late_activity_ramp` detects accounts with account age >= 270d, active-month ratio `<0.45`, active days `<45`, and >=65% of lifetime active days inside the recent 90d window.
+- `final_score` now has quality-gate caps:
+  - recent 30d and 7d both negative: cap `45`
+  - 30d positive but 7d materially negative: cap `55` or `48`
+  - extreme lifetime drawdown or daily volatility: cap `52`
+  - late activity ramp: cap `58`, or `48` when also small scale
+  - low copy capacity: cap `48`
+  - incomplete closed-position history: cap `58`
+
 ## Primary Output Fields
 
 - `score_version = auto_v3`

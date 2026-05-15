@@ -323,10 +323,15 @@ class StateStore:
             ORDER BY id ASC
             """
         ).fetchall()
+
+        def has_marker_group(message: str, marker_group: str) -> bool:
+            alternatives = [item.strip() for item in marker_group.split("||") if item.strip()]
+            return any(marker in message for marker in alternatives)
+
         stale_ids = [
             int(row["id"])
             for row in rows
-            if any(marker not in str(row["message"] or "") for marker in markers)
+            if any(not has_marker_group(str(row["message"] or ""), marker) for marker in markers)
         ]
         if not stale_ids:
             return 0
@@ -336,6 +341,42 @@ class StateStore:
                 "sent": False,
                 "reason": reason,
                 "required_markers": markers,
+            },
+            ensure_ascii=False,
+        )
+        self.conn.execute(
+            f"""
+            UPDATE alerts
+            SET push_status='archived',
+                push_batch_id=?,
+                push_result=?
+            WHERE id IN ({placeholders})
+            """,
+            (reason, payload, *stale_ids),
+        )
+        self.conn.commit()
+        return len(stale_ids)
+
+    def archive_pending_alerts_at_or_below_score(self, threshold: float, reason: str) -> int:
+        rows = self.conn.execute(
+            """
+            SELECT id
+            FROM alerts
+            WHERE push_status='pending'
+              AND COALESCE(final_score, 0) <= ?
+            ORDER BY id ASC
+            """,
+            (threshold,),
+        ).fetchall()
+        stale_ids = [int(row["id"]) for row in rows]
+        if not stale_ids:
+            return 0
+        placeholders = ",".join("?" for _ in stale_ids)
+        payload = json.dumps(
+            {
+                "sent": False,
+                "reason": reason,
+                "minimum_score_exclusive": threshold,
             },
             ensure_ascii=False,
         )

@@ -48,6 +48,16 @@ def clamp(value: float, lo: float, hi: float) -> float:
     return max(lo, min(hi, value))
 
 
+def alert_grade_from_score(final_score: float) -> str:
+    if final_score > 70:
+        return "A"
+    if final_score > 55:
+        return "B"
+    if final_score > 45:
+        return "C"
+    return "none"
+
+
 def safe_ratio(num: float, den: float) -> float | None:
     return None if den <= 0 else (num / den)
 
@@ -1227,13 +1237,24 @@ def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[
             normalized_return = -8.0
         if total_buy < 100:
             normalized_return *= 0.5
+        elif total_buy < 5000:
+            normalized_return *= 0.4
+        elif total_buy < 20000:
+            normalized_return *= 0.7
 
+    recent_loss_ratio = 0.0
     if realized_30d > 0 and realized_7d > 0:
-        momentum = 5.0
+        momentum = 4.0
     elif realized_30d > 0 and abs(realized_7d) <= max(1.0, abs(realized_30d) * 0.03):
         momentum = 3.0
     elif realized_30d > 0:
-        momentum = 0.0
+        recent_loss_ratio = abs(realized_7d) / max(1.0, abs(realized_30d))
+        if recent_loss_ratio >= 0.30:
+            momentum = -5.0
+        elif recent_loss_ratio >= 0.10:
+            momentum = -3.0
+        else:
+            momentum = -1.0
     elif realized_30d < 0 and realized_7d > 0:
         momentum = 1.0
     elif realized_30d < 0 and realized_7d < 0:
@@ -1267,6 +1288,7 @@ def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[
         "pnl_per_volume_30d": None if pnl_per_volume is None else round(pnl_per_volume, 6),
         "closed_positions_realized_pnl_30d": round(realized_30d, 6),
         "closed_positions_realized_pnl_7d": round(realized_7d, 6),
+        "recent_7d_loss_to_30d_profit_ratio": round(recent_loss_ratio, 6),
         "drawdown_to_return_ratio_30d": round(dd_ratio, 6),
         "pnl_tag": pnl_tag,
     }
@@ -1350,7 +1372,7 @@ def data_quality_adjustment(data_quality_score: float) -> float:
     return -10.0
 
 
-def compute_copy_capacity_score(metrics: dict[str, Any]) -> tuple[float, list[str], dict[str, Any]]:
+def compute_copy_capacity_score(metrics: dict[str, Any], api_summary: dict[str, Any] | None = None) -> tuple[float, list[str], dict[str, Any]]:
     score = 5.0
     flags: list[str] = []
     median_buy = metrics.get("median_buy_notional")
@@ -1359,13 +1381,17 @@ def compute_copy_capacity_score(metrics: dict[str, Any]) -> tuple[float, list[st
     extreme_ratio = metrics.get("extreme_price_trade_ratio") or 0.0
     avg_trades = metrics.get("avg_trades_per_active_day") or 0.0
     fast_sell = metrics.get("sell_usdc_ratio_within_20m") or 0.0
+    total_buy = to_float(metrics.get("total_buy_usdc"), 0.0)
+    positions_value = optional_float(summary_node(api_summary).get("positions_value"))
 
     if median_buy is not None:
         median_buy = float(median_buy)
         if 20 <= median_buy <= 2000:
-            score += 2
+            score += 1.5
         elif median_buy < 5:
             score -= 2
+        elif median_buy < 20:
+            score -= 1
         elif median_buy > 5000:
             score -= 1
     if p90_buy is not None:
@@ -1376,6 +1402,35 @@ def compute_copy_capacity_score(metrics: dict[str, Any]) -> tuple[float, list[st
             score -= 2
         elif p90_buy > 15000:
             score -= 1
+
+    if total_buy > 0:
+        if 20000 <= total_buy <= 150000:
+            score += 1
+        elif total_buy < 5000:
+            score -= 3
+            flags.append("capital_scale_too_small")
+        elif total_buy < 20000:
+            score -= 1.5
+            flags.append("capital_scale_small")
+        elif total_buy > 500000:
+            score -= 2
+            flags.append("capital_scale_too_large")
+        elif total_buy > 300000:
+            score -= 1
+            flags.append("capital_scale_large")
+
+    if positions_value is not None:
+        if 5000 <= positions_value <= 200000:
+            score += 1
+        elif positions_value < 1000:
+            score -= 2
+            flags.append("capital_scale_too_small")
+        elif positions_value > 500000:
+            score -= 3
+            flags.append("capital_scale_too_large")
+        elif positions_value > 300000:
+            score -= 1
+            flags.append("capital_scale_large")
 
     if tiny_ratio > 0.40:
         score -= 4
@@ -1406,6 +1461,8 @@ def compute_copy_capacity_score(metrics: dict[str, Any]) -> tuple[float, list[st
     return score, flags, {
         "median_buy_notional": median_buy,
         "p90_buy_notional": p90_buy,
+        "total_buy_usdc_30d": round(total_buy, 6),
+        "positions_value": None if positions_value is None else round(positions_value, 6),
         "tiny_trade_buy_ratio": round(tiny_ratio, 6),
         "extreme_price_trade_ratio": round(extreme_ratio, 6),
     }
@@ -1420,11 +1477,11 @@ def compute_leaderboard_consistency_adj(context: dict[str, Any] | None) -> tuple
     adj = 0.0
     flags: list[str] = []
     if {"month_pnl", "month_vol"} <= keys:
-        adj += 2
+        adj += 1.0
     if {"week_pnl", "month_pnl"} <= keys:
-        adj += 2
+        adj += 0.75
     if len(keys) >= 3:
-        adj += 1
+        adj += 0.25
         flags.append("multi_category_hit")
 
     month_pnl_value = context.get("month_pnl") or context.get("month_profit")
@@ -1436,7 +1493,7 @@ def compute_leaderboard_consistency_adj(context: dict[str, Any] | None) -> tuple
     if to_float(month_pnl_value, 0.0) < 0 and to_float(week_pnl_value, 0.0) < 0:
         adj -= 5
         flags.append("leaderboard_negative_pnl")
-    return round(clamp(adj, -5.0, 5.0), 2), flags
+    return round(clamp(adj, -5.0, 2.0), 2), flags
 
 
 def optional_float(value: Any) -> float | None:
@@ -1550,17 +1607,19 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
             flags.append("pnl_drawdown_high")
 
     if largest_move_ratio is not None:
-        if largest_move_ratio > 0.60:
+        severe_single_move = daily_vol_ratio is not None and daily_vol_ratio > 0.25
+        if largest_move_ratio > 0.60 and (drawdown_ratio > 0.20 or severe_single_move):
             smoothness_adj -= 4.0
             flags.append("pnl_spiky")
         elif largest_move_ratio > 0.35:
-            smoothness_adj -= 2.0
+            penalty = 1.0 if drawdown_ratio <= 0.10 and (daily_vol_ratio is None or daily_vol_ratio <= 0.15) else 2.0
+            smoothness_adj -= penalty
             flags.append("pnl_spiky")
     if largest_gain_share is not None:
         if largest_gain_share > 0.70:
             smoothness_adj -= 3.0
             flags.append("pnl_single_spike")
-        elif largest_gain_share > 0.50:
+        elif largest_gain_share > 0.55 and drawdown_ratio > 0.20:
             smoothness_adj -= 1.5
             flags.append("pnl_single_spike")
     if daily_vol_ratio is not None:
@@ -1576,26 +1635,50 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
     active_month_ratio = optional_float(summary.get("closed_position_active_month_ratio")) or 0.0
     active_months = optional_float(summary.get("closed_position_active_months")) or 0.0
     active_days_30d = optional_float(summary.get("closed_position_active_days_30d")) or 0.0
+    active_days_90d = optional_float(summary.get("closed_position_active_days_90d")) or 0.0
+    active_day_ratio_lifetime = optional_float(summary.get("closed_position_active_day_ratio_lifetime"))
+    if active_day_ratio_lifetime is None and account_age_days:
+        active_day_ratio_lifetime = active_days / max(1.0, account_age_days)
+    recent_90d_active_day_share = optional_float(summary.get("closed_position_recent_90d_active_day_share"))
+    if recent_90d_active_day_share is None:
+        recent_90d_active_day_share = active_days_90d / max(1.0, active_days)
     recent_trade_days = max(active_days_30d, to_float(metrics.get("active_trading_days"), 0.0))
     lifetime_adj = 0.0
     if account_age_days is not None and account_age_days >= 540 and active_month_ratio >= 0.55 and active_days >= 90:
         lifetime_adj += 4.0
         flags.append("long_consistent_activity")
+    elif account_age_days is not None and account_age_days >= 270 and active_month_ratio >= 0.55 and active_days >= 35:
+        lifetime_adj += 3.0
+        flags.append("consistent_activity")
     elif account_age_days is not None and account_age_days >= 270 and active_month_ratio >= 0.35 and active_days >= 35:
         lifetime_adj += 2.0
         flags.append("consistent_activity")
 
+    late_activity_ramp = (
+        account_age_days is not None
+        and account_age_days >= 270
+        and active_month_ratio < 0.45
+        and active_days < 45
+        and recent_90d_active_day_share >= 0.65
+        and recent_trade_days >= 8
+    )
     dormant_recent_spike = (
         account_age_days is not None
         and account_age_days >= 270
         and active_month_ratio < 0.20
         and recent_trade_days >= 8
     )
-    if dormant_recent_spike:
-        lifetime_adj -= 3.0
+    if late_activity_ramp:
+        lifetime_adj -= 5.0
+        flags.append("late_activity_ramp")
+    elif dormant_recent_spike:
+        lifetime_adj -= 4.0
         flags.append("dormant_recent_spike")
     elif account_age_days is not None and account_age_days >= 270 and active_month_ratio < 0.15 and active_months <= 2:
-        lifetime_adj -= 1.5
+        lifetime_adj -= 3.0
+        flags.append("sparse_lifetime_activity")
+    elif account_age_days is not None and account_age_days >= 270 and active_day_ratio_lifetime is not None and active_day_ratio_lifetime < 0.08 and active_days < 45:
+        lifetime_adj -= 2.0
         flags.append("sparse_lifetime_activity")
     lifetime_adj = clamp(lifetime_adj, -5.0, 5.0)
 
@@ -1616,6 +1699,11 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         "closed_position_active_months": round(active_months, 3),
         "closed_position_active_month_ratio": round(active_month_ratio, 6),
         "closed_position_active_days_30d": round(active_days_30d, 3),
+        "closed_position_active_days_90d": round(active_days_90d, 3),
+        "closed_position_active_day_ratio_lifetime": None if active_day_ratio_lifetime is None else round(active_day_ratio_lifetime, 6),
+        "closed_position_recent_90d_active_day_share": round(recent_90d_active_day_share, 6),
+        "late_activity_ramp": late_activity_ramp,
+        "dormant_recent_spike": dormant_recent_spike,
     }, hard_blocks
 
 
@@ -1679,7 +1767,7 @@ def compute_scores_auto_v3(
     pnl_quality, pnl_details = compute_pnl_quality_score(api_summary, metrics)
     data_quality, data_flags, dq_details = compute_data_quality_score(api_summary, metrics)
     data_adj = data_quality_adjustment(data_quality)
-    copy_capacity, capacity_flags, capacity_details = compute_copy_capacity_score(metrics)
+    copy_capacity, capacity_flags, capacity_details = compute_copy_capacity_score(metrics, api_summary)
     capacity_adj = (copy_capacity - 5.0) * 2.0
     discovery_score = compute_discovery_score(leaderboard_context)
     leaderboard_adj, leaderboard_flags = compute_leaderboard_consistency_adj(leaderboard_context)
@@ -1781,6 +1869,81 @@ def compute_scores_auto_v3(
         or dual_side_1h > 0.25
     )
 
+    quality_caps: list[tuple[str, float]] = []
+
+    def add_quality_cap(reason: str, cap: float) -> None:
+        quality_caps.append((reason, cap))
+        score_flags.append(reason)
+
+    realized_30d = float(pnl_details.get("closed_positions_realized_pnl_30d") or 0.0)
+    realized_7d = float(pnl_details.get("closed_positions_realized_pnl_7d") or 0.0)
+    recent_loss_ratio = float(pnl_details.get("recent_7d_loss_to_30d_profit_ratio") or 0.0)
+    lifetime_drawdown_ratio = lifetime_details.get("pnl_drawdown_to_total_pnl_ratio")
+    lifetime_drawdown_ratio = None if lifetime_drawdown_ratio is None else float(lifetime_drawdown_ratio)
+    lifetime_largest_move_ratio = lifetime_details.get("pnl_largest_daily_abs_move_to_return_ratio")
+    lifetime_largest_move_ratio = None if lifetime_largest_move_ratio is None else float(lifetime_largest_move_ratio)
+    lifetime_daily_vol_ratio = lifetime_details.get("pnl_daily_volatility_to_return_ratio")
+    lifetime_daily_vol_ratio = None if lifetime_daily_vol_ratio is None else float(lifetime_daily_vol_ratio)
+    active_month_ratio = float(lifetime_details.get("closed_position_active_month_ratio") or 0.0)
+    active_days_lifetime = float(lifetime_details.get("closed_position_active_days") or 0.0)
+    late_activity_ramp = bool(lifetime_details.get("late_activity_ramp"))
+    dormant_recent_spike = bool(lifetime_details.get("dormant_recent_spike"))
+    total_buy_30d = float(capacity_details.get("total_buy_usdc_30d") or 0.0)
+    positions_value = capacity_details.get("positions_value")
+    positions_value = None if positions_value is None else float(positions_value)
+
+    if realized_30d < 0 and realized_7d < 0:
+        add_quality_cap("recent_pnl_negative_45", 45.0)
+    elif realized_30d > 0 and realized_7d < 0:
+        if recent_loss_ratio >= 0.30:
+            add_quality_cap("recent_7d_loss_heavy_48", 48.0)
+        elif recent_loss_ratio >= 0.10:
+            add_quality_cap("recent_7d_loss_material_55", 55.0)
+        else:
+            add_quality_cap("recent_7d_loss_light_62", 62.0)
+    elif realized_30d < 0:
+        add_quality_cap("recent_30d_loss_50", 50.0)
+
+    if lifetime_drawdown_ratio is not None and lifetime_drawdown_ratio > 1.25:
+        add_quality_cap("lifetime_drawdown_extreme_52", 52.0)
+    elif lifetime_drawdown_ratio is not None and lifetime_drawdown_ratio > 0.75:
+        add_quality_cap("lifetime_drawdown_high_58", 58.0)
+    if lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.50:
+        add_quality_cap("lifetime_daily_volatility_extreme_52", 52.0)
+    elif lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.35:
+        add_quality_cap("lifetime_daily_volatility_high_58", 58.0)
+    if lifetime_largest_move_ratio is not None and lifetime_largest_move_ratio > 1.0:
+        add_quality_cap("single_day_move_extreme_52", 52.0)
+    elif (
+        lifetime_largest_move_ratio is not None
+        and lifetime_largest_move_ratio > 0.60
+        and lifetime_daily_vol_ratio is not None
+        and lifetime_daily_vol_ratio > 0.25
+    ):
+        add_quality_cap("single_day_move_high_60", 60.0)
+
+    if late_activity_ramp:
+        if copy_capacity < 4 or total_buy_30d < 20000 or active_days_lifetime < 30:
+            add_quality_cap("late_activity_ramp_small_scale_48", 48.0)
+        else:
+            add_quality_cap("late_activity_ramp_58", 58.0)
+    elif dormant_recent_spike:
+        add_quality_cap("dormant_recent_spike_50", 50.0)
+    elif account_age_days := lifetime_details.get("account_age_days"):
+        if float(account_age_days) >= 270 and active_month_ratio < 0.15 and active_days_lifetime < 30:
+            add_quality_cap("sparse_lifetime_activity_52", 52.0)
+
+    if copy_capacity < 4:
+        add_quality_cap("copy_capacity_low_48", 48.0)
+    elif copy_capacity < 5:
+        add_quality_cap("copy_capacity_watchlist_58", 58.0)
+    if total_buy_30d > 0 and total_buy_30d < 5000:
+        add_quality_cap("capital_scale_too_small_45", 45.0)
+    elif total_buy_30d > 0 and total_buy_30d < 20000 and (positions_value is None or positions_value < 5000):
+        add_quality_cap("capital_scale_small_48", 48.0)
+    if summary.get("closed_positions_incomplete") or summary.get("closed_positions_recent_incomplete"):
+        add_quality_cap("closed_positions_incomplete_58", 58.0)
+
     anchor_offset = 0.0
     anchor_target = 60.0
     anchor_version = "none"
@@ -1823,6 +1986,10 @@ def compute_scores_auto_v3(
     elif avg_trades_per_active_day > 150:
         final_score = min(final_score, 72.0)
         final_caps.append("high_frequency_72")
+    for reason, cap in quality_caps:
+        if final_score > cap:
+            final_score = min(final_score, cap)
+            final_caps.append(reason)
     if lifetime_hard_block:
         final_score = min(final_score, 39.0)
         final_caps.extend(f"lifetime_{reason}_39" for reason in lifetime_hard_blocks)
@@ -1840,19 +2007,7 @@ def compute_scores_auto_v3(
     if final_score < 32:
         decision = "not_recommended"
 
-    alert_grade = "none"
-    if final_score >= 78 and not caution_risk_gate and not severe_risk_gate and data_quality >= 8 and copy_capacity >= 7:
-        alert_grade = "A"
-    elif final_score >= 65 and not severe_risk_gate and data_quality >= 7 and copy_capacity >= 5:
-        alert_grade = "B"
-    elif final_score > 40 and data_quality >= 4 and not skipped_by_hft:
-        alert_grade = "C"
-    if caution_risk_gate and alert_grade == "A":
-        alert_grade = "B"
-    if data_quality < 6 and alert_grade in {"A", "B"}:
-        alert_grade = "C"
-    if avg_trades_per_active_day > 300 and alert_grade in {"A", "B"}:
-        alert_grade = "C"
+    alert_grade = alert_grade_from_score(final_score)
     if severe_risk_gate or lifetime_hard_block:
         alert_grade = "none"
 
@@ -1912,6 +2067,7 @@ def compute_scores_auto_v3(
         "auto_action": auto_action,
         "applied_raw_caps": applied_caps,
         "applied_final_caps": final_caps,
+        "quality_gate_caps": [{"reason": reason, "cap": cap} for reason, cap in quality_caps],
         "decision_score_basis": "auto_v3_final_score",
         "anchor_offset": round(anchor_offset, 6),
         "anchor_target_score": anchor_target,

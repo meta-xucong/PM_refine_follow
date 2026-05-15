@@ -52,6 +52,40 @@ function shortAddress(address) {
   return address.length > 14 ? `${address.slice(0, 8)}...${address.slice(-6)}` : address;
 }
 
+function copyButton(value, label = "复制地址") {
+  const safeValue = html(value);
+  return `
+    <button type="button" class="copy-btn" data-copy="${safeValue}" title="${html(label)}" aria-label="${html(label)}">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+        <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+      </svg>
+    </button>
+  `;
+}
+
+async function copyText(value) {
+  const text = fmt(value);
+  if (!text || text === "-") return;
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch (_) {
+      // Fall back to a temporary textarea when browser permissions block clipboard access.
+    }
+  }
+  const input = document.createElement("textarea");
+  input.value = text;
+  input.setAttribute("readonly", "");
+  input.style.position = "fixed";
+  input.style.left = "-9999px";
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand("copy");
+  input.remove();
+}
+
 function ageText(seconds) {
   if (seconds === null || seconds === undefined) return "-";
   if (seconds < 60) return `${Math.round(seconds)} 秒前`;
@@ -74,6 +108,7 @@ function renderStatus(data) {
   renderRuns(data.auto?.recent_runs || []);
   renderAlerts(data.excel?.alerts || data.auto?.recent_alerts || []);
   renderAgentReviews(data.excel?.agent_reviews || []);
+  renderPushedAccounts(data.auto?.pushed_accounts || []);
 }
 
 function renderProgress(progress, process) {
@@ -167,7 +202,13 @@ function renderRuns(rows) {
 function renderAccounts(rows) {
   $("accountsBody").innerHTML = rows.map((r) => `
     <tr>
-      <td title="${html(r.address)}">${html(r.label)}<br><span class="muted">${html(shortAddress(r.address))}</span></td>
+      <td class="account-cell" title="${html(r.address)}">
+        ${r.label && r.label !== r.address ? `<div class="account-label">${html(r.label)}</div>` : ""}
+        <div class="address-row">
+          <span class="address-full">${html(r.address)}</span>
+          ${copyButton(r.address)}
+        </div>
+      </td>
       <td>${html(r.final_score)}</td>
       <td>${html(r.alert_grade)}</td>
       <td>${html(r.auto_action)}${r.scan_prompt ? `<br><span class="muted">${html(r.scan_prompt)}</span>` : ""}</td>
@@ -189,6 +230,53 @@ function renderAlerts(rows) {
   `).join("") || `<div class="list-item">暂无告警</div>`;
 }
 
+function renderRoundChip(round) {
+  return `
+    <span class="score-pill" title="批次：${html(round.batch_id)}｜时间：${html(round.pushed_at)}">
+      第 ${html(round.round_number)} 轮：${html(round.score)} 分 ${html(round.grade)}
+    </span>
+  `;
+}
+
+function renderPushedAccounts(rows) {
+  const totalRounds = rows.reduce((sum, row) => sum + Number(row.push_count || 0), 0);
+  $("pushedHistoryHint").textContent = rows.length ? `${rows.length} 个账号，累计 ${totalRounds} 次推送，5 秒自动更新` : "暂无已推送账号";
+  $("pushedHistoryBody").innerHTML = rows.map((r) => {
+    const recent = r.recent_rounds || [];
+    const hidden = r.hidden_rounds || [];
+    return `
+      <tr>
+        <td class="account-cell" title="${html(r.address)}">
+          ${r.label && r.label !== r.address ? `<div class="account-label">${html(r.label)}</div>` : ""}
+          <div class="address-row">
+            <span class="address-full">${html(r.address)}</span>
+            ${copyButton(r.address)}
+          </div>
+        </td>
+        <td>${html(r.push_count)} 轮</td>
+        <td><div class="score-stack">${recent.map(renderRoundChip).join("") || "-"}</div></td>
+        <td>
+          ${hidden.length ? `
+            <details class="history-details">
+              <summary>查看剩余 ${hidden.length} 轮</summary>
+              <div class="score-stack">${hidden.map(renderRoundChip).join("")}</div>
+            </details>
+          ` : "-"}
+        </td>
+        <td>${html(r.latest_pushed_at)}</td>
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="5">暂无已推送账号</td></tr>`;
+}
+
+function renderServerchanKey(info) {
+  if (!info) return;
+  const source = info.active_source || "未设置";
+  const masked = info.active_masked || "未设置";
+  $("serverchanKeyStatus").textContent = `当前生效：${source}（${masked}）。${info.note || ""}`;
+  $("serverchanKeyPath").textContent = `保存位置：${info.file_path || "-"}；环境变量：${info.env_name || "SCT_SENDKEY"}${info.env_present ? `（已设置 ${info.env_masked || ""}）` : "（未设置）"}`;
+}
+
 function renderAgentReviews(rows) {
   $("agentReviewsList").innerHTML = rows.map((r) => `
     <div class="list-item">
@@ -205,7 +293,7 @@ function loadConfigForms(cfg) {
   $("cfgBatch").value = auto.scan?.process_batch_size ?? 25;
   $("cfgSleep").value = auto.scan?.cycle_sleep_seconds ?? 600;
   $("cfgNoNewPages").value = auto.scan?.leaderboard_no_new_pages_stop ?? 40;
-  $("cfgAlertThreshold").value = auto.scoring?.alert_threshold ?? 40;
+  $("cfgAlertThreshold").value = auto.scoring?.alert_threshold ?? 50;
   $("cfgAgentEnabled").checked = Boolean(auto.agent?.enabled);
   $("cfgServerEnabled").checked = Boolean(auto.serverchan?.enabled);
   $("cfgServerBatch").value = auto.serverchan?.batch_size ?? 10;
@@ -223,7 +311,7 @@ function collectConfigFromForm() {
   auto.scan.process_batch_size = Number($("cfgBatch").value || auto.scan.process_batch_size || 25);
   auto.scan.cycle_sleep_seconds = Number($("cfgSleep").value || auto.scan.cycle_sleep_seconds || 600);
   auto.scan.leaderboard_no_new_pages_stop = Number($("cfgNoNewPages").value || auto.scan.leaderboard_no_new_pages_stop || 40);
-  auto.scoring.alert_threshold = Number($("cfgAlertThreshold").value || auto.scoring.alert_threshold || 40);
+  auto.scoring.alert_threshold = Number($("cfgAlertThreshold").value || auto.scoring.alert_threshold || 50);
   auto.agent.enabled = $("cfgAgentEnabled").checked;
   auto.serverchan.enabled = $("cfgServerEnabled").checked;
   auto.serverchan.batch_size = Number($("cfgServerBatch").value || auto.serverchan.batch_size || 10);
@@ -232,23 +320,38 @@ function collectConfigFromForm() {
 }
 
 async function refreshAll() {
-  const [status, config, accounts, proc] = await Promise.all([
+  const [status, config, accounts, proc, sendkey] = await Promise.all([
     api("/api/status"),
     api("/api/config"),
     api("/api/accounts?limit=80"),
     api("/api/process"),
+    api("/api/serverchan-key"),
   ]);
   renderStatus(status);
   renderAccounts(accounts.accounts || []);
   $("logTail").textContent = proc.log_tail || "";
   loadConfigForms(config);
+  renderServerchanKey(sendkey);
+}
+
+async function refreshDashboardData() {
+  const [status, accounts, proc, sendkey] = await Promise.all([
+    api("/api/status"),
+    api("/api/accounts?limit=80"),
+    api("/api/process"),
+    api("/api/serverchan-key"),
+  ]);
+  renderStatus(status);
+  renderAccounts(accounts.accounts || []);
+  $("logTail").textContent = proc.log_tail || "";
+  renderServerchanKey(sendkey);
 }
 
 async function startRun() {
   const body = { dry_run_alerts: $("dryRunAlerts").checked };
   const res = await api("/api/start", { method: "POST", body: JSON.stringify(body) });
   toast(res.started ? `已启动 PID ${res.pid}` : `未启动：${res.reason}`);
-  await refreshProcessOnly();
+  await refreshDashboardData();
 }
 
 async function runOnce() {
@@ -260,13 +363,13 @@ async function runOnce() {
   };
   const res = await api("/api/run-once", { method: "POST", body: JSON.stringify(body) });
   toast(res.started ? `单轮任务已启动 PID ${res.pid}` : `未启动：${res.reason}`);
-  await refreshProcessOnly();
+  await refreshDashboardData();
 }
 
 async function stopRun() {
   const res = await api("/api/stop", { method: "POST", body: "{}" });
   toast(res.stopped ? "已停止" : `未停止：${res.reason}`);
-  await refreshProcessOnly();
+  await refreshDashboardData();
 }
 
 async function saveConfig() {
@@ -274,6 +377,24 @@ async function saveConfig() {
   await api("/api/config", { method: "POST", body: JSON.stringify(full) });
   toast("配置已保存");
   await refreshAll();
+}
+
+async function loadServerchanKeyStatus() {
+  renderServerchanKey(await api("/api/serverchan-key"));
+  toast("密钥状态已刷新");
+}
+
+async function saveServerchanKey() {
+  const input = $("serverchanSendkeyInput");
+  const sendkey = input.value.trim();
+  if (!sendkey) {
+    toast("请输入新的 SendKey");
+    return;
+  }
+  const info = await api("/api/serverchan-key", { method: "POST", body: JSON.stringify({ sendkey }) });
+  input.value = "";
+  renderServerchanKey(info);
+  toast("SendKey 已保存");
 }
 
 async function refreshProcessOnly() {
@@ -297,6 +418,13 @@ $("startBtn").addEventListener("click", () => startRun().catch((e) => toast(e.me
 $("runOnceBtn").addEventListener("click", () => runOnce().catch((e) => toast(e.message)));
 $("stopBtn").addEventListener("click", () => stopRun().catch((e) => toast(e.message)));
 $("saveConfigBtn").addEventListener("click", () => saveConfig().catch((e) => toast(e.message)));
+$("refreshSendkeyBtn").addEventListener("click", () => loadServerchanKeyStatus().catch((e) => toast(e.message)));
+$("saveSendkeyBtn").addEventListener("click", () => saveServerchanKey().catch((e) => toast(e.message)));
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-copy]");
+  if (!button) return;
+  copyText(button.dataset.copy).then(() => toast("已复制地址")).catch((e) => toast(`复制失败：${e.message}`));
+});
 
 refreshAll().catch((e) => toast(e.message));
-setInterval(() => refreshProcessOnly().catch(() => {}), 5000);
+setInterval(() => refreshDashboardData().catch(() => {}), 5000);

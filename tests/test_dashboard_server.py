@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from auto_screen.state_store import StateStore
 from dashboard import server as dashboard_server
 
 
@@ -58,6 +60,80 @@ class DashboardServerTests(unittest.TestCase):
             self.assertEqual(summary["sheet_counts"]["alerts"], 2)
             self.assertEqual(summary["alerts"][0]["address"], "new")
             self.assertEqual(summary["excel_path"], str(excel_path))
+
+    def test_auto_state_summary_groups_pushed_accounts_by_address(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db_path = root / "state.sqlite3"
+            store = StateStore(db_path)
+            first = store.record_alert(
+                "0x1111111111111111111111111111111111111111",
+                55,
+                "B",
+                "账号筛选结果：优先复核｜55.00 分｜Alpha",
+                "m1",
+                push_status="pending",
+            )
+            second = store.record_alert(
+                "0x1111111111111111111111111111111111111111",
+                62,
+                "B",
+                "账号筛选结果：优先复核｜62.00 分｜Alpha",
+                "m2",
+                push_status="pending",
+            )
+            pending = store.record_alert(
+                "0x2222222222222222222222222222222222222222",
+                80,
+                "A",
+                "账号筛选结果：重点关注｜80.00 分｜Beta",
+                "m3",
+                push_status="pending",
+            )
+            store.mark_alert_push_result([first], "batch-1", {"sent": True})
+            store.mark_alert_push_result([second], "batch-2", {"sent": True})
+            store.close()
+            self.assertIsInstance(pending, int)
+
+            with patch.object(dashboard_server, "ROOT", root):
+                summary = dashboard_server.auto_state_summary({"state_db": "state.sqlite3"})
+
+            pushed = summary["pushed_accounts"]
+            self.assertEqual(len(pushed), 1)
+            self.assertEqual(pushed[0]["address"], "0x1111111111111111111111111111111111111111")
+            self.assertEqual(pushed[0]["label"], "Alpha")
+            self.assertEqual(pushed[0]["push_count"], 2)
+            self.assertEqual([r["score"] for r in pushed[0]["rounds"]], [62, 55])
+            self.assertEqual([r["round_number"] for r in pushed[0]["rounds"]], [2, 1])
+
+    def test_serverchan_key_info_masks_and_saves_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            key_path = Path(tmp) / "sendkey.txt"
+            cfg = {"serverchan": {"sendkey_file": str(key_path), "sendkey_env": "PM_TEST_SENDKEY"}}
+            with patch.dict(os.environ, {"PM_TEST_SENDKEY": ""}, clear=False):
+                empty = dashboard_server.serverchan_key_info(cfg)
+                self.assertEqual(empty["active_source"], "未设置")
+
+                saved = dashboard_server.save_serverchan_key(cfg, "SCT1234567890")
+
+            self.assertEqual(key_path.read_text(encoding="utf-8"), "SCT1234567890")
+            self.assertTrue(saved["saved"])
+            self.assertEqual(saved["active_source"], "本地文件")
+            self.assertEqual(saved["active_masked"], "SCT1...7890")
+            self.assertEqual(saved["file_masked"], "SCT1...7890")
+
+    def test_serverchan_key_info_env_takes_precedence_over_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            key_path = Path(tmp) / "sendkey.txt"
+            key_path.write_text("SCTFILE1234", encoding="utf-8")
+            cfg = {"serverchan": {"sendkey_file": str(key_path), "sendkey_env": "PM_TEST_SENDKEY"}}
+
+            with patch.dict(os.environ, {"PM_TEST_SENDKEY": "SCTENV5678"}, clear=False):
+                info = dashboard_server.serverchan_key_info(cfg)
+
+            self.assertEqual(info["active_source"], "环境变量")
+            self.assertEqual(info["active_masked"], "SCTE...5678")
+            self.assertEqual(info["file_masked"], "SCTF...1234")
 
     def test_list_accounts_reads_recent_analysis_and_agent_review(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

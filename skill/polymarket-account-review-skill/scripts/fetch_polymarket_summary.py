@@ -128,9 +128,13 @@ def fetch_paginated(path: str, user: str, page_limit: int, max_records: int, cfg
         need = max_records - len(rows)
         rows.extend(page[:need])
 
-        if len(page) < page_limit:
+        # Some Polymarket Data API endpoints silently cap pages below the
+        # requested limit (commonly 50 rows). A short-but-capped page should
+        # still advance by the observed row count; otherwise long histories
+        # look like complete 50-row histories and lifetime scoring is wrong.
+        if len(page) < page_limit and not (page_limit > len(page) >= 50):
             break
-        offset += page_limit
+        offset += len(page)
 
     return rows
 
@@ -364,18 +368,24 @@ def account_lifetime_activity_profile(closed_positions: list[dict[str, Any]]) ->
     lifetime_months = max(1, (now_date.year - first_date.year) * 12 + (now_date.month - first_date.month) + 1)
     cutoff_30 = now_date - timedelta(days=30)
     cutoff_90 = now_date - timedelta(days=90)
+    active_days_30d = sum(1 for date in active_dates if date >= cutoff_30)
+    active_days_90d = sum(1 for date in active_dates if date >= cutoff_90)
+    active_day_count = len(active_dates)
     return {
         "first_closed_position_ts": first_ts,
         "first_closed_position_date": first_date.isoformat(),
         "last_closed_position_ts": last_ts,
         "last_closed_position_date": datetime.fromtimestamp(last_ts, tz=timezone.utc).date().isoformat(),
         "account_age_days": round(max(0.0, (now_ts - first_ts) / 86400.0), 3),
-        "closed_position_active_days": len(active_dates),
+        "closed_position_active_days": active_day_count,
         "closed_position_active_months": len(active_months),
         "account_lifetime_months": lifetime_months,
         "closed_position_active_month_ratio": round(len(active_months) / max(1, lifetime_months), 6),
-        "closed_position_active_days_30d": sum(1 for date in active_dates if date >= cutoff_30),
-        "closed_position_active_days_90d": sum(1 for date in active_dates if date >= cutoff_90),
+        "closed_position_active_days_30d": active_days_30d,
+        "closed_position_active_days_90d": active_days_90d,
+        "closed_position_active_day_ratio_lifetime": round(active_day_count / max(1.0, (now_date - first_date).days + 1), 6),
+        "closed_position_recent_30d_active_day_share": round(active_days_30d / max(1, active_day_count), 6),
+        "closed_position_recent_90d_active_day_share": round(active_days_90d / max(1, active_day_count), 6),
     }
 
 

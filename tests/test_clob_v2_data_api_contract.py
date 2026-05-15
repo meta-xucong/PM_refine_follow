@@ -88,6 +88,33 @@ class DataApiContractTests(unittest.TestCase):
         self.assertIn("offset=2", seen_urls[1])
         self.assertIn("sortBy=TIMESTAMP", seen_urls[0])
 
+    def test_paginated_fetch_continues_when_api_silently_caps_page_size(self):
+        seen_urls: list[str] = []
+        pages = [
+            [{"realizedPnl": i, "timestamp": i} for i in range(50)],
+            [{"realizedPnl": 50 + i, "timestamp": 50 + i} for i in range(12)],
+        ]
+
+        def fake_urlopen(req, timeout):
+            seen_urls.append(req.full_url)
+            page = pages.pop(0) if pages else []
+            return FakeResponse(json.dumps(page).encode("utf-8"))
+
+        with patch.object(self.fetch.urllib.request, "urlopen", side_effect=fake_urlopen):
+            rows = self.fetch.fetch_paginated(
+                "/closed-positions",
+                user="0x56687bf447db6ffa42ffe2204a05edaa20f55839",
+                page_limit=500,
+                max_records=100,
+                cfg=self.fetch.FetchConfig(timeout_seconds=1, max_retries=0),
+                extra_params={"sortBy": "TIMESTAMP", "sortDirection": "ASC"},
+            )
+
+        self.assertEqual(len(rows), 62)
+        self.assertIn("limit=500", seen_urls[0])
+        self.assertIn("offset=0", seen_urls[0])
+        self.assertIn("offset=50", seen_urls[1])
+
     def test_extract_list_payload_accepts_known_wrappers(self):
         self.assertEqual(self.fetch.extract_list_payload([{"a": 1}]), [{"a": 1}])
         self.assertEqual(self.fetch.extract_list_payload({"value": [{"a": 1}]}), [{"a": 1}])

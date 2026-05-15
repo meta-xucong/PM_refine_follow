@@ -92,7 +92,7 @@ python -m auto_screen.cli once --config auto_screen_config.json --limit-candidat
    - 可多 shard 构建候选池。
    - 可预筛高频账号。
    - 可完整取数和评分。
-   - `final_score > 40` 可推送并写 Excel。
+   - `final_score > 50` 可推送并写 Excel。
    - 推送按 A/B/C 分级。
    - 扫完一轮可自动重启下一轮。
 

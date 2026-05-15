@@ -83,7 +83,12 @@ auto_screen_config.json
     "sendkey_env": "SCT_SENDKEY",
     "sendkey_file": "%USERPROFILE%/.codex/secrets/serverchan_sendkey.txt",
     "batch_size": 10,
-    "required_message_markers": ["总PnL:", "账号年龄天数:", "PnL平滑调整:", "长期活跃调整:"],
+    "required_message_markers": [
+      "累计收益：||总PnL:",
+      "账号已运行：||账号年龄天数:",
+      "收益曲线平滑度：||PnL平滑调整:",
+      "长期活跃表现：||长期活跃调整:"
+    ],
     "dedupe_days": 7
   },
   "runtime": {
@@ -111,12 +116,13 @@ auto_screen_config.json
 - `activity_historical_offset_limit`: `3000`，对应 Polymarket Data API 历史 activity offset 限制。
 - `activity_high_frequency_window_seconds`: `86400`，如果 1 天以内仍超过历史 offset 上限，判定为明显高频账号并跳过完整评分。
 - `summary_request_sleep_seconds`: `0.1`，summary 侧 `/positions`、`/closed-positions`、`/user-pnl` 等请求之间保留轻量间隔，避免批量分页时贴近官方限流。
+- summary 侧 `/closed-positions` 即使配置 `page_limit=500`，官方接口也可能静默只返回约 50 行；程序会按实际返回行数继续推进 offset，直到空页或达到 `max_closed_records`，避免误把 50 条记录当成完整历史。
 - `alert_score_threshold`: `40`
 - `alert_score_comparison`: `>`
 - `score_version`: `auto_v3`
 - `min_data_quality_for_push`: `4`
 - `serverchan.batch_size`: `10`，命中账号先进入 pending 队列，凑满 10 个后发送一条汇总推送。
-- `serverchan.required_message_markers`: 当前 pending 告警必须包含这些消息字段才允许参与批量推送；缺少字段的旧规则 pending 会自动归档为 `archived`。
+- `serverchan.required_message_markers`: 当前 pending 告警必须包含这些消息标记才允许参与批量推送；`||` 表示新旧中文文案二选一兼容。缺少标记的旧规则 pending 会自动归档为 `archived`。
 
 ## 调优建议
 

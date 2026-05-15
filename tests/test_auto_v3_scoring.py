@@ -176,6 +176,107 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertIn("pnl_spiky", result["score_flags"])
         self.assertIn("dormant_recent_spike", result["score_flags"])
 
+    def test_late_activity_ramp_small_scale_is_capped_to_c(self):
+        metrics = base_metrics()
+        metrics["total_buy_usdc"] = 15000.0
+        metrics["median_buy_notional"] = 10.0
+        metrics["p90_buy_notional"] = 120.0
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "positions_value": 4000.0,
+                "account_total_pnl": 2200.0,
+                "closed_positions_realized_pnl_total": 2300.0,
+                "account_age_days": 380,
+                "closed_position_active_days": 27,
+                "closed_position_active_months": 5,
+                "account_lifetime_months": 13,
+                "closed_position_active_month_ratio": 0.38,
+                "closed_position_active_days_30d": 13,
+                "closed_position_active_days_90d": 24,
+                "closed_position_recent_90d_active_day_share": 0.89,
+                "closed_positions_realized_pnl_30d": 5800.0,
+                "closed_positions_realized_pnl_7d": 190.0,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 48)
+        self.assertIn("late_activity_ramp", result["score_flags"])
+        self.assertIn("capital_scale_small_48", result["score_flags"])
+        self.assertIn(result["alert_grade"], {"C", "none"})
+
+    def test_recent_loss_and_extreme_lifetime_drawdown_cap_score(self):
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "account_total_pnl": 19000.0,
+                "closed_positions_realized_pnl_total": 19000.0,
+                "closed_positions_realized_pnl_30d": 17000.0,
+                "closed_positions_realized_pnl_7d": -3000.0,
+                "account_age_days": 420,
+                "closed_position_active_days": 18,
+                "closed_position_active_months": 1,
+                "account_lifetime_months": 14,
+                "closed_position_active_month_ratio": 0.07,
+                "closed_position_active_days_30d": 0,
+                "closed_position_active_days_90d": 0,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "volatile_up",
+                "drawdown_to_return_ratio": 2.7,
+                "daily_volatility_to_return_ratio": 0.94,
+                "largest_daily_abs_move_to_return_ratio": 2.47,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(base_metrics(), summary, None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 52)
+        self.assertNotEqual(result["alert_grade"], "B")
+        self.assertIn("recent_7d_loss_material_55", result["score_flags"])
+        self.assertIn("lifetime_drawdown_extreme_52", result["score_flags"])
+
+    def test_stable_moderate_scale_account_can_score_above_70_with_anchor(self):
+        metrics = base_metrics()
+        metrics["total_buy_usdc"] = 100000.0
+        metrics["median_buy_notional"] = 120.0
+        metrics["p90_buy_notional"] = 1200.0
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "positions_value": 70000.0,
+                "account_total_pnl": 29000.0,
+                "closed_positions_realized_pnl_total": 29000.0,
+                "closed_positions_realized_pnl_30d": 6500.0,
+                "closed_positions_realized_pnl_7d": 190.0,
+                "account_age_days": 520,
+                "closed_position_active_days": 110,
+                "closed_position_active_months": 10,
+                "account_lifetime_months": 18,
+                "closed_position_active_month_ratio": 0.56,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "smooth_up",
+                "drawdown_to_return_ratio": 0.03,
+                "daily_volatility_to_return_ratio": 0.11,
+                "largest_daily_abs_move_to_return_ratio": 0.63,
+                "largest_daily_gain_share": 0.60,
+            }
+        )
+        anchor = {"target_anchor_score": 60, "raw_base_score_v3": 72.43, "calibration_scale": 0.65}
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, anchor, {}, 50.0, 60.0, None)
+        self.assertGreater(result["final_score"], 70)
+        self.assertEqual(result["alert_grade"], "A")
+        self.assertNotIn("single_day_move_high_60", result["score_flags"])
+
+    def test_alert_grade_follows_score_thresholds(self):
+        self.assertEqual(self.analyze.alert_grade_from_score(70.01), "A")
+        self.assertEqual(self.analyze.alert_grade_from_score(55.01), "B")
+        self.assertEqual(self.analyze.alert_grade_from_score(45.01), "C")
+        self.assertEqual(self.analyze.alert_grade_from_score(45.0), "none")
+
     def test_severe_risk_gate_blocks_alert_push_even_with_high_score(self):
         metrics = base_metrics()
         metrics["dual_side_buy_usdc_ratio"] = 0.70

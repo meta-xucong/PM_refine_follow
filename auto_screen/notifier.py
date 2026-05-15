@@ -7,6 +7,100 @@ from typing import Any
 import requests
 
 
+DECISION_TEXT = {
+    "relative_copyable": "整体表现较好，可以进入重点复核名单。",
+    "selective_copying_only": "只适合筛选后谨慎跟单，建议先看近期持仓、题材和流动性。",
+    "not_recommended": "暂不建议跟单。",
+}
+
+ACTION_TEXT = {
+    "push_strong_candidate": "重点候选，建议优先人工复核。",
+    "push_selective_candidate": "较强候选，适合筛选后再考虑跟单。",
+    "push_watchlist": "观察名单，建议小仓位或只作为后续观察对象。",
+    "store_only": "只记录，不主动跟单。",
+    "skip": "跳过，不建议跟单。",
+    "defer_recheck": "数据还不够稳定，建议稍后重新检查。",
+}
+
+GRADE_TEXT = {
+    "A": "重点关注",
+    "B": "优先复核",
+    "C": "观察名单",
+    "none": "暂不推荐",
+    None: "暂不推荐",
+}
+
+FLAG_TEXT = {
+    "account_age_under_9m": "账号可验证历史不足 9 个月",
+    "account_age_unknown": "账号历史长度暂时无法确认",
+    "activity_incomplete": "近期交易记录可能不完整",
+    "caution_risk_gate": "存在需要谨慎复核的风险信号",
+    "closed_positions_incomplete": "已结算仓位数据可能不完整",
+    "closed_positions_incomplete_58": "已结算仓位不完整，分数已封顶",
+    "capital_scale_large": "账号资金规模偏大",
+    "capital_scale_small": "账号资金规模偏小",
+    "capital_scale_small_48": "资金规模偏小，分数已封顶",
+    "capital_scale_too_large": "账号资金规模过大",
+    "capital_scale_too_small": "账号资金规模过小",
+    "capital_scale_too_small_45": "资金规模过小，分数已封顶",
+    "copy_capacity_low": "可跟单容量偏低",
+    "copy_capacity_low_48": "可跟单容量偏低，分数已封顶",
+    "copy_capacity_watchlist_58": "可跟单容量一般，只能作为观察名单",
+    "data_quality_low": "资料完整程度偏低",
+    "dormant_recent_spike": "曾经较长时间不活跃，最近突然放量",
+    "dormant_recent_spike_50": "长期沉寂后近期突然放量，分数已封顶",
+    "high_dual_side": "同一市场双边交易比例偏高",
+    "high_noncopyable_fast": "存在偏快、难复制的交易行为",
+    "hft_suspected": "疑似高频交易",
+    "leaderboard_negative_pnl": "榜单收益为负，需要谨慎",
+    "late_activity_ramp": "有效活跃期偏短，近期才明显放量",
+    "late_activity_ramp_58": "近期才明显放量，分数已封顶",
+    "late_activity_ramp_small_scale_48": "近期才明显放量且资金规模偏小，分数已封顶",
+    "lifetime_daily_volatility_extreme_52": "长期收益波动极大，分数已封顶",
+    "lifetime_daily_volatility_high_58": "长期收益波动偏高，分数已封顶",
+    "lifetime_drawdown_extreme_52": "长期回撤极大，分数已封顶",
+    "lifetime_drawdown_high_58": "长期回撤偏高，分数已封顶",
+    "long_consistent_activity": "账号长期保持交易活跃",
+    "multi_category_hit": "覆盖多个题材，分散度较好",
+    "negative_total_pnl": "累计收益为负",
+    "pnl_curve_down": "收益曲线有下行压力",
+    "pnl_curve_volatile": "收益曲线波动较大",
+    "pnl_daily_volatility_high": "日收益波动偏高",
+    "pnl_drawdown_high": "回撤偏大",
+    "pnl_recent_missing": "近期收益覆盖不足",
+    "pnl_recent_partial": "近期收益数据不够完整",
+    "pnl_single_spike": "收益较集中在单次爆发",
+    "pnl_smooth_up": "累计收益走势比较平滑向上",
+    "pnl_spiky": "收益出现明显尖峰波动",
+    "severe_risk_gate": "存在严重风险信号",
+    "single_day_move_extreme_52": "单日收益波动过大，分数已封顶",
+    "single_day_move_high_60": "单日收益波动偏大，分数已封顶",
+    "sparse_lifetime_activity": "长期交易活跃度偏稀疏",
+    "sparse_lifetime_activity_52": "长期活跃度过于稀疏，分数已封顶",
+    "strong_recent_pnl": "近期收益表现较强",
+    "recent_30d_loss_50": "近 30 天收益转弱，分数已封顶",
+    "recent_7d_loss_heavy_48": "近 7 天亏损较重，分数已封顶",
+    "recent_7d_loss_light_62": "近 7 天收益转弱，分数已封顶",
+    "recent_7d_loss_material_55": "近 7 天亏损明显，分数已封顶",
+    "recent_pnl_negative_45": "近 7 天和 30 天均亏损，分数已封顶",
+    "unit_test": "测试样例",
+}
+
+AGENT_VERDICT_TEXT = {
+    "copyable": "可以进一步考虑跟单",
+    "watchlist": "建议加入观察名单",
+    "avoid": "建议回避",
+    "insufficient_data": "资料不足，暂不判断",
+}
+
+COPY_STYLE_TEXT = {
+    "full_copy": "可考虑较完整复制",
+    "selective": "只适合选择性跟单",
+    "small_size": "只适合小仓位观察",
+    "avoid": "不建议跟单",
+}
+
+
 def load_sendkey(config: dict[str, Any]) -> str | None:
     env_name = str(config.get("sendkey_env") or "SCT_SENDKEY")
     value = os.environ.get(env_name)
@@ -21,112 +115,315 @@ def load_sendkey(config: dict[str, Any]) -> str | None:
     return None
 
 
+def _as_float(value: Any) -> float | None:
+    if value is None or value == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _fmt_number(value: Any, digits: int = 2, suffix: str = "") -> str:
+    number = _as_float(value)
+    if number is None:
+        return "暂无"
+    return f"{number:,.{digits}f}{suffix}"
+
+
+def _fmt_score(value: Any) -> str:
+    number = _as_float(value)
+    if number is None:
+        return "暂无"
+    return f"{number:.2f} 分"
+
+
+def _fmt_money(value: Any) -> str:
+    number = _as_float(value)
+    if number is None:
+        return "暂无"
+    return f"{number:,.2f} 美元"
+
+
+def _fmt_days(value: Any) -> str:
+    number = _as_float(value)
+    if number is None:
+        return "暂无"
+    return f"{int(round(number))} 天"
+
+
+def _grade_text(grade: Any) -> str:
+    return GRADE_TEXT.get(str(grade), "其他分层" if grade else "暂不推荐")
+
+
+def _decision_text(value: Any) -> str:
+    if not value:
+        return "暂无明确结论。"
+    return DECISION_TEXT.get(str(value), "建议先人工复核后再决定。")
+
+
+def _action_text(value: Any) -> str:
+    if not value:
+        return "建议先人工复核后再决定。"
+    return ACTION_TEXT.get(str(value), "建议先人工复核后再决定。")
+
+
+def _recommendation_text(analysis: dict[str, Any]) -> str:
+    action = _action_text(analysis.get("auto_action"))
+    decision = _decision_text(analysis.get("decision"))
+    if action and action != "建议先人工复核后再决定。":
+        if decision and decision not in {action, "暂无明确结论。", "建议先人工复核后再决定。"}:
+            return f"{action.rstrip('。')}；{decision}"
+        return action
+    return decision
+
+
+def _flag_items(flags: Any) -> list[str]:
+    if not flags:
+        return []
+    if isinstance(flags, str):
+        raw_items = [item.strip() for item in flags.split(",")]
+    else:
+        raw_items = [str(item).strip() for item in flags]
+    items: list[str] = []
+    for item in raw_items:
+        if not item:
+            continue
+        items.append(FLAG_TEXT.get(item, "存在需要人工复核的提醒"))
+    return items
+
+
+def _first_present(*values: Any) -> Any:
+    for value in values:
+        if value not in (None, ""):
+            return value
+    return None
+
+
+def _contains_cjk(value: Any) -> bool:
+    text = str(value or "")
+    return any("\u4e00" <= char <= "\u9fff" for char in text)
+
+
+def _append_optional_line(lines: list[str], label: str, value: Any, chinese_only: bool = False) -> None:
+    if value not in (None, ""):
+        if chinese_only and not _contains_cjk(value):
+            return
+        lines.append(f"- {label}：{value}")
+
+
 def format_candidate_message(analysis: dict[str, Any]) -> tuple[str, str]:
-    address = analysis.get("account_address")
-    label = analysis.get("account_label") or address
-    grade = analysis.get("alert_grade") or "none"
-    score = analysis.get("final_score")
-    decision = analysis.get("decision")
-    flags = ", ".join(analysis.get("score_flags") or []) or "none"
+    address = str(analysis.get("account_address") or "")
+    label = str(analysis.get("account_label") or address or "未知账号")
+    grade = _grade_text(analysis.get("alert_grade"))
+    score = _fmt_score(analysis.get("final_score"))
     review = analysis.get("agent_review") or {}
     breakdown = analysis.get("score_breakdown_v3") or {}
-    title = f"Polymarket候选 {grade} | {score} | {label}"
+
+    total_pnl = _fmt_money(breakdown.get("account_total_pnl"))
+    age_days = _fmt_days(breakdown.get("account_age_days"))
+    smooth_adj = _fmt_score(breakdown.get("pnl_smoothness_adjustment"))
+    activity_adj = _fmt_score(breakdown.get("lifetime_activity_adjustment"))
+    recommendation = _recommendation_text(analysis)
+
+    title = f"账号筛选结果：{grade}｜{score}｜{label}"
     lines = [
-        f"账号: {label}",
-        f"地址: {address}",
-        f"最终分: {score}",
-        f"结论: {decision}",
-        f"推送等级: {grade}",
-        f"自动动作: {analysis.get('auto_action')}",
-        f"发现优先分: {analysis.get('discovery_score')}",
-        f"数据质量: {analysis.get('data_quality_score')}",
-        f"收益质量: {analysis.get('pnl_quality_score')}",
-        f"跟单容量: {analysis.get('copy_capacity_score')}",
-        f"总PnL: {breakdown.get('account_total_pnl')}",
-        f"账号年龄天数: {breakdown.get('account_age_days')}",
-        f"PnL平滑调整: {breakdown.get('pnl_smoothness_adjustment')}",
-        f"长期活跃调整: {breakdown.get('lifetime_activity_adjustment')}",
-        f"标记: {flags}",
+        "## 一句话结论",
+        f"这个账号当前评分为 {score}，系统归为“{grade}”。{recommendation}",
+        "",
+        "## 账号信息",
+        f"- 昵称：{label}",
+        f"- 钱包地址：{address}",
+        "",
+        "## 核心概括",
+        f"- 当前评分：{score}",
+        f"- 系统分层：{grade}",
+        f"- 系统建议：{recommendation}",
+        f"- 累计收益：{total_pnl}",
+        f"- 账号已运行：{age_days}",
+        f"- 发现优先级：{_fmt_score(analysis.get('discovery_score'))}",
+        "",
+        "## 质量拆解",
+        f"- 资料完整程度：{_fmt_number(analysis.get('data_quality_score'))} / 10",
+        f"- 收益表现质量：{_fmt_number(analysis.get('pnl_quality_score'))} / 40",
+        f"- 跟单容量表现：{_fmt_number(analysis.get('copy_capacity_score'))} / 10",
+        f"- 收益曲线平滑度：{smooth_adj}",
+        f"- 长期活跃表现：{activity_adj}",
     ]
+
+    flags = _flag_items(analysis.get("score_flags"))
+    lines.extend(["", "## 主要提醒"])
+    if flags:
+        lines.extend(f"- {flag}" for flag in flags[:8])
+        if len(flags) > 8:
+            lines.append(f"- 另有 {len(flags) - 8} 条提醒已写入本地表格")
+    else:
+        lines.append("- 暂无明显额外风险提醒")
+
     if review:
-        lines.extend(
-            [
-                "",
-                "AI复核:",
-                f"Agent结论: {review.get('agent_verdict')}",
-                f"置信度: {review.get('confidence')}",
-                f"人工优先级: {review.get('human_review_priority')}",
-                f"建议跟单方式: {review.get('copy_style')}",
-                f"核心理由: {review.get('main_reason')}",
-                f"风险摘要: {review.get('risk_summary')}",
-                f"下一步: {review.get('recommended_followup')}",
-            ]
-        )
+        lines.extend(["", "## 智能复核补充"])
+        _append_optional_line(lines, "复核判断", AGENT_VERDICT_TEXT.get(str(review.get("agent_verdict")), review.get("agent_verdict")))
+        _append_optional_line(lines, "置信程度", _fmt_score(review.get("confidence")))
+        _append_optional_line(lines, "人工复核优先级", review.get("human_review_priority"))
+        _append_optional_line(lines, "建议跟单方式", COPY_STYLE_TEXT.get(str(review.get("copy_style")), review.get("copy_style")))
+        _append_optional_line(lines, "核心理由", review.get("main_reason"), chinese_only=True)
+        _append_optional_line(lines, "风险摘要", review.get("risk_summary"), chinese_only=True)
+        _append_optional_line(lines, "下一步建议", review.get("recommended_followup"), chinese_only=True)
     elif analysis.get("agent_review_error"):
-        lines.extend(["", f"AI复核失败: {analysis.get('agent_review_error')}"])
-    lines.extend(["", str(analysis.get("narrative_conclusion") or "")])
-    desp = "\n".join(lines)
-    return title, desp
+        lines.extend(["", "## 智能复核补充", "- 复核没有成功完成，详情已写入本地日志"])
+
+    narrative = str(analysis.get("narrative_conclusion") or "").strip()
+    if narrative and _contains_cjk(narrative):
+        lines.extend(["", "## 本地分析摘要", narrative])
+
+    lines.extend(
+        [
+            "",
+            "## 操作建议",
+            "建议先人工复核最近持仓、主要题材、交易频率和市场流动性，再决定是否加入跟单名单。",
+        ]
+    )
+    return title, "\n".join(lines)
 
 
 def _extract_message_value(message: str | None, prefix: str) -> str | None:
     if not message:
         return None
     for line in message.splitlines():
-        if line.startswith(prefix):
-            return line[len(prefix) :].strip()
+        stripped = line.strip()
+        if stripped.startswith(prefix):
+            return stripped[len(prefix) :].strip()
     return None
+
+
+def _extract_first_value(message: str | None, prefixes: list[str]) -> str | None:
+    for prefix in prefixes:
+        value = _extract_message_value(message, prefix)
+        if value:
+            return value
+    return None
+
+
+def _section_bullets(message: str, header: str, limit: int = 3) -> list[str]:
+    lines = message.splitlines()
+    try:
+        start = next(index for index, line in enumerate(lines) if line.strip() == header)
+    except StopIteration:
+        return []
+    bullets: list[str] = []
+    for line in lines[start + 1 :]:
+        stripped = line.strip()
+        if stripped.startswith("## "):
+            break
+        if stripped.startswith("- "):
+            bullets.append(stripped[2:].strip())
+            if len(bullets) >= limit:
+                break
+    return bullets
 
 
 def _alert_label(row: dict[str, Any]) -> str:
     title = str(row.get("title") or "")
-    parts = title.split(" | ", 2)
-    if len(parts) == 3 and parts[2].strip():
-        return parts[2].strip()
+    if "｜" in title:
+        parts = [part.strip() for part in title.split("｜")]
+        if parts and parts[-1]:
+            return parts[-1]
+    old_parts = title.split(" | ", 2)
+    if len(old_parts) == 3 and old_parts[2].strip():
+        return old_parts[2].strip()
     return str(row.get("address") or "")
+
+
+def _row_grade_text(row: dict[str, Any]) -> str:
+    return _grade_text(row.get("alert_grade"))
+
+
+def _row_recommendation(message: str) -> str:
+    new_value = _extract_first_value(message, ["- 系统建议：", "系统建议："])
+    if new_value:
+        return new_value
+    old_action = _extract_first_value(message, ["自动动作:"])
+    old_decision = _extract_first_value(message, ["结论:"])
+    if old_action:
+        action_text = _action_text(old_action)
+        decision_text = _decision_text(old_decision)
+        if decision_text not in {action_text, "暂无明确结论。", "建议先人工复核后再决定。"}:
+            return f"{action_text.rstrip('。')}；{decision_text}"
+        return action_text
+    if old_decision:
+        return _decision_text(old_decision)
+    return "建议先人工复核后再决定。"
+
+
+def _row_summary(message: str) -> str:
+    data_quality = _extract_first_value(message, ["- 资料完整程度：", "数据质量:"])
+    pnl_quality = _extract_first_value(message, ["- 收益表现质量：", "收益质量:"])
+    capacity = _extract_first_value(message, ["- 跟单容量表现：", "跟单容量:"])
+    total_pnl = _extract_first_value(message, ["- 累计收益：", "总PnL:"])
+    age = _extract_first_value(message, ["- 账号已运行：", "账号年龄天数:"])
+    flags = _extract_first_value(message, ["- 主要提醒：", "标记:"])
+    if not flags:
+        bullets = _section_bullets(message, "## 主要提醒")
+        if bullets:
+            flags = "；".join(bullets)
+
+    if flags and "," in flags:
+        flags = "；".join(_flag_items(flags)[:3])
+    elif flags:
+        flags = FLAG_TEXT.get(flags, flags)
+
+    parts = []
+    if total_pnl:
+        parts.append(f"累计收益 {total_pnl}")
+    if age:
+        parts.append(f"账号历史 {age}")
+    if pnl_quality:
+        parts.append(f"收益质量 {pnl_quality}")
+    if data_quality:
+        parts.append(f"资料完整度 {data_quality}")
+    if capacity:
+        parts.append(f"跟单容量 {capacity}")
+    if flags:
+        parts.append(f"提醒：{flags}")
+    return "；".join(parts) if parts else "完整分析已写入本地表格"
 
 
 def format_alert_batch(alerts: list[dict[str, Any]]) -> tuple[str, str]:
     count = len(alerts)
     scores = [float(row.get("final_score") or 0) for row in alerts]
     highest = max(scores) if scores else 0.0
-    title = f"Polymarket候选批量提醒 | {count}个 | 最高 {highest:.2f}"
+    title = f"账号筛选批量提醒：{count} 个候选｜最高 {highest:.2f} 分"
     lines = [
-        f"本批已凑满 {count} 个高分候选，统一推送。",
-        f"本批包含 {count} 个具体地址如下：",
+        "## 本批概览",
+        f"本批已凑满 {count} 个可关注账号，最高分 {highest:.2f} 分。建议先看分数、分层和提醒，再决定是否人工复核。",
+        "",
+        f"## {count} 个地址",
     ]
     lines.extend(
-        f"{index}. {row.get('address')}"
+        f"{index}. {row.get('address')} ｜ 分数：{_fmt_score(row.get('final_score'))}"
         for index, row in enumerate(alerts, start=1)
     )
     lines.extend(
         [
             "",
-            "候选明细：",
-            "完整明细已写入 Excel 的 alerts 表。",
-            "",
+            "## 账号速览",
         ]
     )
     for index, row in enumerate(alerts, start=1):
         message = str(row.get("message") or "")
-        details = [
-            value
-            for value in [
-                _extract_message_value(message, "结论:"),
-                _extract_message_value(message, "自动动作:"),
-                _extract_message_value(message, "数据质量:"),
-                _extract_message_value(message, "收益质量:"),
-                _extract_message_value(message, "跟单容量:"),
-                _extract_message_value(message, "标记:"),
+        label = _alert_label(row)
+        recommendation = _row_recommendation(message)
+        summary = _row_summary(message)
+        lines.extend(
+            [
+                f"{index}. {label}",
+                f"   分数：{_fmt_score(row.get('final_score'))}｜分层：{_row_grade_text(row)}",
+                f"   地址：{row.get('address')}",
+                f"   建议：{recommendation}",
+                f"   概括：{summary}",
             ]
-            if value
-        ]
-        lines.append(
-            f"{index}. {row.get('alert_grade')} | {row.get('final_score')} | {_alert_label(row)}"
         )
-        lines.append(f"   地址: {row.get('address')}")
-        if details:
-            lines.append(f"   摘要: {' / '.join(details)}")
+    lines.extend(["", "完整明细已同步写入本地表格。"])
     return title, "\n".join(lines)
 
 

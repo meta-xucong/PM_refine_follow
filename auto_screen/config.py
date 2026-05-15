@@ -65,7 +65,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
     },
     "scoring": {
         "score_version": "auto_v3",
-        "alert_threshold": 40,
+        "alert_threshold": 50,
         "skill_dir": "skill/polymarket-account-review-skill",
     },
     "serverchan": {
@@ -74,7 +74,12 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "sendkey_file": "~/.codex/secrets/serverchan_sendkey.txt",
         "dry_run": False,
         "batch_size": 10,
-        "required_message_markers": ["总PnL:", "账号年龄天数:", "PnL平滑调整:", "长期活跃调整:"],
+        "required_message_markers": [
+            "累计收益：||总PnL:",
+            "账号已运行：||账号年龄天数:",
+            "收益曲线平滑度：||PnL平滑调整:",
+            "长期活跃表现：||长期活跃调整:",
+        ],
     },
     "agent": {
         "enabled": False,

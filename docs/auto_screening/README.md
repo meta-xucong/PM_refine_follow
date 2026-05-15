@@ -2,7 +2,7 @@
 
 本目录是“定时/常驻扫描 Polymarket 高表现、高活跃账号，并自动筛出适合跟单目标”的开工前文档包。
 
-目标不是新增交易功能，而是构建一个只读筛选服务：持续访问 Polymarket 官方公开 Data API，生成候选池，预筛高频或低价值账号，复用当前仓库的锚点评分模型，发现 `final_score > 40` 的账号后推送 ServerChan 并写入 Excel。
+目标不是新增交易功能，而是构建一个只读筛选服务：持续访问 Polymarket 官方公开 Data API，生成候选池，预筛高频或低价值账号，复用当前仓库的锚点评分模型，发现 `final_score > 50` 的账号后推送 ServerChan 并写入 Excel。
 
 ## 文档清单
 
@@ -27,7 +27,7 @@
 - 初版严格只读 Data API，不接 CLOB 交易端点。
 - 初版评分通过 subprocess 复用现有 `analyze_account.py`，降低评分漂移风险。
 - SQLite 是运行状态源，Excel 是人工查看表。
-- 推送阈值为严格 `final_score > 40`。
+- 推送阈值为严格 `final_score > 50`。
 - ServerChan 默认批量推送：命中候选先写入 SQLite/Excel，待 `serverchan.batch_size=10` 个 pending 告警凑满后发送一条汇总推送，避免单账号刷屏。评分/消息结构升级后，缺少当前要求字段的旧 pending 告警会自动归档，不和新规则候选混批。
 - 从排行榜开头重新扫描时，若地址曾经出现过，会在候选池标记为 `refresh_score`，并在上下文和前端提示“刷新分数”；它仍会进入待处理队列，用新数据刷新评分。
 - 常驻 `run` 采用“大周期 + 小批次”模式：每个大周期先扫描候选池，然后按 `process_batch_size` 分批处理，直到本轮 pending 候选处理完，才休眠并从排行榜开头开启下一大周期。`process_batch_size=25` 只是每个内部批次大小，不是一整轮上限。

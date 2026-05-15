@@ -20,10 +20,10 @@ from .state_store import StateStore
 
 
 CURRENT_ALERT_REQUIRED_MARKERS = [
-    "总PnL:",
-    "账号年龄天数:",
-    "PnL平滑调整:",
-    "长期活跃调整:",
+    "累计收益：||总PnL:",
+    "账号已运行：||账号年龄天数:",
+    "收益曲线平滑度：||PnL平滑调整:",
+    "长期活跃表现：||长期活跃调整:",
 ]
 
 
@@ -163,6 +163,13 @@ def _serverchan_required_markers(config: dict[str, Any]) -> list[str]:
     return list(CURRENT_ALERT_REQUIRED_MARKERS)
 
 
+def _alert_threshold(config: dict[str, Any]) -> float:
+    try:
+        return float((config.get("scoring") or {}).get("alert_threshold", 50))
+    except (TypeError, ValueError):
+        return 50.0
+
+
 def _new_alert_push_status(config: dict[str, Any], dry_run_alerts: bool) -> str:
     serverchan_cfg = config.get("serverchan") or {}
     if not bool(serverchan_cfg.get("enabled", True)):
@@ -197,6 +204,23 @@ def maybe_send_alert_batches(
                     "archived": archived,
                     "reason": "archived_legacy_alert_schema",
                     "required_markers": required_markers,
+                    "pending": store.pending_alert_push_count(),
+                },
+                ensure_ascii=False,
+            ),
+            flush=True,
+        )
+
+    alert_threshold = _alert_threshold(config)
+    archived_low_score = store.archive_pending_alerts_at_or_below_score(alert_threshold, "archived_below_alert_threshold")
+    if archived_low_score:
+        print(
+            "[serverchan_archive] "
+            + json.dumps(
+                {
+                    "archived": archived_low_score,
+                    "reason": "archived_below_alert_threshold",
+                    "alert_threshold": alert_threshold,
                     "pending": store.pending_alert_push_count(),
                 },
                 ensure_ascii=False,
@@ -540,7 +564,7 @@ def run_once(
                 excel.append("all_scored", result_row(result.payload))
                 stats["processed"] += 1
 
-                if result.alert_grade in {"A", "B", "C"} and result.final_score > float((config.get("scoring") or {}).get("alert_threshold", 40)):
+                if result.alert_grade in {"A", "B", "C"} and result.final_score > _alert_threshold(config):
                     reporter.update(
                         "alerting",
                         f"命中推送阈值：{result.alert_grade} / {result.final_score}",
