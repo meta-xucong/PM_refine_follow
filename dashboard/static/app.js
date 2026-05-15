@@ -119,6 +119,10 @@ function leaderboardStopText(reason) {
   return mapping[reason] || reason || "";
 }
 
+function storedCandidateText(progress) {
+  return `当前数据库已保存 ${fmt(progress.candidate_total_count)} 个地址；扫榜完成后会把本轮候选批量写入`;
+}
+
 function renderStatus(data) {
   state = data;
   setBadge(data.process || {});
@@ -170,7 +174,7 @@ function renderProgress(progress, process) {
     const rankRange = leaderboard.first_rank ? `，返回排名 ${fmt(leaderboard.first_rank)}-${fmt(leaderboard.last_rank)}` : "";
     const cap = leaderboard.api_cap_detected ? `，官方可见上限约 ${fmt(leaderboard.api_cap_rank)} 名` : "";
     const earlyStop = leaderboard.early_stop ? `，提前结束：${leaderboardStopText(leaderboard.early_stop_reason)}` : "";
-    const storedTotal = progress.candidate_total_count !== undefined ? `，已入库总地址 ${fmt(progress.candidate_total_count)}` : "";
+    const storedTotal = progress.candidate_total_count !== undefined ? `；${storedCandidateText(progress)}` : "";
     $("leaderboardProgress").textContent = `${fmt(leaderboard.shard)} (${shardIndex})`;
     $("leaderboardHint").textContent = `offset ${fmt(leaderboard.offset)}-${fmt(offsetEnd)} / ${fmt(leaderboard.max_rank)}${rankRange}，本页新增 ${fmt(leaderboard.new_candidates)}，本轮候选 ${fmt(leaderboard.unique_candidates)}${storedTotal}${noNew}${cap}${earlyStop}`;
   } else {
@@ -181,7 +185,7 @@ function renderProgress(progress, process) {
   if (candidateSource) {
     const marketText = candidateSource.market_slug ? ` · ${fmt(candidateSource.market_slug)}` : "";
     const indexText = candidateSource.total_markets ? ` (${fmt(candidateSource.market_index)} / ${fmt(candidateSource.total_markets)})` : "";
-    const storedTotal = progress.candidate_total_count !== undefined ? `，已入库总地址 ${fmt(progress.candidate_total_count)}` : "";
+    const storedTotal = progress.candidate_total_count !== undefined ? `；${storedCandidateText(progress)}` : "";
     $("leaderboardProgress").textContent = `${fmt(candidateSource.source)}${indexText}`;
     $("leaderboardHint").textContent = `官方信源${marketText}，返回 ${fmt(candidateSource.rows || candidateSource.markets || 0)} 条，新增 ${fmt(candidateSource.new_candidates || 0)}，本轮候选 ${fmt(candidateSource.unique_candidates || 0)}${storedTotal}`;
   }
@@ -192,10 +196,10 @@ function renderProgress(progress, process) {
   const capDetected = Boolean(leaderboardScan.api_cap_detected || leaderboard?.api_cap_detected);
   if (capDetected) {
     $("leaderboardCap").textContent = `约 ${fmt(visibleCap)} 名`;
-    $("leaderboardCapHint").textContent = `目标 ${fmt(requestedCap)} 名；官方接口已触顶，本轮多榜合并候选 ${fmt(uniqueCandidates)} 个，已入库总地址 ${fmt(progress.candidate_total_count)}`;
+    $("leaderboardCapHint").textContent = `目标 ${fmt(requestedCap)} 名；官方接口已触顶，本轮多榜合并候选 ${fmt(uniqueCandidates)} 个；${storedCandidateText(progress)}`;
   } else if (requestedCap) {
     $("leaderboardCap").textContent = `目标 ${fmt(requestedCap)} 名`;
-    $("leaderboardCapHint").textContent = uniqueCandidates ? `本轮已发现 ${fmt(uniqueCandidates)} 个候选，已入库总地址 ${fmt(progress.candidate_total_count)}，尚未检测到接口触顶` : `等待扫榜进度，已入库总地址 ${fmt(progress.candidate_total_count)}`;
+    $("leaderboardCapHint").textContent = uniqueCandidates ? `本轮已发现 ${fmt(uniqueCandidates)} 个候选；${storedCandidateText(progress)}；尚未检测到接口触顶` : `等待扫榜进度；${storedCandidateText(progress)}`;
   } else {
     $("leaderboardCap").textContent = "-";
     $("leaderboardCapHint").textContent = process.running ? "等待扫榜进度" : "-";
@@ -220,7 +224,7 @@ function renderProgress(progress, process) {
   }
   const stats = progress.stats || {};
   $("cycleStats").textContent = `扫:${fmt(stats.scanned)} 处理:${fmt(stats.processed)} 推送:${fmt(stats.alerts)} 跳过:${fmt(stats.skipped)}`;
-  $("lastAction").textContent = progress.auto_action || progress.alert_grade || (leaderboard ? `本轮候选 ${fmt(leaderboard.unique_candidates)} / 入库总地址 ${fmt(progress.candidate_total_count)}` : (progress.phase || "-"));
+  $("lastAction").textContent = progress.auto_action || progress.alert_grade || (leaderboard ? `本轮候选 ${fmt(leaderboard.unique_candidates)} / 数据库已保存 ${fmt(progress.candidate_total_count)}` : (progress.phase || "-"));
   $("progressFill").style.width = `${Number(progress.percent || 0)}%`;
   renderTimeline(progress.history || []);
 }

@@ -400,7 +400,7 @@ def format_alert_batch(alerts: list[dict[str, Any]]) -> tuple[str, str]:
         f"## {count} 个地址",
     ]
     lines.extend(
-        f"{index}. {row.get('address')} ｜ 分数：{_fmt_score(row.get('final_score'))}"
+        f"{index}. {row.get('address')} ｜ 分数：{_fmt_score(row.get('final_score'))}｜评级：{_row_grade_text(row)}"
         for index, row in enumerate(alerts, start=1)
     )
     lines.extend(

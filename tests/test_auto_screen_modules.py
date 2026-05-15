@@ -393,7 +393,7 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertIn("## 10 个地址", message)
             for i in range(1, 11):
                 self.assertIn(f"0x{i:040x}", message)
-                self.assertIn(f"0x{i:040x} ｜ 分数：55.00 分", message)
+                self.assertIn(f"0x{i:040x} ｜ 分数：55.00 分｜评级：观察名单", message)
             self.assertIn("只适合筛选后谨慎跟单", message)
             self.assertEqual({row["push_status"] for row in rows}, {"sent"})
             self.assertEqual(len({row["push_batch_id"] for row in rows}), 1)
@@ -792,7 +792,7 @@ class AutoScreenModuleTests(unittest.TestCase):
         ]
         title, message = format_alert_batch(rows)
         self.assertIn("10 个", title)
-        self.assertIn("0x1111111111111111111111111111111111111111 ｜ 分数：55.00 分", message)
+        self.assertIn("0x1111111111111111111111111111111111111111 ｜ 分数：55.00 分｜评级：观察名单", message)
         self.assertIn("Alpha", message)
         self.assertIn("只适合筛选后谨慎跟单", message)
         self.assertIn("覆盖多个题材", message)
