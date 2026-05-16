@@ -134,7 +134,6 @@ function renderStatus(data) {
   $("candidateCounts").textContent = `总地址:${fmt(totalCount)}${statusText ? `  ${statusText}` : ""}`;
   $("alertCount").textContent = `${fmt((data.excel?.sheet_counts || {}).alerts || 0)} / 待推送:${fmt(alertPushCounts.pending || 0)}`;
   $("agentCount").textContent = fmt((data.agent?.counts || {}).agent_decisions || 0);
-  $("excelPath").textContent = data.excel?.excel_path || "-";
 
   renderCycles(data.auto?.latest_cycles || []);
   renderRuns(data.auto?.recent_runs || []);
@@ -538,6 +537,7 @@ $("saveConfigBtn").addEventListener("click", () => saveConfig().catch((e) => toa
 $("refreshSendkeyBtn").addEventListener("click", () => loadServerchanKeyStatus().catch((e) => toast(e.message)));
 $("saveSendkeyBtn").addEventListener("click", () => saveServerchanKey().catch((e) => toast(e.message)));
 $("downloadPushedCsvBtn").addEventListener("click", downloadPushedCsv);
+$("downloadExcelCsvBtn").addEventListener("click", downloadPushedCsv);
 document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-copy]");
   if (!button) return;

@@ -323,7 +323,11 @@ button:hover { border-color: var(--accent); }
 }
 .metric span { color: var(--muted); font-size: 12px; display: block; }
 .metric strong { display: block; margin-top: 8px; font-size: 18px; overflow-wrap: anywhere; }
-#excelPath { font-size: 13px; line-height: 1.35; }
+.metric-button {
+  margin-top: 10px;
+  width: 100%;
+  justify-content: center;
+}
 
 .tabs {
   display: flex;

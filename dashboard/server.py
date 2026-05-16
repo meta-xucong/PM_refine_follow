@@ -5,6 +5,7 @@ import csv
 import io
 import json
 import os
+import re
 import signal
 import sqlite3
 import subprocess
@@ -271,6 +272,49 @@ def compact_text(value: Any, limit: int = 500) -> str:
     return text[:limit]
 
 
+def _line_after_heading(message: str, heading: str) -> str:
+    lines = message.splitlines()
+    for index, line in enumerate(lines):
+        if line.strip() != heading:
+            continue
+        for candidate in lines[index + 1 :]:
+            text = candidate.strip()
+            if text and not text.startswith("#"):
+                return text
+    return ""
+
+
+def _message_line_value(message: str, label: str) -> str:
+    prefixes = (f"- {label}：", f"{label}：", f"- {label}: ", f"{label}: ")
+    for line in message.splitlines():
+        text = line.strip()
+        for prefix in prefixes:
+            if text.startswith(prefix):
+                return text[len(prefix) :].strip()
+    return ""
+
+
+def compact_recommendation(row: dict[str, Any], limit: int = 180) -> str:
+    message = str(row.get("message") or "")
+    if not message:
+        return ""
+
+    recommendation = _message_line_value(message, "系统建议")
+    if not recommendation:
+        recommendation = _message_line_value(message, "下一步建议")
+    if not recommendation:
+        recommendation = _message_line_value(message, "建议跟单方式")
+    if not recommendation:
+        recommendation = _line_after_heading(message, "## 操作建议")
+    if not recommendation:
+        recommendation = _line_after_heading(message, "## 一句话结论")
+
+    recommendation = re.sub(r"^这个账号当前评分为[^。]*。", "", recommendation).strip()
+    recommendation = re.sub(r"^当前评分[^。]*。", "", recommendation).strip()
+    recommendation = recommendation.lstrip("- ").strip()
+    return compact_text(recommendation, limit)
+
+
 def pushed_alert_rows(db_path: Path) -> list[dict[str, Any]]:
     return sqlite_rows(
         db_path,
@@ -343,7 +387,7 @@ def pushed_accounts_csv(auto_cfg: dict[str, Any]) -> str:
                 row.get("push_batch_id") or "",
                 row.get("created_at") or "",
                 row.get("pushed_at") or row.get("created_at") or "",
-                compact_text(row.get("message")),
+                compact_recommendation(row),
             ]
         )
     return out.getvalue()

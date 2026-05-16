@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import csv
+import io
 import json
 import os
 import tempfile
@@ -117,7 +119,7 @@ class DashboardServerTests(unittest.TestCase):
                 62,
                 "B",
                 "账号筛选结果：B级｜62.00 分｜Alpha",
-                "## 一句话结论\n这个账号当前评分为 62 分。",
+                "## 一句话结论\n这个账号当前评分为 62 分，系统归为“B级”。适合筛选后再考虑跟单。\n\n## 核心概括\n- 当前评分：62 分\n- 系统评级：B级\n- 系统建议：适合筛选后再考虑跟单。",
                 push_status="pending",
             )
             store.mark_alert_push_result([alert_id], "batch-1", {"sent": True})
@@ -130,6 +132,10 @@ class DashboardServerTests(unittest.TestCase):
             self.assertIn("0x1111111111111111111111111111111111111111", csv_text)
             self.assertIn("Alpha", csv_text)
             self.assertIn("batch-1", csv_text)
+            data_rows = list(csv.reader(io.StringIO(csv_text)))
+            self.assertEqual(data_rows[1][-1], "适合筛选后再考虑跟单。")
+            self.assertNotIn("62", data_rows[1][-1])
+            self.assertNotIn("B级", data_rows[1][-1])
 
     def test_serverchan_key_info_masks_and_saves_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
