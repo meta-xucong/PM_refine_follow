@@ -759,6 +759,16 @@ class DashboardHandler(SimpleHTTPRequestHandler):
                 {
                     "process": process,
                     "progress": progress_summary(auto_cfg, process, auto_state),
+                    "auto": {
+                        "candidate_counts": auto_state.get("candidate_counts", {}),
+                        "candidate_total_count": auto_state.get("candidate_total_count", 0),
+                        "alert_push_counts": auto_state.get("alert_push_counts", {}),
+                        "latest_cycles": auto_state.get("latest_cycles", []),
+                        "recent_runs": auto_state.get("recent_runs", []),
+                        "recent_alerts": auto_state.get("recent_alerts", []),
+                        "pushed_accounts": auto_state.get("pushed_accounts", []),
+                    },
+                    "excel": excel_sidecar_summary(auto_cfg),
                     "log_tail": tail_text(LOG_FILE),
                 }
             )

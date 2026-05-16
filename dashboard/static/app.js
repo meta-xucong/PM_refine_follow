@@ -110,6 +110,13 @@ function ageText(seconds) {
   return `${(seconds / 3600).toFixed(1)} 小时前`;
 }
 
+function fmtTime(value) {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return fmt(value);
+  return date.toLocaleString("zh-CN", { hour12: false });
+}
+
 function leaderboardStopText(reason) {
   const mapping = {
     api_rank_cap: "官方接口已到可见末尾",
@@ -248,13 +255,25 @@ function renderTimeline(rows) {
 
 function renderCycles(rows) {
   $("cyclesBody").innerHTML = rows.map((r) => `
-    <tr><td>${html(r.id)}</td><td>${html(r.status)}</td><td>${html(r.started_at)}</td><td>${html(r.finished_at)}</td><td>${html(r.note)}</td></tr>
+    <tr>
+      <td>${html(r.id)}</td>
+      <td>${html(r.status)}</td>
+      <td title="${html(r.started_at)}">${html(fmtTime(r.started_at))}</td>
+      <td title="${html(r.finished_at)}">${html(fmtTime(r.finished_at))}</td>
+      <td>${html(r.note)}</td>
+    </tr>
   `).join("") || `<tr><td colspan="5">暂无周期</td></tr>`;
 }
 
 function renderRuns(rows) {
   $("runsBody").innerHTML = rows.map((r) => `
-    <tr><td title="${html(r.address)}">${html(shortAddress(r.address))}</td><td>${html(r.status)}</td><td>${html(r.final_score)}</td><td>${html(r.alert_grade)}</td><td>${html(r.created_at)}</td></tr>
+    <tr>
+      <td title="${html(r.address)}">${html(shortAddress(r.address))}</td>
+      <td>${html(r.status)}</td>
+      <td>${html(r.final_score)}</td>
+      <td>${html(r.alert_grade)}</td>
+      <td title="${html(r.created_at)}">${html(fmtTime(r.created_at))}</td>
+    </tr>
   `).join("") || `<tr><td colspan="5">暂无任务</td></tr>`;
 }
 
@@ -286,7 +305,7 @@ function renderScoreHistory(rounds) {
   return `
     <div class="score-stack compact">
       ${rounds.slice(0, 4).map((round, index) => `
-        <span class="score-pill" title="${html(round.created_at)}｜${html(round.action)}">
+        <span class="score-pill" title="${html(fmtTime(round.created_at))}｜${html(round.action)}">
           ${index === 0 ? "最新" : `旧${index}`}：${html(round.score)} ${html(round.grade)}
         </span>
       `).join("")}
@@ -305,7 +324,7 @@ function renderAlerts(rows) {
 
 function renderRoundChip(round) {
   return `
-    <span class="score-pill" title="批次：${html(round.batch_id)}｜时间：${html(round.pushed_at)}">
+    <span class="score-pill" title="批次：${html(round.batch_id)}｜时间：${html(fmtTime(round.pushed_at))}">
       第 ${html(round.round_number)} 轮：${html(round.score)} 分 ${html(round.grade)}
     </span>
   `;
@@ -336,7 +355,7 @@ function renderPushedAccounts(rows) {
             </details>
           ` : "-"}
         </td>
-        <td>${html(r.latest_pushed_at)}</td>
+        <td title="${html(r.latest_pushed_at)}">${html(fmtTime(r.latest_pushed_at))}</td>
       </tr>
     `;
   }).join("") || `<tr><td colspan="5">暂无已推送账号</td></tr>`;
@@ -480,8 +499,14 @@ function downloadPushedCsv() {
 
 async function refreshProcessOnly() {
   const proc = await api("/api/process");
-  setBadge(proc.process || {});
-  renderProgress(proc.progress || {}, proc.process || {});
+  const merged = {
+    process: proc.process || state.process || {},
+    progress: proc.progress || state.progress || {},
+    auto: proc.auto || state.auto || {},
+    agent: state.agent || {},
+    excel: proc.excel || state.excel || {},
+  };
+  renderStatus(merged);
   $("logTail").textContent = proc.log_tail || "";
   setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
