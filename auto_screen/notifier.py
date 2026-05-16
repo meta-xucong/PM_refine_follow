@@ -14,20 +14,20 @@ DECISION_TEXT = {
 }
 
 ACTION_TEXT = {
-    "push_strong_candidate": "重点候选，建议优先人工复核。",
-    "push_selective_candidate": "较强候选，适合筛选后再考虑跟单。",
-    "push_watchlist": "观察名单，建议小仓位或只作为后续观察对象。",
+    "push_strong_candidate": "A级候选，建议重点人工复核。",
+    "push_selective_candidate": "B级候选，适合筛选后再考虑跟单。",
+    "push_watchlist": "C级候选，建议小仓位观察或继续复核。",
     "store_only": "只记录，不主动跟单。",
     "skip": "跳过，不建议跟单。",
     "defer_recheck": "数据还不够稳定，建议稍后重新检查。",
 }
 
 GRADE_TEXT = {
-    "A": "重点关注",
-    "B": "优先复核",
-    "C": "观察名单",
-    "none": "暂不推荐",
-    None: "暂不推荐",
+    "A": "A级",
+    "B": "B级",
+    "C": "C级",
+    "none": "未评级",
+    None: "未评级",
 }
 
 FLAG_TEXT = {
@@ -153,7 +153,7 @@ def _fmt_days(value: Any) -> str:
 
 
 def _grade_text(grade: Any) -> str:
-    return GRADE_TEXT.get(str(grade), "其他分层" if grade else "暂不推荐")
+    return GRADE_TEXT.get(str(grade), "其他评级" if grade else "未评级")
 
 
 def _decision_text(value: Any) -> str:
@@ -237,7 +237,7 @@ def format_candidate_message(analysis: dict[str, Any]) -> tuple[str, str]:
         "",
         "## 核心概括",
         f"- 当前评分：{score}",
-        f"- 系统分层：{grade}",
+        f"- 系统评级：{grade}",
         f"- 系统建议：{recommendation}",
         f"- 累计收益：{total_pnl}",
         f"- 账号已运行：{age_days}",
@@ -395,7 +395,7 @@ def format_alert_batch(alerts: list[dict[str, Any]]) -> tuple[str, str]:
     title = f"账号筛选批量提醒：{count} 个候选｜最高 {highest:.2f} 分"
     lines = [
         "## 本批概览",
-        f"本批已凑满 {count} 个可关注账号，最高分 {highest:.2f} 分。建议先看分数、分层和提醒，再决定是否人工复核。",
+        f"本批已凑满 {count} 个可关注账号，最高分 {highest:.2f} 分。建议先看分数、评级和提醒，再决定是否人工复核。",
         "",
         f"## {count} 个地址",
     ]
@@ -417,7 +417,7 @@ def format_alert_batch(alerts: list[dict[str, Any]]) -> tuple[str, str]:
         lines.extend(
             [
                 f"{index}. {label}",
-                f"   分数：{_fmt_score(row.get('final_score'))}｜分层：{_row_grade_text(row)}",
+                f"   分数：{_fmt_score(row.get('final_score'))}｜评级：{_row_grade_text(row)}",
                 f"   地址：{row.get('address')}",
                 f"   建议：{recommendation}",
                 f"   概括：{summary}",

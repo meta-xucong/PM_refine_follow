@@ -393,7 +393,7 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertIn("## 10 个地址", message)
             for i in range(1, 11):
                 self.assertIn(f"0x{i:040x}", message)
-                self.assertIn(f"0x{i:040x} ｜ 分数：55.00 分｜评级：观察名单", message)
+                self.assertIn(f"0x{i:040x} ｜ 分数：55.00 分｜评级：C级", message)
             self.assertIn("只适合筛选后谨慎跟单", message)
             self.assertEqual({row["push_status"] for row in rows}, {"sent"})
             self.assertEqual(len({row["push_batch_id"] for row in rows}), 1)
@@ -779,7 +779,9 @@ class AutoScreenModuleTests(unittest.TestCase):
         }
         title, message = format_candidate_message(analysis)
         self.assertIn("Alpha", title)
+        self.assertIn("B级", title)
         self.assertIn("一句话结论", message)
+        self.assertIn("系统评级：B级", message)
         self.assertIn("系统建议", message)
         self.assertNotIn("final_score", message)
         self.assertNotIn("auto_action", message)
@@ -809,12 +811,14 @@ class AutoScreenModuleTests(unittest.TestCase):
         ]
         title, message = format_alert_batch(rows)
         self.assertIn("10 个", title)
-        self.assertIn("0x1111111111111111111111111111111111111111 ｜ 分数：55.00 分｜评级：观察名单", message)
+        self.assertIn("0x1111111111111111111111111111111111111111 ｜ 分数：55.00 分｜评级：C级", message)
         self.assertIn("Alpha", message)
+        self.assertIn("评级：C级", message)
         self.assertIn("只适合筛选后谨慎跟单", message)
         self.assertIn("覆盖多个题材", message)
         self.assertNotIn("selective_copying_only", message)
         self.assertNotIn("push_watchlist", message)
+        self.assertNotIn("评级：观察名单", message)
 
     def test_notifier_parses_serverchan_success(self):
         class FakeResponse:
