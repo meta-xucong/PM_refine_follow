@@ -415,6 +415,64 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual(stats["scanned"], 0)
             self.assertEqual(scan.call_args.kwargs["limit"], 123)
 
+    def test_run_once_skips_discovery_when_pending_candidates_exist(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = load_config(None)
+            cfg["data_dir"] = str(root / "data")
+            cfg["state_db"] = str(root / "state.sqlite3")
+            cfg["excel_path"] = str(root / "candidates.xlsx")
+            cfg["progress_path"] = str(root / "progress.json")
+            cfg["scan"]["process_batch_size"] = 1
+            cfg["scan"]["process_all_candidates_per_cycle"] = True
+            cfg["scan"]["skip_discovery_when_pending"] = True
+            candidate = AccountCandidate(
+                address="0x1111111111111111111111111111111111111111",
+                display_name="ResumeMe",
+                discovery_score=99,
+            )
+            store = StateStore(root / "state.sqlite3")
+            store.upsert_candidates([candidate], "pending")
+            store.close()
+            reporter = ProgressReporter(root / "progress.json", emit_log=False)
+
+            def fake_score(address, *_args):
+                return ScoringResult(
+                    address=address,
+                    final_score=10,
+                    decision="not_recommended",
+                    alert_grade="none",
+                    auto_action="store_only",
+                    analysis_path=str(root / "analysis.json"),
+                    payload={
+                        "account_address": address,
+                        "account_label": address,
+                        "final_score": 10,
+                        "decision": "not_recommended",
+                        "alert_grade": "none",
+                        "auto_action": "store_only",
+                    },
+                )
+
+            with (
+                patch.object(scheduler, "scan_candidates") as scan,
+                patch.object(scheduler, "prefilter_account", return_value=PrefilterResult(candidate.address, True, "passed")),
+                patch.object(scheduler, "collect_account_files", return_value=(root / "trades.csv", root / "summary.json")),
+                patch.object(scheduler, "score_account", side_effect=fake_score),
+            ):
+                stats = scheduler.run_once(cfg, dry_run_alerts=True, reporter=reporter)
+
+            scan.assert_not_called()
+            self.assertEqual(stats["scanned"], 0)
+            self.assertEqual(stats["processed"], 1)
+            progress = json.loads((root / "progress.json").read_text(encoding="utf-8"))
+            scan_events = [event for event in progress["history"] if event["phase"] == "leaderboard_scanned"]
+            self.assertTrue(scan_events[-1]["leaderboard_scan"]["discovery_skipped"])
+            store = StateStore(root / "state.sqlite3")
+            row = store.conn.execute("SELECT status FROM candidates WHERE address=?", (candidate.address,)).fetchone()
+            store.close()
+            self.assertEqual(row["status"], "store_only")
+
     def test_run_once_does_not_queue_serverchan_alert_at_or_below_threshold(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -819,6 +877,29 @@ class AutoScreenModuleTests(unittest.TestCase):
         self.assertNotIn("selective_copying_only", message)
         self.assertNotIn("push_watchlist", message)
         self.assertNotIn("评级：观察名单", message)
+
+    def test_notifier_normalizes_legacy_grade_words_in_batch(self):
+        rows = [
+            {
+                "address": "0x1111111111111111111111111111111111111111",
+                "final_score": 56,
+                "alert_grade": "C",
+                "title": "账号筛选结果：观察名单｜56.00 分｜Alpha",
+                "message": (
+                    "## 核心概括\n"
+                    "- 当前评分：56.00 分\n"
+                    "- 系统分层：观察名单\n"
+                    "- 系统建议：观察名单，建议小仓位或只作为后续观察对象。\n"
+                    "- 累计收益：1,000.00 美元\n"
+                    "- 账号已运行：400 天"
+                ),
+            }
+        ]
+        _title, message = format_alert_batch(rows)
+        self.assertIn("评级：C级", message)
+        self.assertIn("建议：C级，建议小仓位或只作为后续观察对象。", message)
+        self.assertNotIn("系统分层", message)
+        self.assertNotIn("观察名单", message)
 
     def test_notifier_parses_serverchan_success(self):
         class FakeResponse:

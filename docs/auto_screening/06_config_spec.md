@@ -116,6 +116,7 @@ auto_screen_config.json
 - `candidate_sources.holders.markets_limit`: `10`，每轮最多对 10 个热门市场拉 holders。
 - `process_batch_size`: `25`，仅表示单次内部处理批次大小。
 - `process_all_candidates_per_cycle`: `true`，常驻模式会处理完整个 pending 候选池后才进入下一轮。
+- `skip_discovery_when_pending`: `true`，服务重启或新 cycle 开始时如果本地仍有待分析账号，会先接着处理现有队列，不重新从榜单发现候选；当 pending 队列清空后才开启下一轮候选发现。
 - `analysis_window_days`: `30`
 - `max_requests_per_second`: `2`
 - `activity_offset_probe_after_rows`: `1000`，单个 activity 时间片先拉到约 1000 行后，用 offset=3000 的轻量探针判断是否会触发官方历史 offset 上限；命中后直接拆片或早停高频账号，避免反复拉到 offset=3500 才失败。

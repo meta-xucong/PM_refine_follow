@@ -45,7 +45,7 @@ FLAG_TEXT = {
     "capital_scale_too_small_45": "资金规模过小，分数已封顶",
     "copy_capacity_low": "可跟单容量偏低",
     "copy_capacity_low_48": "可跟单容量偏低，分数已封顶",
-    "copy_capacity_watchlist_58": "可跟单容量一般，只能作为观察名单",
+    "copy_capacity_watchlist_58": "可跟单容量一般，建议按 C 级候选观察",
     "data_quality_low": "资料完整程度偏低",
     "dormant_recent_spike": "曾经较长时间不活跃，最近突然放量",
     "dormant_recent_spike_50": "长期沉寂后近期突然放量，分数已封顶",
@@ -88,7 +88,7 @@ FLAG_TEXT = {
 
 AGENT_VERDICT_TEXT = {
     "copyable": "可以进一步考虑跟单",
-    "watchlist": "建议加入观察名单",
+    "watchlist": "建议作为 C 级候选继续观察",
     "avoid": "建议回避",
     "insufficient_data": "资料不足，暂不判断",
 }
@@ -166,6 +166,21 @@ def _action_text(value: Any) -> str:
     if not value:
         return "建议先人工复核后再决定。"
     return ACTION_TEXT.get(str(value), "建议先人工复核后再决定。")
+
+
+def _normalize_grade_words(value: str) -> str:
+    replacements = {
+        "重点关注": "A级",
+        "优先复核": "B级",
+        "观察名单": "C级",
+        "暂不推荐": "未评级",
+        "重点候选": "A级候选",
+        "较强候选": "B级候选",
+    }
+    normalized = value
+    for old, new in replacements.items():
+        normalized = normalized.replace(old, new)
+    return normalized
 
 
 def _recommendation_text(analysis: dict[str, Any]) -> str:
@@ -341,7 +356,7 @@ def _row_grade_text(row: dict[str, Any]) -> str:
 def _row_recommendation(message: str) -> str:
     new_value = _extract_first_value(message, ["- 系统建议：", "系统建议："])
     if new_value:
-        return new_value
+        return _normalize_grade_words(new_value)
     old_action = _extract_first_value(message, ["自动动作:"])
     old_decision = _extract_first_value(message, ["结论:"])
     if old_action:

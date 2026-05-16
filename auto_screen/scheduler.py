@@ -314,7 +314,12 @@ def run_once(
             cycle_id=cycle_id,
             stats=stats,
         )
-        reporter.update("scanning_leaderboard", "正在按排行榜分片发现候选账号", cycle_id=cycle_id, stats=stats)
+        pending_before_discovery = store.pending_candidate_count()
+        skip_discovery = (
+            limit_candidates is None
+            and bool(scan_cfg.get("skip_discovery_when_pending", True))
+            and pending_before_discovery > 0
+        )
         leaderboard_caps: list[dict[str, Any]] = []
         latest_leaderboard_info: dict[str, Any] = {}
 
@@ -356,48 +361,73 @@ def run_once(
                 **progress_fields,
             )
 
-        candidates = scan_candidates(config, client, limit=discovery_limit, progress_callback=report_leaderboard_progress)
-        stats["scanned"] = len(candidates)
-        api_cap_ranks = [
-            int(item["api_cap_rank"])
-            for item in leaderboard_caps
-            if item.get("api_cap_rank") is not None
-        ]
-        leaderboard_scan_summary = {
-            "requested_rank_cap": int((config.get("scan") or {}).get("max_rank", 100000)),
-            "requested_candidate_limit": discovery_limit,
-            "api_cap_detected": bool(api_cap_ranks),
-            "api_visible_cap_rank": max(api_cap_ranks) if api_cap_ranks else None,
-            "api_cap_shards": leaderboard_caps,
-            "unique_candidates": len(candidates),
-            "latest": dict(latest_leaderboard_info),
-        }
-        reporter.update(
-            "leaderboard_scanned",
-            f"发现 {len(candidates)} 个候选账号",
-            cycle_id=cycle_id,
-            scanned=len(candidates),
-            leaderboard_scan=leaderboard_scan_summary,
-            stats=stats,
-        )
-        reporter.update(
-            "saving_candidates",
-            f"正在写入 {len(candidates)} 个候选账号到本地状态库",
-            cycle_id=cycle_id,
-            scanned=len(candidates),
-            stats=stats,
-        )
-        candidate_write_summary = store.upsert_candidates(candidates, "pending")
-        stats["refresh_score"] = int(candidate_write_summary.get("refresh_score") or 0)
-        if stats["refresh_score"]:
+        if skip_discovery:
+            candidates = []
+            leaderboard_scan_summary = {
+                "requested_rank_cap": int((config.get("scan") or {}).get("max_rank", 100000)),
+                "requested_candidate_limit": discovery_limit,
+                "discovery_skipped": True,
+                "skip_reason": "pending_candidates_exist",
+                "pending_before_discovery": pending_before_discovery,
+                "api_cap_detected": False,
+                "api_visible_cap_rank": None,
+                "api_cap_shards": [],
+                "unique_candidates": 0,
+                "latest": {},
+            }
             reporter.update(
-                "saving_candidates",
-                f"发现 {stats['refresh_score']} 个曾出现地址，已标记为“刷新分数”",
+                "leaderboard_scanned",
+                f"检测到 {pending_before_discovery} 个待分析账号，跳过候选发现并继续处理现有记录",
                 cycle_id=cycle_id,
-                scanned=len(candidates),
-                candidate_write_summary=candidate_write_summary,
+                scanned=0,
+                leaderboard_scan=leaderboard_scan_summary,
                 stats=stats,
             )
+        else:
+            reporter.update("scanning_leaderboard", "正在按排行榜分片发现候选账号", cycle_id=cycle_id, stats=stats)
+            candidates = scan_candidates(config, client, limit=discovery_limit, progress_callback=report_leaderboard_progress)
+            stats["scanned"] = len(candidates)
+            api_cap_ranks = [
+                int(item["api_cap_rank"])
+                for item in leaderboard_caps
+                if item.get("api_cap_rank") is not None
+            ]
+            leaderboard_scan_summary = {
+                "requested_rank_cap": int((config.get("scan") or {}).get("max_rank", 100000)),
+                "requested_candidate_limit": discovery_limit,
+                "discovery_skipped": False,
+                "api_cap_detected": bool(api_cap_ranks),
+                "api_visible_cap_rank": max(api_cap_ranks) if api_cap_ranks else None,
+                "api_cap_shards": leaderboard_caps,
+                "unique_candidates": len(candidates),
+                "latest": dict(latest_leaderboard_info),
+            }
+            reporter.update(
+                "leaderboard_scanned",
+                f"发现 {len(candidates)} 个候选账号",
+                cycle_id=cycle_id,
+                scanned=len(candidates),
+                leaderboard_scan=leaderboard_scan_summary,
+                stats=stats,
+            )
+            reporter.update(
+                "saving_candidates",
+                f"正在写入 {len(candidates)} 个候选账号到本地状态库",
+                cycle_id=cycle_id,
+                scanned=len(candidates),
+                stats=stats,
+            )
+            candidate_write_summary = store.upsert_candidates(candidates, "pending")
+            stats["refresh_score"] = int(candidate_write_summary.get("refresh_score") or 0)
+            if stats["refresh_score"]:
+                reporter.update(
+                    "saving_candidates",
+                    f"发现 {stats['refresh_score']} 个曾出现地址，已标记为“刷新分数”",
+                    cycle_id=cycle_id,
+                    scanned=len(candidates),
+                    candidate_write_summary=candidate_write_summary,
+                    stats=stats,
+                )
 
         batch_size = max(1, int(scan_cfg.get("process_batch_size", 25)))
         process_all = bool(scan_cfg.get("process_all_candidates_per_cycle", False)) and process_limit is None

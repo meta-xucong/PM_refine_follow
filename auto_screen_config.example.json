@@ -11,6 +11,7 @@
     "failure_sleep_seconds": 60,
     "process_batch_size": 25,
     "process_all_candidates_per_cycle": true,
+    "skip_discovery_when_pending": true,
     "leaderboard_progress_pages": 20,
     "leaderboard_no_new_pages_stop": 40,
     "leaderboard_api_cap_stop_enabled": true

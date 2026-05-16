@@ -20,6 +20,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "failure_sleep_seconds": 60,
         "process_batch_size": 25,
         "process_all_candidates_per_cycle": True,
+        "skip_discovery_when_pending": True,
         "leaderboard_progress_pages": 20,
         "leaderboard_no_new_pages_stop": 40,
         "leaderboard_api_cap_stop_enabled": True,
