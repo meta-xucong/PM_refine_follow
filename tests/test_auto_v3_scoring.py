@@ -286,6 +286,35 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertEqual(result["auto_action"], "skip")
         self.assertIn("severe_risk_gate", result["score_flags"])
 
+    def test_material_dual_side_ratio_is_not_pushable(self):
+        metrics = base_metrics()
+        metrics["dual_side_buy_usdc_ratio"] = 0.26
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 50)
+        self.assertEqual(result["alert_grade"], "C")
+        self.assertIn("dual_side_material_50", result["score_flags"])
+        self.assertIn("high_dual_side", result["score_flags"])
+
+    def test_high_dual_side_ratio_is_capped_below_alert_grade(self):
+        metrics = base_metrics()
+        metrics["dual_side_buy_usdc_ratio"] = 0.35
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 45)
+        self.assertEqual(result["alert_grade"], "none")
+        self.assertIn("dual_side_high_45", result["score_flags"])
+        self.assertIn("high_dual_side", result["score_flags"])
+
+    def test_severe_dual_side_ratio_is_skipped(self):
+        metrics = base_metrics()
+        metrics["dual_side_buy_usdc_ratio"] = 0.50
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 39)
+        self.assertEqual(result["decision"], "not_recommended")
+        self.assertEqual(result["alert_grade"], "none")
+        self.assertEqual(result["auto_action"], "skip")
+        self.assertIn("dual_side_severe_39", result["score_flags"])
+        self.assertIn("severe_risk_gate", result["score_flags"])
+
     def test_alert_grade_is_capped_to_c_when_data_quality_is_low(self):
         metrics = base_metrics()
         summary = good_api_summary()

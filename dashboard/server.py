@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import os
 import signal
@@ -264,16 +266,25 @@ def _alert_label(row: dict[str, Any]) -> str:
     return str(row.get("address") or "")
 
 
-def pushed_accounts_summary(db_path: Path) -> list[dict[str, Any]]:
-    rows = sqlite_rows(
+def compact_text(value: Any, limit: int = 500) -> str:
+    text = " ".join(str(value or "").replace("\r", "\n").split())
+    return text[:limit]
+
+
+def pushed_alert_rows(db_path: Path) -> list[dict[str, Any]]:
+    return sqlite_rows(
         db_path,
         """
-        SELECT id, address, final_score, alert_grade, title, created_at, pushed_at, push_batch_id
+        SELECT id, address, final_score, alert_grade, title, message, created_at, pushed_at, push_batch_id
         FROM alerts
         WHERE push_status='sent'
         ORDER BY COALESCE(pushed_at, created_at) DESC, id DESC
         """,
     )
+
+
+def pushed_accounts_summary(db_path: Path) -> list[dict[str, Any]]:
+    rows = pushed_alert_rows(db_path)
     grouped: dict[str, dict[str, Any]] = {}
     ordered_addresses: list[str] = []
     for row in rows:
@@ -313,6 +324,62 @@ def pushed_accounts_summary(db_path: Path) -> list[dict[str, Any]]:
         item["hidden_rounds"] = rounds[3:]
         result.append(item)
     return result
+
+
+def pushed_accounts_csv(auto_cfg: dict[str, Any]) -> str:
+    db_path = resolve_auto_path(auto_cfg, "state_db", "auto_screen_data/state.sqlite3")
+    rows = pushed_alert_rows(db_path)
+    out = io.StringIO()
+    writer = csv.writer(out, lineterminator="\n")
+    writer.writerow(["钱包地址", "昵称", "分数", "评级", "标题", "推送批次", "入库时间", "推送时间", "描述"])
+    for row in rows:
+        writer.writerow(
+            [
+                row.get("address") or "",
+                _alert_label(row),
+                row.get("final_score") or "",
+                row.get("alert_grade") or "",
+                row.get("title") or "",
+                row.get("push_batch_id") or "",
+                row.get("created_at") or "",
+                row.get("pushed_at") or row.get("created_at") or "",
+                compact_text(row.get("message")),
+            ]
+        )
+    return out.getvalue()
+
+
+def scoring_history_for_addresses(db_path: Path, addresses: list[str], per_address: int = 5) -> dict[str, list[dict[str, Any]]]:
+    normalized = [address.lower() for address in addresses if address]
+    if not normalized or not db_path.exists():
+        return {}
+    placeholders = ",".join("?" for _ in normalized)
+    rows = sqlite_rows(
+        db_path,
+        f"""
+        SELECT id, address, final_score, alert_grade, decision, auto_action, created_at
+        FROM runs
+        WHERE status='scored'
+          AND lower(address) IN ({placeholders})
+        ORDER BY created_at DESC, id DESC
+        """,
+        tuple(normalized),
+    )
+    grouped: dict[str, list[dict[str, Any]]] = {address: [] for address in normalized}
+    for row in rows:
+        address = str(row.get("address") or "").lower()
+        if len(grouped.setdefault(address, [])) >= per_address:
+            continue
+        grouped[address].append(
+            {
+                "score": row.get("final_score"),
+                "grade": row.get("alert_grade"),
+                "decision": row.get("decision"),
+                "action": row.get("auto_action"),
+                "created_at": row.get("created_at"),
+            }
+        )
+    return grouped
 
 
 def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
@@ -525,7 +592,13 @@ def list_accounts(auto_cfg: dict[str, Any], limit: int = 60) -> list[dict[str, A
     if not accounts_dir.exists():
         return []
     rows = []
-    for account_dir in sorted(accounts_dir.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+    account_dirs = [p for p in sorted(accounts_dir.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True) if p.is_dir()]
+    account_dirs = account_dirs[:limit]
+    history = scoring_history_for_addresses(
+        resolve_auto_path(auto_cfg, "state_db", "auto_screen_data/state.sqlite3"),
+        [p.name for p in account_dirs],
+    )
+    for account_dir in account_dirs:
         if not account_dir.is_dir():
             continue
         analysis = read_json(account_dir / "account_analysis.json", {}) or {}
@@ -549,6 +622,7 @@ def list_accounts(auto_cfg: dict[str, Any], limit: int = 60) -> list[dict[str, A
                 "analysis_path": str(account_dir / "account_analysis.json"),
                 "agent_review_path": str(account_dir / "agent_review.json") if (account_dir / "agent_review.json").exists() else "",
                 "report_zh": str(account_dir / "report_zh.md") if (account_dir / "report_zh.md").exists() else "",
+                "score_history": history.get(account_dir.name.lower(), []),
             }
         )
         if len(rows) >= limit:
@@ -620,6 +694,15 @@ class DashboardHandler(SimpleHTTPRequestHandler):
                     "excel": excel_sidecar_summary(auto_cfg),
                 }
             )
+            return
+        if path == "/api/export/pushed.csv":
+            raw = ("\ufeff" + pushed_accounts_csv(auto_cfg)).encode("utf-8")
+            self.send_response(int(HTTPStatus.OK))
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="polymarket_pushed_scores.csv"')
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
             return
         if path == "/api/accounts":
             limit = int((query.get("limit") or ["60"])[0])

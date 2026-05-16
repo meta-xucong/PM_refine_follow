@@ -366,6 +366,13 @@ button:hover { border-color: var(--accent); }
   justify-content: space-between;
   gap: 12px;
 }
+.panel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
 .table-wrap {
   margin-top: 10px;
@@ -404,7 +411,7 @@ th:nth-child(2) {
   white-space: nowrap;
 }
 
-#candidates table { min-width: 1240px; }
+#candidates table { min-width: 1360px; }
 #candidates th:first-child,
 #candidates td:first-child {
   min-width: 390px;
@@ -456,6 +463,9 @@ th:nth-child(2) {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+.score-stack.compact {
+  max-width: 240px;
 }
 .score-pill {
   display: inline-flex;

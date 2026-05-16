@@ -276,9 +276,23 @@ function renderAccounts(rows) {
       <td>${html(r.data_quality_score)}</td>
       <td>${html(r.pnl_quality_score)}</td>
       <td>${html(r.copy_capacity_score)}</td>
+      <td>${renderScoreHistory(r.score_history || [])}</td>
       <td>${html(r.updated_at)}</td>
     </tr>
-  `).join("") || `<tr><td colspan="9">暂无候选</td></tr>`;
+  `).join("") || `<tr><td colspan="10">暂无候选</td></tr>`;
+}
+
+function renderScoreHistory(rounds) {
+  if (!rounds.length) return "-";
+  return `
+    <div class="score-stack compact">
+      ${rounds.slice(0, 4).map((round, index) => `
+        <span class="score-pill" title="${html(round.created_at)}｜${html(round.action)}">
+          ${index === 0 ? "最新" : `旧${index}`}：${html(round.score)} ${html(round.grade)}
+        </span>
+      `).join("")}
+    </div>
+  `;
 }
 
 function renderAlerts(rows) {
@@ -461,6 +475,10 @@ async function saveServerchanKey() {
   toast("SendKey 已保存");
 }
 
+function downloadPushedCsv() {
+  window.location.href = "/api/export/pushed.csv";
+}
+
 async function refreshProcessOnly() {
   const proc = await api("/api/process");
   setBadge(proc.process || {});
@@ -519,6 +537,7 @@ $("stopBtn").addEventListener("click", () => stopRun().catch((e) => toast(e.mess
 $("saveConfigBtn").addEventListener("click", () => saveConfig().catch((e) => toast(e.message)));
 $("refreshSendkeyBtn").addEventListener("click", () => loadServerchanKeyStatus().catch((e) => toast(e.message)));
 $("saveSendkeyBtn").addEventListener("click", () => saveServerchanKey().catch((e) => toast(e.message)));
+$("downloadPushedCsvBtn").addEventListener("click", downloadPushedCsv);
 document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-copy]");
   if (!button) return;

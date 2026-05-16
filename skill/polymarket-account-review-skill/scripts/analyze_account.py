@@ -1733,7 +1733,7 @@ def compute_scores_auto_v3(
     avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
 
     copyability = 30.0
-    copyability -= dual_side * 20
+    copyability -= dual_side * 34
     copyability -= noncopy_buy * 24
     copyability -= excl_conc * 26
     copyability -= nested_conc * 10
@@ -1742,8 +1742,10 @@ def compute_scores_auto_v3(
         copyability -= (noncopy_sell - 0.35) * 8
     if noncopy_token > 0.30:
         copyability -= (noncopy_token - 0.30) * 6
+    if dual_side_1h > 0.12:
+        copyability -= 2
     if dual_side_1h > 0.20:
-        copyability -= 3
+        copyability -= 4
     copyability = clamp(copyability, 0.0, 30.0)
 
     deployability = min(8.0, deployable * 1.25)
@@ -1856,8 +1858,8 @@ def compute_scores_auto_v3(
         or (weighted_risk > 0.75 and (excl_conc > 0.35 or nested_conc > 0.50))
         or noncopy_buy > 0.50
         or noncopy_sell > 0.82
-        or dual_side > 0.62
-        or dual_side_1h > 0.38
+        or dual_side > 0.45
+        or dual_side_1h > 0.25
     )
     caution_risk_gate = (
         excl_conc > 0.45
@@ -1865,8 +1867,8 @@ def compute_scores_auto_v3(
         or (weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35))
         or noncopy_buy > 0.30
         or noncopy_sell > 0.70
-        or dual_side > 0.45
-        or dual_side_1h > 0.25
+        or dual_side > 0.20
+        or dual_side_1h > 0.12
     )
 
     quality_caps: list[tuple[str, float]] = []
@@ -1943,6 +1945,12 @@ def compute_scores_auto_v3(
         add_quality_cap("capital_scale_small_48", 48.0)
     if summary.get("closed_positions_incomplete") or summary.get("closed_positions_recent_incomplete"):
         add_quality_cap("closed_positions_incomplete_58", 58.0)
+    if dual_side > 0.45 or dual_side_1h > 0.25:
+        add_quality_cap("dual_side_severe_39", 39.0)
+    elif dual_side > 0.30 or dual_side_1h > 0.20:
+        add_quality_cap("dual_side_high_45", 45.0)
+    elif dual_side > 0.20 or dual_side_1h > 0.12:
+        add_quality_cap("dual_side_material_50", 50.0)
 
     anchor_offset = 0.0
     anchor_target = 60.0
@@ -2028,7 +2036,7 @@ def compute_scores_auto_v3(
         score_flags.append("caution_risk_gate")
     if severe_risk_gate:
         score_flags.append("severe_risk_gate")
-    if dual_side > 0.30:
+    if dual_side > 0.20 or dual_side_1h > 0.12:
         score_flags.append("high_dual_side")
     if noncopy_buy > 0.25:
         score_flags.append("high_noncopyable_fast")

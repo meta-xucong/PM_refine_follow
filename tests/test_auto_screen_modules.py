@@ -317,6 +317,30 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual(rows[0]["push_status"], "archived")
             self.assertEqual(rows[1]["push_status"], "pending")
 
+    def test_state_store_starts_fresh_candidate_round_without_deleting_history(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = StateStore(Path(tmp) / "state.sqlite3")
+            candidate = AccountCandidate(address="0x1111111111111111111111111111111111111111", discovery_score=10)
+            store.upsert_candidate(candidate)
+            store.record_account_error(candidate.address, "account_failed", "old failure")
+            pending_alert = store.record_alert(candidate.address, 55, "B", "old", "old", push_status="pending")
+            sent_alert = store.record_alert(candidate.address, 60, "B", "sent", "sent", push_status="pending")
+            store.mark_alert_push_result([sent_alert], "batch-1", {"sent": True})
+
+            summary = store.start_fresh_candidate_round()
+            rows = [dict(row) for row in store.conn.execute("SELECT status FROM candidates").fetchall()]
+            run_count = store.conn.execute("SELECT COUNT(*) AS n FROM runs").fetchone()["n"]
+            alert_rows = [dict(row) for row in store.conn.execute("SELECT id, push_status FROM alerts ORDER BY id").fetchall()]
+            store.close()
+
+            self.assertEqual(summary["candidates_marked_previous_round"], 1)
+            self.assertEqual(summary["pending_alerts_superseded"], 1)
+            self.assertEqual(rows[0]["status"], "previous_round")
+            self.assertEqual(run_count, 1)
+            self.assertEqual(alert_rows[0]["id"], pending_alert)
+            self.assertEqual(alert_rows[0]["push_status"], "superseded")
+            self.assertEqual(alert_rows[1]["push_status"], "sent")
+
     def _run_alert_batch_scenario(self, root: Path, candidate_count: int):
         cfg = load_config(None)
         cfg["data_dir"] = str(root / "data")

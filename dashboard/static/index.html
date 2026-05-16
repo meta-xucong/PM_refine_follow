@@ -138,7 +138,7 @@
             <table>
               <thead>
                 <tr>
-                  <th>账号</th><th>分数</th><th>等级</th><th>动作</th><th>Agent</th><th>数据</th><th>PnL</th><th>容量</th><th>更新时间</th>
+                  <th>账号</th><th>分数</th><th>等级</th><th>动作</th><th>Agent</th><th>数据</th><th>PnL</th><th>容量</th><th>历史分数</th><th>更新时间</th>
                 </tr>
               </thead>
               <tbody id="accountsBody"></tbody>
@@ -164,7 +164,10 @@
         <section class="panel">
           <div class="panel-head">
             <h2>已推送账号</h2>
-            <span id="pushedHistoryHint" class="muted">-</span>
+            <div class="panel-actions">
+              <span id="pushedHistoryHint" class="muted">-</span>
+              <button id="downloadPushedCsvBtn" type="button">下载评分CSV</button>
+            </div>
           </div>
           <div class="table-wrap tall">
             <table class="pushed-table">

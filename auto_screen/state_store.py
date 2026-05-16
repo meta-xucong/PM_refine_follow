@@ -12,6 +12,7 @@ from .models import AccountCandidate, PrefilterResult, ScoringResult
 PENDING_CANDIDATE_STATUSES = ("pending", "refresh_score")
 REFRESH_SCORE_STATUS = "refresh_score"
 REFRESH_SCORE_PROMPT = "刷新分数"
+PREVIOUS_ROUND_STATUS = "previous_round"
 
 
 def utc_now() -> str:
@@ -119,6 +120,41 @@ class StateStore:
             (utc_now(), status, note, cycle_id),
         )
         self.conn.commit()
+
+    def start_fresh_candidate_round(self, supersede_pending_alerts: bool = True) -> dict[str, int]:
+        now = utc_now()
+        cur = self.conn.execute(
+            """
+            UPDATE candidates
+            SET status=?, updated_at=?
+            WHERE status<>?
+            """,
+            (PREVIOUS_ROUND_STATUS, now, PREVIOUS_ROUND_STATUS),
+        )
+        candidates_marked = int(cur.rowcount if cur.rowcount is not None else 0)
+        alerts_marked = 0
+        if supersede_pending_alerts:
+            payload = json.dumps(
+                {
+                    "sent": False,
+                    "reason": "superseded_by_new_scoring_round",
+                    "note": "保留历史记录，但不再把旧模型的未发送告警混入新一轮推送。",
+                },
+                ensure_ascii=False,
+            )
+            cur = self.conn.execute(
+                """
+                UPDATE alerts
+                SET push_status='superseded',
+                    push_batch_id='superseded_by_new_scoring_round',
+                    push_result=?
+                WHERE push_status='pending'
+                """,
+                (payload,),
+            )
+            alerts_marked = int(cur.rowcount if cur.rowcount is not None else 0)
+        self.conn.commit()
+        return {"candidates_marked_previous_round": candidates_marked, "pending_alerts_superseded": alerts_marked}
 
     def upsert_candidate(self, candidate: AccountCandidate, status: str = "pending") -> dict[str, int]:
         return self.upsert_candidates([candidate], status=status)

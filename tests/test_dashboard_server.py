@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from auto_screen.models import ScoringResult
 from auto_screen.state_store import StateStore
 from dashboard import server as dashboard_server
 
@@ -106,6 +107,30 @@ class DashboardServerTests(unittest.TestCase):
             self.assertEqual([r["score"] for r in pushed[0]["rounds"]], [62, 55])
             self.assertEqual([r["round_number"] for r in pushed[0]["rounds"]], [2, 1])
 
+    def test_pushed_accounts_csv_exports_sent_alert_details(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db_path = root / "state.sqlite3"
+            store = StateStore(db_path)
+            alert_id = store.record_alert(
+                "0x1111111111111111111111111111111111111111",
+                62,
+                "B",
+                "账号筛选结果：B级｜62.00 分｜Alpha",
+                "## 一句话结论\n这个账号当前评分为 62 分。",
+                push_status="pending",
+            )
+            store.mark_alert_push_result([alert_id], "batch-1", {"sent": True})
+            store.close()
+
+            with patch.object(dashboard_server, "ROOT", root):
+                csv_text = dashboard_server.pushed_accounts_csv({"state_db": "state.sqlite3"})
+
+            self.assertIn("钱包地址,昵称,分数,评级", csv_text)
+            self.assertIn("0x1111111111111111111111111111111111111111", csv_text)
+            self.assertIn("Alpha", csv_text)
+            self.assertIn("batch-1", csv_text)
+
     def test_serverchan_key_info_masks_and_saves_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             key_path = Path(tmp) / "sendkey.txt"
@@ -159,14 +184,39 @@ class DashboardServerTests(unittest.TestCase):
                 json.dumps({"agent_verdict": "watchlist", "confidence": 0.82}),
                 encoding="utf-8",
             )
+            store = StateStore(root / "state.sqlite3")
+            store.record_scoring(
+                ScoringResult(
+                    address="0xabc",
+                    final_score=42,
+                    decision="old",
+                    alert_grade="none",
+                    auto_action="store_only",
+                    analysis_path=str(account_dir / "old.json"),
+                    payload={"account_address": "0xabc"},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address="0xabc",
+                    final_score=48.5,
+                    decision="watch",
+                    alert_grade="B",
+                    auto_action="notify",
+                    analysis_path=str(account_dir / "account_analysis.json"),
+                    payload={"account_address": "0xabc"},
+                )
+            )
+            store.close()
 
             with patch.object(dashboard_server, "ROOT", root):
-                accounts = dashboard_server.list_accounts({"data_dir": "auto_screen_data"}, limit=10)
+                accounts = dashboard_server.list_accounts({"data_dir": "auto_screen_data", "state_db": "state.sqlite3"}, limit=10)
 
             self.assertEqual(len(accounts), 1)
             self.assertEqual(accounts[0]["label"], "Alpha")
             self.assertEqual(accounts[0]["agent_verdict"], "watchlist")
             self.assertEqual(accounts[0]["agent_confidence"], 0.82)
+            self.assertEqual([item["score"] for item in accounts[0]["score_history"]], [48.5, 42])
 
     def test_progress_summary_reads_progress_file(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

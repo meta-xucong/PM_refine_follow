@@ -22,6 +22,13 @@ def parse_args() -> argparse.Namespace:
     run = sub.add_parser("run", help="Run forever")
     run.add_argument("--dry-run-alerts", action="store_true", help="Do not send ServerChan")
 
+    reset = sub.add_parser("start-fresh-round", help="Preserve history but reset the current candidate queue")
+    reset.add_argument(
+        "--keep-pending-alerts",
+        action="store_true",
+        help="Do not mark old pending ServerChan alerts as superseded",
+    )
+
     sub.add_parser("status", help="Print state DB status")
     return parser.parse_args()
 
@@ -33,6 +40,19 @@ def main() -> None:
         store = StateStore(resolve_path(config, "state_db"))
         try:
             print(json.dumps(store.status(), ensure_ascii=False, indent=2))
+        finally:
+            store.close()
+        return
+    if args.command == "start-fresh-round":
+        store = StateStore(resolve_path(config, "state_db"))
+        try:
+            print(
+                json.dumps(
+                    store.start_fresh_candidate_round(supersede_pending_alerts=not args.keep_pending_alerts),
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
         finally:
             store.close()
         return

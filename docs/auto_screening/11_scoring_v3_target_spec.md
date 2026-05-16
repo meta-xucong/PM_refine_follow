@@ -161,7 +161,7 @@ raw_score_v3 = clamp(apply_caps(raw_score_v3_before_cap), 0, 100)
 
 ```text
 copyability = 30
-- dual_side_buy_usdc_ratio * 20
+- dual_side_buy_usdc_ratio * 34
 - noncopyable_token_fast_buy_ratio * 24
 - exclusive_concurrent_leg_ratio * 26
 - nested_concurrent_leg_ratio * 10
@@ -172,7 +172,8 @@ copyability = 30
 
 - `noncopyable_token_fast_sell_ratio > 0.35`: `(ratio - 0.35) * 8`
 - `noncopyable_token_fast_token_ratio > 0.30`: `(ratio - 0.30) * 6`
-- `dual_side_buy_usdc_ratio_1h > 0.20`: 额外 `3`
+- `dual_side_buy_usdc_ratio_1h > 0.12`: 额外 `2`
+- `dual_side_buy_usdc_ratio_1h > 0.20`: 额外 `4`
 
 范围：
 
@@ -597,6 +598,16 @@ ServerChan 推送按用户要求：只推 `final_score > 50` 的账号。
 | `none` | 其他 | 不推送 |
 
 严重风险或长期硬性剔除仍直接为 `none`，因为这类账号的最终分通常已被封顶或强制跳过。
+
+## 双边 yes/no 结构化交易硬门槛
+
+同一 `conditionId` 同时买入 Yes / No 的金额占比，直接反映账号是否在做结构化组合或套利型仓位管理。该行为对普通跟单很难复制，因此 Auto V3 将其作为硬约束，而不是普通提醒。
+
+- `dual_side_buy_usdc_ratio > 0.20` 或 `dual_side_buy_usdc_ratio_1h > 0.12`：标记 `high_dual_side`，最终分最高 `50`，不进入实际推送阈值。
+- `dual_side_buy_usdc_ratio > 0.30` 或 `dual_side_buy_usdc_ratio_1h > 0.20`：标记 `dual_side_high_45`，最终分最高 `45`，不评级。
+- `dual_side_buy_usdc_ratio > 0.45` 或 `dual_side_buy_usdc_ratio_1h > 0.25`：触发 `severe_risk_gate` 和 `dual_side_severe_39`，最高 `39`，`decision=not_recommended`，`auto_action=skip`。
+
+这组规则的目的，是避免 PnL、活跃度或资金容量把明显双边结构账号重新抬回 B/C 级候选。
 
 ## Auto Action
 
