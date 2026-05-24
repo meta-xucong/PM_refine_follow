@@ -13,6 +13,9 @@ from typing import Any
 
 FAST_WINDOW_SECONDS = 20 * 60
 HOUR_SECONDS = 60 * 60
+CONVERSION_WINDOW_SECONDS = 24 * 60 * 60
+NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT = 80
+NONCOPY_PENALTY_MIN_ACTIVE_DAYS = 8
 
 STOPWORDS = {
     "will", "the", "and", "for", "with", "from", "that", "this", "have", "has", "was", "are", "its",
@@ -177,6 +180,17 @@ def token_key(row: dict[str, Any]) -> str:
     return f"{row.get('conditionId','')}|{outcome_part}"
 
 
+def normalize_outcome_label(row: dict[str, Any]) -> str:
+    outcome = str(row.get("outcome") or "").strip().lower()
+    if outcome in {"yes", "no"}:
+        return outcome
+    idx = str(row.get("outcomeIndex") or "").strip().lower()
+    if idx in {"0", "1"}:
+        # Polymarket binary markets commonly encode YES/NO as 0/1.
+        return "yes" if idx == "0" else "no"
+    return outcome or idx
+
+
 def dual_side_metrics(rows: list[dict[str, Any]], total_buy_usdc: float) -> tuple[dict[str, float | None], set[str]]:
     buys = [r for r in rows if r["side"] == "BUY"]
     by_condition: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -212,6 +226,79 @@ def dual_side_metrics(rows: list[dict[str, Any]], total_buy_usdc: float) -> tupl
         "dual_side_buy_usdc_ratio": safe_ratio(dual_side_buy_usdc, total_buy_usdc),
         "dual_side_buy_usdc_ratio_1h": safe_ratio(dual_side_1h_buy_usdc, total_buy_usdc),
     }, dual_side_conditions
+
+
+def outcome_conversion_metrics(
+    rows: list[dict[str, Any]],
+    total_buy_usdc: float,
+) -> tuple[dict[str, float | int | None], set[str], dict[str, float]]:
+    buys = [r for r in rows if r["side"] == "BUY"]
+    by_condition: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for r in buys:
+        if r.get("conditionId"):
+            by_condition[r["conditionId"]].append(r)
+
+    conversion_conditions: set[str] = set()
+    conversion_event_buy: Counter[str] = Counter()
+    conversion_buy_usdc = 0.0
+    conversion_flip_count_total = 0
+    conversion_flip_rows: set[int] = set()
+
+    for cond, cond_rows in by_condition.items():
+        ordered = sorted(cond_rows, key=lambda x: x["timestamp"])
+        valid_rows = []
+        for row in ordered:
+            label = normalize_outcome_label(row)
+            if label:
+                valid_rows.append((row, label))
+        if len(valid_rows) < 2:
+            continue
+
+        outcome_buy_notional: Counter[str] = Counter()
+        for row, label in valid_rows:
+            outcome_buy_notional[label] += max(0.0, row["usdcSize"])
+        if len(outcome_buy_notional) < 2:
+            continue
+
+        labels = sorted(outcome_buy_notional.values(), reverse=True)
+        balance = safe_ratio(labels[-1], labels[0]) or 0.0
+        cond_total_buy = sum(labels)
+        cond_flip_count = 0
+        cond_flip_buy_usdc = 0.0
+        prev_label = None
+        prev_ts = None
+        for row, label in valid_rows:
+            ts = row["timestamp"]
+            if prev_label and label != prev_label and prev_ts is not None and ts - prev_ts <= CONVERSION_WINDOW_SECONDS:
+                cond_flip_count += 1
+                cond_flip_buy_usdc += max(0.0, row["usdcSize"])
+                conversion_flip_rows.add(row["row_id"])
+            prev_label = label
+            prev_ts = ts
+
+        meaningful_condition = cond_total_buy >= 100 and balance >= 0.2
+        if meaningful_condition and cond_flip_count >= 2:
+            conversion_conditions.add(cond)
+            conversion_buy_usdc += cond_flip_buy_usdc
+            conversion_flip_count_total += cond_flip_count
+            for row, _label in valid_rows:
+                conversion_event_buy[row["eventSlug"]] += max(0.0, row["usdcSize"])
+
+    all_events = {r["eventSlug"] for r in buys if r.get("eventSlug")}
+    return (
+        {
+            "outcome_conversion_condition_ratio": safe_ratio(len(conversion_conditions), max(1, len(by_condition))),
+            "outcome_conversion_buy_usdc_ratio": safe_ratio(conversion_buy_usdc, total_buy_usdc),
+            "outcome_conversion_flip_count": int(conversion_flip_count_total),
+            "outcome_conversion_event_ratio": safe_ratio(
+                len({k for k, v in conversion_event_buy.items() if v > 0}),
+                max(1, len(all_events)),
+            ),
+            "outcome_conversion_flip_row_ratio": safe_ratio(len(conversion_flip_rows), max(1, len(buys))),
+        },
+        conversion_conditions,
+        dict(conversion_event_buy),
+    )
 
 
 def collect_window_candidates(group_rows: list[dict[str, Any]], require_multi_condition: bool) -> list[dict[str, Any]]:
@@ -405,7 +492,16 @@ def classify_relation_type(event_rows: list[dict[str, Any]]) -> str:
     distinct_conditions = len({r["conditionId"] for r in event_rows if r["conditionId"]})
     return "independent" if distinct_conditions >= 2 else "unknown"
 
-def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: set[str], noncopy_rows: set[int], rebalance_candidates: list[dict[str, Any]], total_buy_usdc: float) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, float]]:
+def event_structure_metrics(
+    rows: list[dict[str, Any]],
+    dual_side_conditions: set[str],
+    conversion_conditions: set[str],
+    conversion_event_buy: dict[str, float],
+    noncopy_rows: set[int],
+    token_fast_count: int,
+    rebalance_candidates: list[dict[str, Any]],
+    total_buy_usdc: float,
+) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, float]]:
     by_event: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for r in rows:
         by_event[r["eventSlug"]].append(r)
@@ -477,6 +573,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
         relation_total_seconds[relation_type] += total_event_span
 
         event_dual_side = any(r["conditionId"] in dual_side_conditions for r in event_rows_sorted)
+        event_conversion = any(r["conditionId"] in conversion_conditions for r in event_rows_sorted)
+        event_conversion_buy_ratio = safe_ratio(conversion_event_buy.get(event_slug, 0.0), event_buy_usdc) or 0.0
         event_noncopyable_buy = sum(r["usdcSize"] for r in buy_rows if r["row_id"] in noncopy_rows)
         event_noncopyable_buy_ratio = safe_ratio(event_noncopyable_buy, event_buy_usdc) or 0.0
 
@@ -498,9 +596,32 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
 
         rebalance_hits = rebalance_by_event[event_slug]
         material_concurrent = concurrent_buy_usdc >= material_overlap_floor or concurrent_seconds >= 180
-        if (subtype in {"exclusive_concurrent_multi_leg", "nested_concurrent_ladder"} and material_concurrent) or event_noncopyable_buy_ratio > 0.25 or event_dual_side or rebalance_hits >= 4:
+        structural_core_dirty = (
+            (subtype in {"exclusive_concurrent_multi_leg", "nested_concurrent_ladder"} and material_concurrent)
+            or event_dual_side
+            or rebalance_hits >= 4
+            or (event_conversion and event_conversion_buy_ratio >= 0.25)
+        )
+        # Noncopyable fast windows are execution-risk hints. Treat them as dirty only when
+        # co-occurring with stronger structural signals to avoid over-killing directional split execution.
+        noncopy_dirty_boost = (
+            event_noncopyable_buy_ratio > 0.25
+            and token_fast_count >= NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT
+            and (
+                event_dual_side
+                or rebalance_hits >= 2
+                or subtype in {"exclusive_concurrent_multi_leg", "nested_concurrent_ladder"}
+                or (event_conversion and event_conversion_buy_ratio >= 0.15)
+            )
+        )
+        if structural_core_dirty or noncopy_dirty_boost:
             classification = "dirty"
-        elif subtype in {"exclusive_sequential_switch", "nested_sequential_roll", "independent_multi_market"} or rebalance_hits > 0:
+        elif (
+            subtype in {"exclusive_sequential_switch", "nested_sequential_roll", "independent_multi_market"}
+            or rebalance_hits > 0
+            or event_noncopyable_buy_ratio > 0.25
+            or event_conversion
+        ):
             classification = "semiclean"
         else:
             classification = "clean"
@@ -517,6 +638,8 @@ def event_structure_metrics(rows: list[dict[str, Any]], dual_side_conditions: se
             "overlap_time_ratio": round(overlap_time_ratio, 6),
             "max_concurrent_legs": max_legs,
             "sequential_switch_count": switch_count,
+            "event_noncopyable_buy_ratio": round(event_noncopyable_buy_ratio, 6),
+            "event_conversion_buy_ratio": round(event_conversion_buy_ratio, 6),
         })
 
     clean_count = sum(1 for e in event_records if e["classification"] == "clean")
@@ -1724,6 +1847,10 @@ def compute_scores_auto_v3(
     noncopy_buy = metrics.get("noncopyable_token_fast_buy_ratio") or 0.0
     noncopy_sell = metrics.get("noncopyable_token_fast_sell_ratio") or 0.0
     noncopy_token = metrics.get("noncopyable_token_fast_token_ratio") or 0.0
+    token_fast_count = metrics.get("token_fast_20m_count") or 0.0
+    conversion_buy_ratio = metrics.get("outcome_conversion_buy_usdc_ratio") or 0.0
+    conversion_condition_ratio = metrics.get("outcome_conversion_condition_ratio") or 0.0
+    conversion_flip_count = metrics.get("outcome_conversion_flip_count") or 0.0
     deployable = metrics.get("deployable_event_equivalent") or 0.0
     density = metrics.get("deployable_event_density") or 0.0
     event_rebalance_ratio = metrics.get("event_rebalance_20m_event_ratio") or 0.0
@@ -1732,16 +1859,26 @@ def compute_scores_auto_v3(
     active_day_ratio = metrics.get("active_day_ratio") or 0.0
     avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
 
+    noncopy_penalty_enabled = (
+        token_fast_count >= NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT
+        and active_days >= NONCOPY_PENALTY_MIN_ACTIVE_DAYS
+    )
+    noncopy_buy_effective = noncopy_buy if noncopy_penalty_enabled else 0.0
+    noncopy_sell_effective = noncopy_sell if noncopy_penalty_enabled else 0.0
+    noncopy_token_effective = noncopy_token if noncopy_penalty_enabled else 0.0
+
     copyability = 30.0
     copyability -= dual_side * 34
-    copyability -= noncopy_buy * 24
+    copyability -= noncopy_buy_effective * 24
     copyability -= excl_conc * 26
     copyability -= nested_conc * 10
     copyability -= weighted_risk * 12
-    if noncopy_sell > 0.35:
-        copyability -= (noncopy_sell - 0.35) * 8
-    if noncopy_token > 0.30:
-        copyability -= (noncopy_token - 0.30) * 6
+    if noncopy_sell_effective > 0.35:
+        copyability -= (noncopy_sell_effective - 0.35) * 8
+    if noncopy_token_effective > 0.30:
+        copyability -= (noncopy_token_effective - 0.30) * 6
+    copyability -= min(8.0, conversion_buy_ratio * 28.0)
+    copyability -= min(4.0, max(0.0, conversion_condition_ratio - 0.08) * 40.0)
     if dual_side_1h > 0.12:
         copyability -= 2
     if dual_side_1h > 0.20:
@@ -1760,6 +1897,11 @@ def compute_scores_auto_v3(
     structure -= (metrics.get("unknown_multi_market_buy_ratio") or 0.0) * 7
     structure -= min(3.0, (metrics.get("exclusive_sequential_switch_count") or 0) * 0.15)
     structure -= min(2.5, (metrics.get("nested_sequential_roll_count") or 0) * 0.10)
+    structure -= min(6.0, conversion_buy_ratio * 20.0)
+    if conversion_flip_count > 24:
+        structure -= 2.5
+    elif conversion_flip_count > 12:
+        structure -= 1.5
     if event_rebalance_ratio > 0.25:
         structure -= 2
     if event_rebalance_ratio > 0.45:
@@ -1793,10 +1935,14 @@ def compute_scores_auto_v3(
     summary = summary if isinstance(summary, dict) else {}
     if summary.get("closed_positions_incomplete") or summary.get("closed_positions_recent_incomplete"):
         automation_risk_penalty -= 6
-    if noncopy_buy > 0.40:
+    if noncopy_penalty_enabled and noncopy_buy > 0.40:
         automation_risk_penalty -= 8
     if (metrics.get("sell_usdc_ratio_within_20m") or 0.0) > 0.50:
         automation_risk_penalty -= 6
+    if conversion_buy_ratio > 0.25:
+        automation_risk_penalty -= 6
+    elif conversion_buy_ratio > 0.15:
+        automation_risk_penalty -= 3
     automation_risk_penalty = clamp(automation_risk_penalty, -25.0, 0.0)
 
     concentration_penalty = 0.0
@@ -1856,8 +2002,9 @@ def compute_scores_auto_v3(
         excl_conc > 0.62
         or (nested_conc > 0.75 and event_rebalance_ratio >= 0.25)
         or (weighted_risk > 0.75 and (excl_conc > 0.35 or nested_conc > 0.50))
-        or noncopy_buy > 0.50
-        or noncopy_sell > 0.82
+        or (noncopy_penalty_enabled and noncopy_buy > 0.50)
+        or (noncopy_penalty_enabled and noncopy_sell > 0.82)
+        or conversion_buy_ratio > 0.30
         or dual_side > 0.45
         or dual_side_1h > 0.25
     )
@@ -1865,8 +2012,9 @@ def compute_scores_auto_v3(
         excl_conc > 0.45
         or (nested_conc > 0.60 and event_rebalance_ratio >= 0.20)
         or (weighted_risk > 0.60 and (excl_conc > 0.25 or nested_conc > 0.35))
-        or noncopy_buy > 0.30
-        or noncopy_sell > 0.70
+        or (noncopy_penalty_enabled and noncopy_buy > 0.30)
+        or (noncopy_penalty_enabled and noncopy_sell > 0.70)
+        or conversion_buy_ratio > 0.18
         or dual_side > 0.20
         or dual_side_1h > 0.12
     )
@@ -1951,6 +2099,12 @@ def compute_scores_auto_v3(
         add_quality_cap("dual_side_high_45", 45.0)
     elif dual_side > 0.20 or dual_side_1h > 0.12:
         add_quality_cap("dual_side_material_50", 50.0)
+    if conversion_buy_ratio > 0.30:
+        add_quality_cap("outcome_conversion_severe_39", 39.0)
+    elif conversion_buy_ratio > 0.20:
+        add_quality_cap("outcome_conversion_high_45", 45.0)
+    elif conversion_buy_ratio > 0.12:
+        add_quality_cap("outcome_conversion_material_50", 50.0)
 
     anchor_offset = 0.0
     anchor_target = 60.0
@@ -2038,8 +2192,12 @@ def compute_scores_auto_v3(
         score_flags.append("severe_risk_gate")
     if dual_side > 0.20 or dual_side_1h > 0.12:
         score_flags.append("high_dual_side")
-    if noncopy_buy > 0.25:
+    if noncopy_penalty_enabled and noncopy_buy > 0.25:
         score_flags.append("high_noncopyable_fast")
+    if not noncopy_penalty_enabled and noncopy_buy > 0.25:
+        score_flags.append("noncopyable_fast_observed_low_confidence")
+    if conversion_buy_ratio > 0.12:
+        score_flags.append("high_outcome_conversion")
     if pnl_details.get("closed_positions_realized_pnl_30d", 0.0) > 0 and pnl_details.get("closed_positions_realized_pnl_7d", 0.0) > 0:
         score_flags.append("strong_recent_pnl")
     score_flags.extend(data_flags)
@@ -2063,6 +2221,9 @@ def compute_scores_auto_v3(
         "data_quality_adjustment": round(data_adj, 2),
         "leaderboard_consistency_adj": leaderboard_adj,
         "lifetime_pnl_adjustment": lifetime_adj,
+        "noncopy_penalty_enabled": noncopy_penalty_enabled,
+        "noncopy_penalty_min_token_fast_count": NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT,
+        "noncopy_penalty_min_active_days": NONCOPY_PENALTY_MIN_ACTIVE_DAYS,
         "automation_risk_penalty": round(automation_risk_penalty, 2),
         "concentration_penalty": round(concentration_penalty, 2),
         "concentration_penalty_v3": round(concentration_penalty, 2),
@@ -2304,15 +2465,26 @@ def analyze(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError("No BUY notional available; cannot score")
 
     dual_m, dual_side_conditions = dual_side_metrics(rows, total_buy_usdc)
+    conv_m, conversion_conditions, conversion_event_buy = outcome_conversion_metrics(rows, total_buy_usdc)
     fast_m, noncopy_rows, token_candidates, noncopyable = fast_metrics(rows, total_buy_usdc, total_sell_usdc)
     reb_m, rebalance_candidates = event_rebalance_metrics(rows, total_buy_usdc, total_sell_usdc)
-    struct_m, event_records, event_buy_by_slug = event_structure_metrics(rows, dual_side_conditions, noncopy_rows, rebalance_candidates, total_buy_usdc)
+    struct_m, event_records, event_buy_by_slug = event_structure_metrics(
+        rows,
+        dual_side_conditions,
+        conversion_conditions,
+        conversion_event_buy,
+        noncopy_rows,
+        int(fast_m.get("token_fast_20m_count") or 0),
+        rebalance_candidates,
+        total_buy_usdc,
+    )
     hold_m = holding_metrics(rows, total_sell_usdc)
     act_m = activity_metrics(rows)
     cap_m = capacity_metrics(rows, total_buy_usdc)
 
     metrics: dict[str, Any] = {}
     metrics.update(dual_m)
+    metrics.update(conv_m)
     metrics.update(fast_m)
     metrics.update(reb_m)
     metrics.update(struct_m)
