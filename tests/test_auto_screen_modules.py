@@ -131,6 +131,21 @@ class FakeGammaClient:
 
 
 class AutoScreenModuleTests(unittest.TestCase):
+    def test_candidate_from_row_tolerates_invalid_json_context(self):
+        candidate = scheduler.candidate_from_row(
+            {
+                "address": "0x1111111111111111111111111111111111111111",
+                "display_name": "Alpha",
+                "best_rank": 3,
+                "discovery_score": 12,
+                "leaderboard_context": "",
+                "source_keys": "{bad-json",
+            }
+        )
+        self.assertEqual(candidate.address, "0x1111111111111111111111111111111111111111")
+        self.assertEqual(candidate.source_keys, [])
+        self.assertEqual(candidate.leaderboard_context, {})
+
     def test_load_config_merges_defaults(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "config.json"

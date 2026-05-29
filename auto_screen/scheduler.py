@@ -57,8 +57,18 @@ def make_client(config: dict[str, Any]) -> DataApiClient:
 
 
 def candidate_from_row(row: dict[str, Any]) -> AccountCandidate:
-    context = json.loads(row.get("leaderboard_context") or "{}")
-    source_keys = json.loads(row.get("source_keys") or "[]")
+    try:
+        context = json.loads(row.get("leaderboard_context") or "{}")
+    except (TypeError, json.JSONDecodeError):
+        context = {}
+    if not isinstance(context, dict):
+        context = {}
+    try:
+        source_keys = json.loads(row.get("source_keys") or "[]")
+    except (TypeError, json.JSONDecodeError):
+        source_keys = []
+    if not isinstance(source_keys, list):
+        source_keys = []
     return AccountCandidate(
         address=row["address"],
         display_name=row.get("display_name") or row["address"],
