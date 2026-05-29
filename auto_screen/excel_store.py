@@ -56,7 +56,12 @@ class ExcelStore:
 
     def load(self) -> dict[str, list[dict[str, Any]]]:
         if self.sidecar.exists():
-            data = json.loads(self.sidecar.read_text(encoding="utf-8"))
+            try:
+                data = json.loads(self.sidecar.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError, TypeError):
+                return {sheet: [] for sheet in DEFAULT_SHEETS}
+            if not isinstance(data, dict):
+                return {sheet: [] for sheet in DEFAULT_SHEETS}
             return {sheet: list(rows or []) for sheet, rows in data.items()}
         return {sheet: [] for sheet in DEFAULT_SHEETS}
 

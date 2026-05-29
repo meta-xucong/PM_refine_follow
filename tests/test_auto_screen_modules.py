@@ -864,6 +864,17 @@ class AutoScreenModuleTests(unittest.TestCase):
                 self.assertIn("xl/workbook.xml", zf.namelist())
                 self.assertIn("xl/worksheets/sheet1.xml", zf.namelist())
 
+    def test_excel_store_recovers_from_invalid_sidecar_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "candidates.xlsx"
+            sidecar = path.with_suffix(path.suffix + ".json")
+            sidecar.write_text("", encoding="utf-8")
+            store = ExcelStore(path)
+            store.append("alerts", {"account": "0x2", "score": 61})
+            data = json.loads(sidecar.read_text(encoding="utf-8"))
+            self.assertEqual(len(data.get("alerts") or []), 1)
+            self.assertEqual((data.get("alerts") or [])[0]["account"], "0x2")
+
     def test_notifier_dry_run(self):
         analysis = {
             "account_address": "0x1111111111111111111111111111111111111111",
