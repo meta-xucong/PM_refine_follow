@@ -32,6 +32,15 @@ SECTOR_KEYWORDS = {
     "entertainment": {"movie", "box", "office", "grossing", "oscar", "album", "song", "tv"},
 }
 
+SPORTS_LEAGUE_HINTS = {
+    "nfl", "nba", "wnba", "mlb", "nhl", "soccer", "epl", "laliga", "bundesliga", "seriea",
+    "ligue1", "mls", "ucl", "uefa", "ncaaf", "cfb", "ncaab", "cbb", "ncaamb", "ncaawb",
+    "atp", "wta", "ufc", "mma", "boxing", "f1", "nascar", "indycar", "pga", "golf", "tennis",
+    "cs2", "valorant", "dota2", "lol", "lck", "lpl", "lcs", "vct",
+}
+
+SPORTS_SLUG_DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
 
 def to_float(value: Any, default: float = 0.0) -> float:
     try:
@@ -655,6 +664,11 @@ def event_structure_metrics(
         if r["side"] == "BUY":
             event_buy_by_slug[r["eventSlug"]] += r["usdcSize"]
 
+    sports_like_buy_usdc = sum(
+        buy for slug, buy in event_buy_by_slug.items() if is_sports_like_event_slug(slug)
+    )
+    sports_like_event_count = sum(1 for slug in event_buy_by_slug.keys() if is_sports_like_event_slug(slug))
+
     top_buys = sorted(event_buy_by_slug.values(), reverse=True)
     top1_ratio = safe_ratio(top_buys[0], total_buy_usdc) if top_buys else None
     top3_ratio = safe_ratio(sum(top_buys[:3]), total_buy_usdc) if top_buys else None
@@ -695,6 +709,9 @@ def event_structure_metrics(
         "deployable_event_density": round(deployable_density, 6),
         "top1_event_buy_ratio": top1_ratio,
         "top3_event_buy_ratio": top3_ratio,
+        "sports_like_buy_usdc": round(sports_like_buy_usdc, 6),
+        "sports_like_buy_ratio": safe_ratio(sports_like_buy_usdc, total_buy_usdc),
+        "sports_like_event_count": int(sports_like_event_count),
     }, event_records, dict(event_buy_by_slug)
 
 
@@ -817,12 +834,44 @@ def tokenize(text: str) -> list[str]:
     return [t for t in tokens if t not in STOPWORDS]
 
 
+def normalize_event_text(title: str, event_slug: str) -> str:
+    text = (title or "").strip()
+    if text:
+        return text
+    slug = (event_slug or "").strip().lower()
+    if not slug or slug == "unknown_event":
+        return ""
+    return slug.replace("-", " ")
+
+
+def is_sports_like_event_slug(event_slug: str) -> bool:
+    slug = (event_slug or "").strip().lower()
+    if not slug or slug == "unknown_event":
+        return False
+    parts = [p for p in slug.split("-") if p]
+    if not parts:
+        return False
+    if parts[0] in SPORTS_LEAGUE_HINTS:
+        return True
+    # Official sports channel slug examples follow league-team-team-date.
+    # Date suffix alone is not enough; require a league hint in the first tokens.
+    if len(parts) >= 4 and SPORTS_SLUG_DATE_RE.search(slug):
+        first_tokens = set(parts[:2])
+        if first_tokens & SPORTS_LEAGUE_HINTS:
+            return True
+    return False
+
+
 def keyword_profile(rows: list[dict[str, Any]], event_records: list[dict[str, Any]], event_buy_by_slug: dict[str, float]) -> dict[str, Any]:
     class_by_event = {e["eventSlug"]: e["classification"] for e in event_records}
     titles_by_event: dict[str, str] = {}
     for r in rows:
-        if r["eventSlug"] not in titles_by_event and r.get("title"):
-            titles_by_event[r["eventSlug"]] = r["title"]
+        event_slug = str(r.get("eventSlug") or "")
+        if event_slug in titles_by_event:
+            continue
+        normalized = normalize_event_text(str(r.get("title") or ""), event_slug)
+        if normalized:
+            titles_by_event[event_slug] = normalized
 
     kw_stats: dict[str, dict[str, float]] = defaultdict(lambda: {"clean": 0.0, "semiclean": 0.0, "dirty": 0.0, "count": 0.0})
     sector_score: Counter[str] = Counter()
@@ -1765,15 +1814,35 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
     recent_90d_active_day_share = optional_float(summary.get("closed_position_recent_90d_active_day_share"))
     if recent_90d_active_day_share is None:
         recent_90d_active_day_share = active_days_90d / max(1.0, active_days)
+    recent_30d_active_day_share = active_days_30d / max(1.0, active_days)
     recent_trade_days = max(active_days_30d, to_float(metrics.get("active_trading_days"), 0.0))
     lifetime_adj = 0.0
-    if account_age_days is not None and account_age_days >= 540 and active_month_ratio >= 0.55 and active_days >= 90:
+    if (
+        account_age_days is not None
+        and account_age_days >= 540
+        and active_month_ratio >= 0.55
+        and active_days >= 90
+        and (active_day_ratio_lifetime or 0.0) >= 0.20
+    ):
         lifetime_adj += 4.0
         flags.append("long_consistent_activity")
-    elif account_age_days is not None and account_age_days >= 270 and active_month_ratio >= 0.55 and active_days >= 35:
+    elif (
+        account_age_days is not None
+        and account_age_days >= 270
+        and active_month_ratio >= 0.55
+        and active_days >= 35
+        and (active_day_ratio_lifetime or 0.0) >= 0.16
+    ):
         lifetime_adj += 3.0
         flags.append("consistent_activity")
-    elif account_age_days is not None and account_age_days >= 270 and active_month_ratio >= 0.35 and active_days >= 35:
+    elif (
+        account_age_days is not None
+        and account_age_days >= 270
+        and active_month_ratio >= 0.40
+        and active_days >= 35
+        and (active_day_ratio_lifetime or 0.0) >= 0.12
+        and recent_90d_active_day_share <= 0.75
+    ):
         lifetime_adj += 2.0
         flags.append("consistent_activity")
 
@@ -1784,6 +1853,14 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         and active_days < 45
         and recent_90d_active_day_share >= 0.65
         and recent_trade_days >= 8
+    )
+    short_track_recent_activation = (
+        account_age_days is not None
+        and account_age_days >= 270
+        and active_days < 60
+        and (active_day_ratio_lifetime or 0.0) < 0.14
+        and recent_30d_active_day_share >= 0.25
+        and active_days_30d >= 8
     )
     dormant_recent_spike = (
         account_age_days is not None
@@ -1797,13 +1874,16 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
     elif dormant_recent_spike:
         lifetime_adj -= 4.0
         flags.append("dormant_recent_spike")
+    elif short_track_recent_activation:
+        lifetime_adj -= 4.0
+        flags.append("short_track_recent_activation")
     elif account_age_days is not None and account_age_days >= 270 and active_month_ratio < 0.15 and active_months <= 2:
         lifetime_adj -= 3.0
         flags.append("sparse_lifetime_activity")
     elif account_age_days is not None and account_age_days >= 270 and active_day_ratio_lifetime is not None and active_day_ratio_lifetime < 0.08 and active_days < 45:
         lifetime_adj -= 2.0
         flags.append("sparse_lifetime_activity")
-    lifetime_adj = clamp(lifetime_adj, -5.0, 5.0)
+    lifetime_adj = clamp(lifetime_adj, -7.0, 5.0)
 
     total_adj = round(clamp(smoothness_adj + lifetime_adj, -12.0, 9.0), 2)
     return total_adj, flags, {
@@ -1825,8 +1905,10 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         "closed_position_active_days_90d": round(active_days_90d, 3),
         "closed_position_active_day_ratio_lifetime": None if active_day_ratio_lifetime is None else round(active_day_ratio_lifetime, 6),
         "closed_position_recent_90d_active_day_share": round(recent_90d_active_day_share, 6),
+        "closed_position_recent_30d_active_day_share": round(recent_30d_active_day_share, 6),
         "late_activity_ramp": late_activity_ramp,
         "dormant_recent_spike": dormant_recent_spike,
+        "short_track_recent_activation": short_track_recent_activation,
     }, hard_blocks
 
 
@@ -1858,6 +1940,8 @@ def compute_scores_auto_v3(
     active_days = metrics.get("active_trading_days") or 0.0
     active_day_ratio = metrics.get("active_day_ratio") or 0.0
     avg_trades_per_active_day = metrics.get("avg_trades_per_active_day") or 0.0
+    sports_like_buy_ratio = float(metrics.get("sports_like_buy_ratio") or 0.0)
+    sports_like_event_count = float(metrics.get("sports_like_event_count") or 0.0)
 
     noncopy_penalty_enabled = (
         token_fast_count >= NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT
@@ -2036,8 +2120,10 @@ def compute_scores_auto_v3(
     lifetime_daily_vol_ratio = None if lifetime_daily_vol_ratio is None else float(lifetime_daily_vol_ratio)
     active_month_ratio = float(lifetime_details.get("closed_position_active_month_ratio") or 0.0)
     active_days_lifetime = float(lifetime_details.get("closed_position_active_days") or 0.0)
+    active_day_ratio_lifetime = float(lifetime_details.get("closed_position_active_day_ratio_lifetime") or 0.0)
     late_activity_ramp = bool(lifetime_details.get("late_activity_ramp"))
     dormant_recent_spike = bool(lifetime_details.get("dormant_recent_spike"))
+    short_track_recent_activation = bool(lifetime_details.get("short_track_recent_activation"))
     total_buy_30d = float(capacity_details.get("total_buy_usdc_30d") or 0.0)
     positions_value = capacity_details.get("positions_value")
     positions_value = None if positions_value is None else float(positions_value)
@@ -2079,9 +2165,30 @@ def compute_scores_auto_v3(
             add_quality_cap("late_activity_ramp_58", 58.0)
     elif dormant_recent_spike:
         add_quality_cap("dormant_recent_spike_50", 50.0)
+    elif short_track_recent_activation:
+        add_quality_cap("short_track_recent_activation_45", 45.0)
     elif account_age_days := lifetime_details.get("account_age_days"):
         if float(account_age_days) >= 270 and active_month_ratio < 0.15 and active_days_lifetime < 30:
             add_quality_cap("sparse_lifetime_activity_52", 52.0)
+
+    sports_cluster_risk = (
+        active_days_lifetime < 60
+        or active_day_ratio_lifetime < 0.14
+        or active_month_ratio < 0.60
+        or late_activity_ramp
+        or dormant_recent_spike
+        or short_track_recent_activation
+        or (lifetime_drawdown_ratio is not None and lifetime_drawdown_ratio > 0.30)
+        or (lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.20)
+    )
+    if sports_like_event_count >= 3 and sports_like_buy_ratio >= 0.90 and sports_cluster_risk:
+        add_quality_cap("sports_concentration_unstable_39", 39.0)
+    elif sports_like_event_count >= 3 and sports_like_buy_ratio >= 0.80 and (
+        sports_cluster_risk
+        or active_days_lifetime < 90
+        or (lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.15)
+    ):
+        add_quality_cap("sports_concentration_watch_45", 45.0)
 
     if copy_capacity < 4:
         add_quality_cap("copy_capacity_low_48", 48.0)
@@ -2221,6 +2328,8 @@ def compute_scores_auto_v3(
         "data_quality_adjustment": round(data_adj, 2),
         "leaderboard_consistency_adj": leaderboard_adj,
         "lifetime_pnl_adjustment": lifetime_adj,
+        "sports_like_buy_ratio": round(sports_like_buy_ratio, 6),
+        "sports_like_event_count": int(sports_like_event_count),
         "noncopy_penalty_enabled": noncopy_penalty_enabled,
         "noncopy_penalty_min_token_fast_count": NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT,
         "noncopy_penalty_min_active_days": NONCOPY_PENALTY_MIN_ACTIVE_DAYS,

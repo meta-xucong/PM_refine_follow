@@ -97,6 +97,13 @@ class AutoV3ScoringTests(unittest.TestCase):
     def setUp(self):
         self.analyze = load_analyze_module()
 
+    def test_keyword_profile_uses_event_slug_when_title_missing(self):
+        rows = [{"eventSlug": "nba-nyk-cle-2026-05-25", "title": ""}]
+        event_records = [{"eventSlug": "nba-nyk-cle-2026-05-25", "classification": "clean", "event_buy_usdc": 100.0}]
+        event_buy_by_slug = {"nba-nyk-cle-2026-05-25": 100.0}
+        profile = self.analyze.keyword_profile(rows, event_records, event_buy_by_slug)
+        self.assertIn("sports", profile["sector_tags"])
+
     def test_anchor_file_exists_and_has_v3_raw_base(self):
         data = json.loads(ANCHOR_FILE.read_text(encoding="utf-8"))
         self.assertEqual(data["anchor_account"], "0x39d0f1dca6fb7e5514858c1a337724a426764fe8")
@@ -235,6 +242,40 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertNotEqual(result["alert_grade"], "B")
         self.assertIn("recent_7d_loss_material_55", result["score_flags"])
         self.assertIn("lifetime_drawdown_extreme_52", result["score_flags"])
+
+    def test_sports_concentration_with_short_track_record_is_hard_capped(self):
+        metrics = base_metrics()
+        metrics["sports_like_buy_ratio"] = 0.995
+        metrics["sports_like_event_count"] = 50
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "account_age_days": 320,
+                "closed_position_active_days": 35,
+                "closed_position_active_months": 6,
+                "account_lifetime_months": 11,
+                "closed_position_active_month_ratio": 0.545455,
+                "closed_position_active_days_30d": 12,
+                "closed_position_active_days_90d": 12,
+                "closed_position_recent_90d_active_day_share": 0.342857,
+                "closed_positions_realized_pnl_30d": 1800.0,
+                "closed_positions_realized_pnl_7d": 320.0,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "smooth_up",
+                "drawdown_to_return_ratio": 0.163124,
+                "daily_volatility_to_return_ratio": 0.13,
+                "largest_daily_abs_move_to_return_ratio": 0.34,
+                "largest_daily_gain_share": 0.30,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, None, {}, 50.0, 60.0, None)
+        self.assertLessEqual(result["final_score"], 39)
+        self.assertEqual(result["decision"], "not_recommended")
+        self.assertEqual(result["alert_grade"], "none")
+        self.assertIn("sports_concentration_unstable_39", result["score_flags"])
 
     def test_stable_moderate_scale_account_can_score_above_70_with_anchor(self):
         metrics = base_metrics()

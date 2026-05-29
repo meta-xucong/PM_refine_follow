@@ -51,6 +51,9 @@ Auto V3 要解决的问题：
 | 长账号、活跃月份覆盖 < 45%、活跃天数 < 45、近 90 天活跃天数占比 >= 65% | 58 | `late_activity_ramp_58` |
 | 上述 late ramp 且 30d 买入额 < 20000、容量分 < 4 或活跃天数 < 30 | 48 | `late_activity_ramp_small_scale_48` |
 | 长期沉睡后近期突然活跃 | 50 | `dormant_recent_spike_50` |
+| 长账号有效活跃轨迹偏短，且近期活跃集中（近 30d 活跃占比偏高） | 45 | `short_track_recent_activation_45` |
+| 体育盘买入占比 >= 90%，且活跃轨迹/波动结构不稳 | 39 | `sports_concentration_unstable_39` |
+| 体育盘买入占比 >= 80%，且稳定性不足 | 45 | `sports_concentration_watch_45` |
 | 可跟单容量分 < 4 | 48 | `copy_capacity_low_48` |
 | 30d 买入额 < 5000 | 45 | `capital_scale_too_small_45` |
 | 30d 买入额 < 20000 且当前仓位价值 < 5000 | 48 | `capital_scale_small_48` |
@@ -362,7 +365,10 @@ lifetime_pnl_adjustment =
 - `long_consistent_activity`
 - `consistent_activity`
 - `dormant_recent_spike`
+- `short_track_recent_activation`
 - `sparse_lifetime_activity`
+- `sports_concentration_unstable_39`
+- `sports_concentration_watch_45`
 
 ## Data Quality Score
 
