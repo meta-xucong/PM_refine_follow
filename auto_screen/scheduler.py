@@ -9,6 +9,7 @@ from .collector import CollectionSkipped, collect_account_files
 from .config import resolve_path
 from .data_api import DataApiClient
 from .excel_store import ExcelStore
+from .housekeeping import perform_storage_cleanup
 from .models import AccountCandidate
 from .notifier import format_alert_batch, format_candidate_message, send_serverchan
 from .official_sources import scan_candidates
@@ -179,6 +180,27 @@ def _new_alert_push_status(config: dict[str, Any], dry_run_alerts: bool) -> str:
     return "pending"
 
 
+def _storage_mid_cycle_check_every(config: dict[str, Any]) -> int:
+    cleanup_cfg = config.get("storage_cleanup") or {}
+    try:
+        return max(1, int(cleanup_cfg.get("mid_cycle_check_every", 50)))
+    except (TypeError, ValueError):
+        return 50
+
+
+def _cleanup_needs_report(summary: dict[str, Any]) -> bool:
+    if not summary:
+        return False
+    if summary.get("errors"):
+        return True
+    if bool(summary.get("emergency_triggered")):
+        return True
+    try:
+        return float(summary.get("freed_gb") or 0) > 0
+    except (TypeError, ValueError):
+        return False
+
+
 def maybe_send_alert_batches(
     store: StateStore,
     config: dict[str, Any],
@@ -293,12 +315,21 @@ def run_once(
 ) -> dict[str, Any]:
     data_dir = resolve_path(config, "data_dir")
     data_dir.mkdir(parents=True, exist_ok=True)
+    reporter = reporter or ProgressReporter.from_config(config)
+    startup_cleanup = perform_storage_cleanup(config, reason="cycle_start", include_sqlite=True)
+    if _cleanup_needs_report(startup_cleanup):
+        reporter.update(
+            "housekeeping",
+            f"启动前已清理历史数据，释放 {float(startup_cleanup.get('freed_gb') or 0):.2f} GB",
+            storage_cleanup=startup_cleanup,
+        )
+
     store = StateStore(resolve_path(config, "state_db"))
     excel = ExcelStore(resolve_path(config, "excel_path"))
     client = client or make_client(config)
-    reporter = reporter or ProgressReporter.from_config(config)
     cycle_id = store.start_cycle()
     stats = {"cycle_id": cycle_id, "scanned": 0, "processed": 0, "alerts": 0, "skipped": 0, "refresh_score": 0}
+    mid_cycle_check_every = _storage_mid_cycle_check_every(config)
     try:
         scan_cfg = config.get("scan") or {}
         discovery_limit = limit_candidates
@@ -697,6 +728,16 @@ def run_once(
                     auto_action=result.auto_action,
                     stats=stats,
                 )
+                if attempted % mid_cycle_check_every == 0:
+                    mid_cycle_cleanup = perform_storage_cleanup(config, reason="mid_cycle", include_sqlite=False)
+                    if _cleanup_needs_report(mid_cycle_cleanup):
+                        reporter.update(
+                            "housekeeping",
+                            f"周期中清理完成，释放 {float(mid_cycle_cleanup.get('freed_gb') or 0):.2f} GB",
+                            cycle_id=cycle_id,
+                            stats=stats,
+                            storage_cleanup=mid_cycle_cleanup,
+                        )
 
         excel.append("cycles", {"cycle_id": cycle_id, **stats})
         store.finish_cycle(cycle_id, "done", json.dumps(stats, ensure_ascii=False))

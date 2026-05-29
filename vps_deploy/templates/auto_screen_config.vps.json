@@ -115,6 +115,37 @@
       "长期活跃表现：||长期活跃调整:"
     ]
   },
+  "storage_cleanup": {
+    "enabled": true,
+    "min_free_gb": 4.0,
+    "target_free_gb": 8.0,
+    "archive_pattern": "^archive",
+    "archives_keep_latest": 2,
+    "archives_max_age_days": 10,
+    "accounts_keep_latest": 4000,
+    "accounts_max_age_days": 30,
+    "protect_pushed_accounts": true,
+    "protected_sent_accounts_limit": 5000,
+    "runs_retention_days": 60,
+    "alerts_retention_days": 120,
+    "cycles_retention_days": 60,
+    "keep_recent_runs": 500000,
+    "keep_recent_alerts": 200000,
+    "log_max_mb": 80,
+    "log_truncate_mb": 20,
+    "log_paths": [
+      "__LOG_DIR__/auto_screen.log",
+      "__LOG_DIR__/dashboard_server.err.log"
+    ],
+    "progress_tmp_max_age_days": 2,
+    "mid_cycle_check_every": 50,
+    "emergency_archives_keep_latest": 0,
+    "emergency_accounts_keep_latest": 1200,
+    "emergency_accounts_max_age_days": 10,
+    "emergency_runs_retention_days": 21,
+    "emergency_alerts_retention_days": 45,
+    "emergency_log_truncate_mb": 5
+  },
   "agent": {
     "enabled": false,
     "config_path": "__CONFIG_DIR__/agent_core_config.json",

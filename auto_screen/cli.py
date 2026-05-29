@@ -4,6 +4,7 @@ import argparse
 import json
 
 from .config import load_config, resolve_path
+from .housekeeping import perform_storage_cleanup
 from .scheduler import run_forever, run_once
 from .state_store import StateStore
 
@@ -30,6 +31,8 @@ def parse_args() -> argparse.Namespace:
     )
 
     sub.add_parser("status", help="Print state DB status")
+    cleanup = sub.add_parser("cleanup", help="Run one storage cleanup pass")
+    cleanup.add_argument("--light", action="store_true", help="Skip SQLite pruning/vacuum")
     return parser.parse_args()
 
 
@@ -55,6 +58,10 @@ def main() -> None:
             )
         finally:
             store.close()
+        return
+    if args.command == "cleanup":
+        result = perform_storage_cleanup(config, reason="cli", include_sqlite=not args.light)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return
     if args.command == "once":
         stats = run_once(

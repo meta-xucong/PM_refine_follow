@@ -8,6 +8,7 @@
 - 把运行数据、配置、密钥和日志分离到 Linux 标准目录。
 - 创建 systemd dashboard 服务，并在服务启动时自动拉起常驻扫描。
 - 配置 Nginx 反向代理和登录保护。
+- 内置自动磁盘清理策略，避免历史归档和缓存长期堆积导致磁盘打满。
 
 ## VPS 与本地版的关键差异
 
@@ -64,7 +65,21 @@ sudo tail -f /var/log/pm-refine-follow/auto_screen.log
 
 # 看当前 API 状态
 bash /opt/pm-refine-follow/current/vps_deploy/scripts/status.sh
+
+# 手动跑一次清理（含数据库瘦身）
+sudo -u pmfollow /opt/pm-refine-follow/current/.venv/bin/python -m auto_screen.cli --config /etc/pm-refine-follow/auto_screen_config.json cleanup
 ```
+
+## 自动清理说明
+
+VPS 默认启用 `storage_cleanup`，会在每轮启动前自动清理：
+
+- 旧的 `archive_*` 历史目录（按保留数量 + 天数）。
+- 非关键账号缓存目录（保留最近 N 个，并保护已推送/待推送地址）。
+- 过大的日志文件（自动截断为最新尾部）。
+- `state.sqlite3` 的历史运行记录（保留近期限额并执行 WAL checkpoint/VACUUM）。
+
+当剩余磁盘低于阈值时，会触发一轮更激进的紧急清理。
 
 ## SendKey 修改方式
 

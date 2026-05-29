@@ -13,6 +13,7 @@ from .config import resolve_path
 PHASE_LABELS = {
     "idle": "空闲",
     "cycle_started": "启动新周期",
+    "housekeeping": "自动清理",
     "scanning_leaderboard": "扫描排行榜",
     "leaderboard_scanned": "排行榜扫描完成",
     "saving_candidates": "保存候选池",

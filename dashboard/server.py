@@ -453,6 +453,7 @@ def progress_next_step(phase: str, running: bool) -> str:
         return "点击启动常驻或单轮运行"
     mapping = {
         "cycle_started": "开始扫描排行榜分片",
+        "housekeeping": "清理完成后继续当前任务",
         "scanning_leaderboard": "扫完候选池后进入账号预筛",
         "leaderboard_scanned": "写入候选池并持续处理 pending 地址",
         "saving_candidates": "写入完成后取待处理批次",
