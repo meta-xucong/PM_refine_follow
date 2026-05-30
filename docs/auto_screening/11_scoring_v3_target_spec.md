@@ -58,6 +58,8 @@ Auto V3 要解决的问题：
 | 30d 买入额 < 5000 | 45 | `capital_scale_too_small_45` |
 | 30d 买入额 < 20000 且当前仓位价值 < 5000 | 48 | `capital_scale_small_48` |
 | closed positions 历史/近期分页不完整 | 58 | `closed_positions_incomplete_58` |
+| closed realized PnL / 总 PnL >= 5 | 45 | `closed_pnl_overstates_total_45` |
+| 总 PnL / closed realized PnL < 20% | 45 | `total_pnl_retention_low_45` |
 
 ## 输出字段
 
@@ -235,6 +237,14 @@ structure_score_v3 = clamp(structure, 0, 15)
 
 ## PnL Quality Score
 
+PnL 的主口径必须对齐网页展示的账户总资金口径：`cash + position_mark`。在当前 API 只能稳定提供
+closed-position 日曲线时，closed realized 曲线只能作为形态代理，不能单独把账号抬高。评分必须用
+`account_total_pnl` 对 closed realized PnL 做一致性校验：
+
+- `total_pnl_retention_ratio = account_total_pnl / closed_positions_realized_pnl_total`
+- `closed_to_total_pnl_multiplier = closed_positions_realized_pnl_total / max(abs(account_total_pnl), 1)`
+- 当 closed realized PnL 远高于总资金 PnL 时，视为“已结算盈利被未平仓/未结算亏损抵消”，PnL quality 需要封顶，并触发最终分封顶。
+
 PnL 必须先修复数据拉取方向：
 
 - 7d/30d 使用最近 `/closed-positions`，优先 `sortDirection=DESC`。
@@ -254,6 +264,8 @@ PnL 必须先修复数据拉取方向：
 - `drawdown_to_return_ratio_30d`
 - `closed_positions_recent_coverage_days`
 - `closed_positions_incomplete`
+- `total_pnl_retention_ratio`
+- `closed_to_total_pnl_multiplier`
 
 分数结构：
 
@@ -307,6 +319,17 @@ pnl_shape_component = clamp((all_time_score + d30_score + d7_score) * 1.25 * pnl
 pnl_quality_score = clamp(total, -20, 25)
 ```
 
+如果 `closed_positions_realized_pnl_total >= 5000` 且 `total_pnl_retention_ratio` 过低，再做 PnL quality 封顶：
+
+| 条件 | PnL quality cap |
+| --- | ---: |
+| `< 0.20` | `6` |
+| `< 0.35` | `10` |
+| `< 0.55` | `15` |
+| `< 0.75` | `20` |
+
+同时，`strong_recent_pnl` 只有在 `total_pnl_retention_ratio >= 0.55` 或没有可比总 PnL 数据时才允许标记。
+
 ## Lifetime PnL Eligibility And Smoothness
 
 这层是 Auto V3 的硬门槛和长期质量补充，不替代 7d/30d PnL，而是防止短期暴冲账号混入候选。
@@ -338,9 +361,9 @@ lifetime_pnl_adjustment =
 扣分：
 
 - all-time PnL `volatile_up`、`flat` 或 `down`。
-- 最大回撤相对总收益过高。
-- 单日收益尖峰占总正收益过高。
-- 日收益波动相对总收益过高。
+- 最大回撤相对总资金 PnL 过高。
+- 单日收益尖峰占总资金 PnL 过高。
+- 日收益波动相对总资金 PnL 过高。
 - 账号年龄长但历史活跃月份很少，且最近 30 天突然活跃。
 
 输出字段：

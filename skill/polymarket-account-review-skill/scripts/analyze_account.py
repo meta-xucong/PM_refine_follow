@@ -1367,6 +1367,42 @@ def pnl_windows(api_summary: dict[str, Any] | None) -> tuple[dict[str, Any], dic
     )
 
 
+def total_pnl_consistency_details(api_summary: dict[str, Any] | None) -> dict[str, Any]:
+    summary = summary_node(api_summary)
+    closed_total = optional_float(summary.get("closed_positions_realized_pnl_total"))
+    account_total = infer_account_total_pnl(api_summary)
+    open_cash = optional_float(summary.get("open_positions_cash_pnl_sum"))
+    open_realized = optional_float(summary.get("open_positions_realized_pnl_sum"))
+
+    open_positions_pnl = None
+    if open_cash is not None or open_realized is not None:
+        open_positions_pnl = (open_cash or 0.0) + (open_realized or 0.0)
+    elif closed_total is not None and account_total is not None:
+        open_positions_pnl = account_total - closed_total
+
+    retention_ratio = None
+    closed_to_total_multiplier = None
+    open_drag_to_closed_ratio = None
+    if closed_total is not None and closed_total > 0 and account_total is not None:
+        retention_ratio = account_total / closed_total
+        closed_to_total_multiplier = abs(closed_total) / max(abs(account_total), 1.0)
+        if open_positions_pnl is not None and open_positions_pnl < 0:
+            open_drag_to_closed_ratio = abs(open_positions_pnl) / max(abs(closed_total), 1.0)
+
+    return {
+        "account_total_pnl": None if account_total is None else round(account_total, 6),
+        "closed_positions_realized_pnl_total": None if closed_total is None else round(closed_total, 6),
+        "open_positions_pnl_sum": None if open_positions_pnl is None else round(open_positions_pnl, 6),
+        "total_pnl_retention_ratio": None if retention_ratio is None else round(retention_ratio, 6),
+        "closed_to_total_pnl_multiplier": (
+            None if closed_to_total_multiplier is None else round(closed_to_total_multiplier, 6)
+        ),
+        "open_pnl_drag_to_closed_pnl_ratio": (
+            None if open_drag_to_closed_ratio is None else round(open_drag_to_closed_ratio, 6)
+        ),
+    }
+
+
 def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[str, Any]) -> tuple[float, dict[str, Any]]:
     all_node, d30_node, d7_node, pnl_tag = pnl_windows(api_summary)
     shapes = [
@@ -1449,7 +1485,29 @@ def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[
     else:
         drawdown_component = -5.0
 
+    consistency = total_pnl_consistency_details(api_summary)
+    retention_ratio = consistency.get("total_pnl_retention_ratio")
+    closed_total = consistency.get("closed_positions_realized_pnl_total")
+    pnl_total_consistency_cap = None
+    pnl_total_consistency_cap_reason = None
+    if retention_ratio is not None and closed_total is not None and closed_total >= 5000:
+        retention_ratio = float(retention_ratio)
+        if retention_ratio < 0.20:
+            pnl_total_consistency_cap = 6.0
+            pnl_total_consistency_cap_reason = "total_pnl_retention_low"
+        elif retention_ratio < 0.35:
+            pnl_total_consistency_cap = 10.0
+            pnl_total_consistency_cap_reason = "total_pnl_retention_weak"
+        elif retention_ratio < 0.55:
+            pnl_total_consistency_cap = 15.0
+            pnl_total_consistency_cap_reason = "total_pnl_retention_watch"
+        elif retention_ratio < 0.75:
+            pnl_total_consistency_cap = 20.0
+            pnl_total_consistency_cap_reason = "total_pnl_retention_mild"
+
     total = clamp(shape_component + normalized_return + momentum + drawdown_component, -20.0, 25.0)
+    if pnl_total_consistency_cap is not None:
+        total = min(total, pnl_total_consistency_cap)
     return round(total, 2), {
         "pnl_shape_component": round(shape_component, 2),
         "normalized_return_quality": round(normalized_return, 2),
@@ -1463,6 +1521,9 @@ def compute_pnl_quality_score(api_summary: dict[str, Any] | None, metrics: dict[
         "recent_7d_loss_to_30d_profit_ratio": round(recent_loss_ratio, 6),
         "drawdown_to_return_ratio_30d": round(dd_ratio, 6),
         "pnl_tag": pnl_tag,
+        "pnl_total_consistency_cap": pnl_total_consistency_cap,
+        "pnl_total_consistency_cap_reason": pnl_total_consistency_cap_reason,
+        **consistency,
     }
 
 
@@ -1746,11 +1807,23 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
     pnl_base = abs(total_pnl) if total_pnl is not None else abs(total_return or 0.0)
     pnl_base = max(pnl_base, 1.0)
     max_drawdown_value = optional_float(all_time.get("max_drawdown")) or 0.0
-    drawdown_ratio = optional_float(all_time.get("drawdown_to_return_ratio"))
-    if drawdown_ratio is None:
+    ratio_base = "account_total_pnl" if total_pnl is not None else "closed_pnl_curve_return"
+    if total_pnl is not None:
         drawdown_ratio = max_drawdown_value / pnl_base
-    largest_move_ratio = optional_float(all_time.get("largest_daily_abs_move_to_return_ratio"))
-    daily_vol_ratio = optional_float(all_time.get("daily_volatility_to_return_ratio"))
+    else:
+        drawdown_ratio = optional_float(all_time.get("drawdown_to_return_ratio"))
+        if drawdown_ratio is None:
+            drawdown_ratio = max_drawdown_value / pnl_base
+    largest_abs_move = optional_float(all_time.get("largest_daily_abs_move"))
+    if total_pnl is not None and largest_abs_move is not None:
+        largest_move_ratio = largest_abs_move / pnl_base
+    else:
+        largest_move_ratio = optional_float(all_time.get("largest_daily_abs_move_to_return_ratio"))
+    daily_volatility = optional_float(all_time.get("daily_volatility"))
+    if total_pnl is not None and daily_volatility is not None:
+        daily_vol_ratio = daily_volatility / pnl_base
+    else:
+        daily_vol_ratio = optional_float(all_time.get("daily_volatility_to_return_ratio"))
     largest_gain_share = optional_float(all_time.get("largest_daily_gain_share"))
 
     smoothness_adj = 0.0
@@ -1894,6 +1967,7 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         "pnl_smoothness_adjustment": round(smoothness_adj, 2),
         "lifetime_activity_adjustment": round(lifetime_adj, 2),
         "lifetime_pnl_adjustment": total_adj,
+        "pnl_ratio_base": ratio_base,
         "pnl_drawdown_to_total_pnl_ratio": None if drawdown_ratio is None else round(drawdown_ratio, 6),
         "pnl_largest_daily_abs_move_to_return_ratio": None if largest_move_ratio is None else round(largest_move_ratio, 6),
         "pnl_largest_daily_gain_share": None if largest_gain_share is None else round(largest_gain_share, 6),
@@ -2127,6 +2201,14 @@ def compute_scores_auto_v3(
     total_buy_30d = float(capacity_details.get("total_buy_usdc_30d") or 0.0)
     positions_value = capacity_details.get("positions_value")
     positions_value = None if positions_value is None else float(positions_value)
+    closed_total_pnl = pnl_details.get("closed_positions_realized_pnl_total")
+    closed_total_pnl = None if closed_total_pnl is None else float(closed_total_pnl)
+    total_pnl_retention_ratio = pnl_details.get("total_pnl_retention_ratio")
+    total_pnl_retention_ratio = None if total_pnl_retention_ratio is None else float(total_pnl_retention_ratio)
+    closed_to_total_pnl_multiplier = pnl_details.get("closed_to_total_pnl_multiplier")
+    closed_to_total_pnl_multiplier = (
+        None if closed_to_total_pnl_multiplier is None else float(closed_to_total_pnl_multiplier)
+    )
 
     if realized_30d < 0 and realized_7d < 0:
         add_quality_cap("recent_pnl_negative_45", 45.0)
@@ -2194,6 +2276,22 @@ def compute_scores_auto_v3(
         add_quality_cap("copy_capacity_low_48", 48.0)
     elif copy_capacity < 5:
         add_quality_cap("copy_capacity_watchlist_58", 58.0)
+    if closed_total_pnl is not None and closed_total_pnl >= 5000 and total_pnl_retention_ratio is not None:
+        if total_pnl_retention_ratio < 0.20:
+            add_quality_cap("total_pnl_retention_low_45", 45.0)
+        elif total_pnl_retention_ratio < 0.35:
+            add_quality_cap("total_pnl_retention_weak_50", 50.0)
+        elif total_pnl_retention_ratio < 0.55:
+            add_quality_cap("total_pnl_retention_watch_55", 55.0)
+        elif total_pnl_retention_ratio < 0.75:
+            add_quality_cap("total_pnl_retention_mild_60", 60.0)
+    if closed_total_pnl is not None and closed_total_pnl >= 5000 and closed_to_total_pnl_multiplier is not None:
+        if closed_to_total_pnl_multiplier >= 5:
+            add_quality_cap("closed_pnl_overstates_total_45", 45.0)
+        elif closed_to_total_pnl_multiplier >= 3:
+            add_quality_cap("closed_pnl_overstates_total_50", 50.0)
+        elif closed_to_total_pnl_multiplier >= 2:
+            add_quality_cap("closed_pnl_overstates_total_55", 55.0)
     if total_buy_30d > 0 and total_buy_30d < 5000:
         add_quality_cap("capital_scale_too_small_45", 45.0)
     elif total_buy_30d > 0 and total_buy_30d < 20000 and (positions_value is None or positions_value < 5000):
@@ -2305,7 +2403,15 @@ def compute_scores_auto_v3(
         score_flags.append("noncopyable_fast_observed_low_confidence")
     if conversion_buy_ratio > 0.12:
         score_flags.append("high_outcome_conversion")
-    if pnl_details.get("closed_positions_realized_pnl_30d", 0.0) > 0 and pnl_details.get("closed_positions_realized_pnl_7d", 0.0) > 0:
+    pnl_retention_ok = (
+        pnl_details.get("total_pnl_retention_ratio") is None
+        or float(pnl_details.get("total_pnl_retention_ratio") or 0.0) >= 0.55
+    )
+    if (
+        pnl_details.get("closed_positions_realized_pnl_30d", 0.0) > 0
+        and pnl_details.get("closed_positions_realized_pnl_7d", 0.0) > 0
+        and pnl_retention_ok
+    ):
         score_flags.append("strong_recent_pnl")
     score_flags.extend(data_flags)
     score_flags.extend(capacity_flags)

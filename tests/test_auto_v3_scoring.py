@@ -232,6 +232,9 @@ class AutoV3ScoringTests(unittest.TestCase):
         summary["pnl_curve"]["all_time"].update(
             {
                 "shape": "volatile_up",
+                "max_drawdown": 51300,
+                "daily_volatility": 17860,
+                "largest_daily_abs_move": 46930,
                 "drawdown_to_return_ratio": 2.7,
                 "daily_volatility_to_return_ratio": 0.94,
                 "largest_daily_abs_move_to_return_ratio": 2.47,
@@ -242,6 +245,56 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertNotEqual(result["alert_grade"], "B")
         self.assertIn("recent_7d_loss_material_55", result["score_flags"])
         self.assertIn("lifetime_drawdown_extreme_52", result["score_flags"])
+
+    def test_closed_pnl_overstatement_is_capped_by_total_pnl_retention(self):
+        metrics = base_metrics()
+        metrics["total_buy_usdc"] = 102000.0
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "account_total_pnl": 15845.0,
+                "closed_positions_realized_pnl_total": 158323.0,
+                "open_positions_cash_pnl_sum": -137607.0,
+                "open_positions_realized_pnl_sum": -4871.0,
+                "closed_positions_realized_pnl_30d": 49452.0,
+                "closed_positions_realized_pnl_7d": 9036.0,
+                "positions_value": 13162.0,
+                "account_age_days": 522,
+                "closed_position_active_days": 363,
+                "closed_position_active_months": 18,
+                "account_lifetime_months": 18,
+                "closed_position_active_month_ratio": 1.0,
+                "closed_position_active_days_30d": 22,
+                "closed_position_active_days_90d": 72,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "smooth_up",
+                "total_return": 159518.0,
+                "max_drawdown": 5017.0,
+                "daily_volatility": 1980.0,
+                "largest_daily_abs_move": 14294.0,
+                "drawdown_to_return_ratio": 0.03145,
+                "daily_volatility_to_return_ratio": 0.0124,
+                "largest_daily_abs_move_to_return_ratio": 0.0896,
+            }
+        )
+        summary["pnl_curve"]["d30"].update({"total_return": 49452.0, "max_drawdown": 3363.0})
+        summary["pnl_curve"]["d7"].update({"total_return": 10279.0, "max_drawdown": 887.0})
+
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, None, {}, 50.0, 60.0, None)
+        breakdown = result["score_breakdown_v3"]
+
+        self.assertLessEqual(result["final_score"], 45)
+        self.assertLessEqual(result["pnl_quality_score"], 6)
+        self.assertEqual(breakdown["pnl_ratio_base"], "account_total_pnl")
+        self.assertGreater(breakdown["closed_to_total_pnl_multiplier"], 5)
+        self.assertLess(breakdown["total_pnl_retention_ratio"], 0.2)
+        self.assertGreater(breakdown["pnl_largest_daily_abs_move_to_return_ratio"], 0.8)
+        self.assertIn("total_pnl_retention_low_45", result["score_flags"])
+        self.assertIn("closed_pnl_overstates_total_45", result["score_flags"])
+        self.assertNotIn("strong_recent_pnl", result["score_flags"])
 
     def test_sports_concentration_with_short_track_record_is_hard_capped(self):
         metrics = base_metrics()
