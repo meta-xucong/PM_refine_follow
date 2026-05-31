@@ -93,6 +93,25 @@ def good_api_summary() -> dict:
     }
 
 
+def daily_points_from_months(months: list[tuple[str, int, float]]) -> list[dict]:
+    points: list[dict] = []
+    cumulative = 0.0
+    for month, days, pnl in months:
+        year_text, month_text = month.split("-", 1)
+        daily = pnl / max(days, 1)
+        for index in range(days):
+            day = min(index + 1, 28)
+            cumulative += daily
+            points.append(
+                {
+                    "date": f"{year_text}-{month_text}-{day:02d}",
+                    "daily_realized_pnl": daily,
+                    "cumulative_realized_pnl": cumulative,
+                }
+            )
+    return points
+
+
 class AutoV3ScoringTests(unittest.TestCase):
     def setUp(self):
         self.analyze = load_analyze_module()
@@ -295,6 +314,157 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertIn("total_pnl_retention_low_45", result["score_flags"])
         self.assertIn("closed_pnl_overstates_total_45", result["score_flags"])
         self.assertNotIn("strong_recent_pnl", result["score_flags"])
+
+    def test_recent_profit_concentration_is_capped_as_short_validated_track(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "dual_side_buy_usdc_ratio": 0.157589,
+                "dual_side_buy_usdc_ratio_1h": 0.013087,
+                "nested_concurrent_leg_ratio": 0.792045,
+                "weighted_multi_market_risk_ratio": 0.30508,
+                "noncopyable_token_fast_buy_ratio": 0.011427,
+                "noncopyable_token_fast_sell_ratio": 0.031508,
+                "noncopyable_token_fast_token_ratio": 0.02439,
+                "deployable_event_equivalent": 85.5,
+                "deployable_event_density": 2.861206,
+                "event_rebalance_20m_event_ratio": 0.09322,
+                "trade_count": 1707.0,
+                "active_trading_days": 31.0,
+                "avg_trades_per_active_day": 55.064516,
+                "total_buy_usdc": 137402.910221,
+                "total_sell_usdc": 102706.015268,
+                "median_buy_notional": 96.045447,
+                "p90_buy_notional": 242.666174,
+                "extreme_price_trade_ratio": 0.039002,
+            }
+        )
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "positions_value": 28458.2815,
+                "account_total_pnl": 18308.442308,
+                "closed_positions_realized_pnl_total": 14834.097808,
+                "open_positions_cash_pnl_sum": 3487.4587,
+                "open_positions_realized_pnl_sum": -13.1142,
+                "closed_positions_realized_pnl_30d": 6190.19607,
+                "closed_positions_realized_pnl_7d": 2169.741635,
+                "account_age_days": 343.293,
+                "closed_position_active_days": 192,
+                "closed_position_active_months": 8,
+                "account_lifetime_months": 12,
+                "closed_position_active_month_ratio": 0.666667,
+                "closed_position_active_days_30d": 30,
+                "closed_position_active_days_90d": 90,
+                "closed_position_active_day_ratio_lifetime": 0.55814,
+                "closed_position_recent_30d_active_day_share": 0.15625,
+                "closed_position_recent_90d_active_day_share": 0.46875,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "smooth_up",
+                "total_return": 14836.305582,
+                "max_drawdown": 4543.645281,
+                "daily_volatility": 674.613764,
+                "largest_daily_abs_move": 5521.296685,
+                "largest_daily_gain_share": 0.165346,
+            }
+        )
+        summary["pnl_curve"]["d30"].update({"shape": "volatile_up", "score": 2, "total_return": 4620.238323})
+        summary["pnl_curve"]["d7"].update({"shape": "smooth_up", "score": 2, "total_return": 2103.342354})
+        summary["pnl_curve"]["daily_points"] = daily_points_from_months(
+            [
+                ("2025-06", 8, -26.71),
+                ("2025-07", 15, -4.32),
+                ("2025-12", 20, -31.45),
+                ("2026-01", 30, 80.39),
+                ("2026-02", 28, -864.84),
+                ("2026-03", 31, 2429.50),
+                ("2026-04", 30, 7230.89),
+                ("2026-05", 30, 6020.65),
+            ]
+        )
+        anchor = {"target_anchor_score": 60, "raw_base_score_v3": 72.43, "calibration_scale": 0.65}
+
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, anchor, {}, 50.0, 60.0, None)
+        breakdown = result["score_breakdown_v3"]
+
+        self.assertLessEqual(result["final_score"], 55)
+        self.assertIn("short_validated_alpha_track", result["score_flags"])
+        self.assertIn("short_validated_alpha_track_55", result["score_flags"])
+        self.assertNotIn("consistent_activity", result["score_flags"])
+        self.assertEqual(breakdown["validated_profit_months"], 3)
+        self.assertEqual(breakdown["pre_recent_validated_profit_months"], 0)
+        self.assertGreaterEqual(breakdown["recent_90d_pnl_share"], 0.75)
+
+    def test_distributed_validated_profit_track_is_not_capped(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "dual_side_buy_usdc_ratio": 0.011519,
+                "nested_concurrent_leg_ratio": 0.636681,
+                "weighted_multi_market_risk_ratio": 0.165393,
+                "deployable_event_equivalent": 50.5,
+                "deployable_event_density": 1.697865,
+                "trade_count": 1054.0,
+                "active_trading_days": 30.0,
+                "avg_trades_per_active_day": 35.133333,
+                "total_buy_usdc": 52206.293212,
+                "median_buy_notional": 66.0,
+                "p90_buy_notional": 108.45192,
+                "extreme_price_trade_ratio": 0.093127,
+            }
+        )
+        summary = good_api_summary()
+        summary["summary"].update(
+            {
+                "positions_value": 15840.1478,
+                "account_total_pnl": 9039.343002,
+                "closed_positions_realized_pnl_total": 8398.780702,
+                "closed_positions_realized_pnl_30d": 4742.768396,
+                "closed_positions_realized_pnl_7d": 1376.616277,
+                "account_age_days": 880.96,
+                "closed_position_active_days": 235,
+                "closed_position_active_months": 28,
+                "account_lifetime_months": 29,
+                "closed_position_active_month_ratio": 0.965517,
+                "closed_position_active_days_30d": 28,
+                "closed_position_active_days_90d": 70,
+                "closed_position_active_day_ratio_lifetime": 0.26644,
+                "closed_position_recent_90d_active_day_share": 0.297872,
+            }
+        )
+        summary["pnl_curve"]["all_time"].update(
+            {
+                "shape": "volatile_up",
+                "total_return": 8392.626181,
+                "max_drawdown": 3416.966274,
+                "daily_volatility": 398.903174,
+                "largest_daily_abs_move": 2942.986307,
+                "largest_daily_gain_share": 0.080537,
+            }
+        )
+        summary["pnl_curve"]["daily_points"] = daily_points_from_months(
+            [
+                ("2025-10", 18, -79.29),
+                ("2025-11", 15, 2925.33),
+                ("2025-12", 17, -1871.61),
+                ("2026-01", 21, 522.56),
+                ("2026-02", 21, 1319.35),
+                ("2026-03", 19, -1976.13),
+                ("2026-04", 24, 506.06),
+                ("2026-05", 28, 6365.98),
+            ]
+        )
+
+        result = self.analyze.compute_scores_auto_v3(metrics, summary, None, {}, 50.0, 60.0, None)
+        breakdown = result["score_breakdown_v3"]
+
+        self.assertNotIn("short_validated_alpha_track", result["score_flags"])
+        self.assertIn("long_consistent_activity", result["score_flags"])
+        self.assertGreaterEqual(breakdown["validated_profit_months"], 5)
+        self.assertLess(breakdown["recent_90d_pnl_share"], 0.75)
 
     def test_sports_concentration_with_short_track_record_is_hard_capped(self):
         metrics = base_metrics()

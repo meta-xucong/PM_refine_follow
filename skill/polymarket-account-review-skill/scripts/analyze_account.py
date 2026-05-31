@@ -6,7 +6,7 @@ import csv
 import json
 import re
 from collections import Counter, defaultdict
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from statistics import median
 from typing import Any
@@ -1781,6 +1781,124 @@ def infer_account_age_days(api_summary: dict[str, Any] | None) -> float | None:
     return None
 
 
+def monthly_pnl_validation_details(api_summary: dict[str, Any] | None, total_pnl: float | None) -> dict[str, Any]:
+    daily_points = pnl_curve_node(api_summary).get("daily_points") or []
+    if not isinstance(daily_points, list) or not daily_points:
+        return {
+            "pnl_active_months_observed": 0,
+            "meaningful_active_months": 0,
+            "validated_profit_months": 0,
+            "pre_recent_validated_profit_months": 0,
+            "first_validated_profit_month": None,
+            "last_validated_profit_month": None,
+            "validated_profit_span_months": 0,
+            "validated_profit_floor": None,
+            "meaningful_month_floor": None,
+            "recent_90d_pnl": None,
+            "pre_recent_pnl": None,
+            "recent_90d_pnl_share": None,
+            "recent_90d_positive_pnl_share": None,
+            "recent_90d_active_days_from_curve": 0,
+        }
+
+    month_stats: dict[str, dict[str, Any]] = {}
+    parsed_points: list[tuple[Any, float]] = []
+    for point in daily_points:
+        if not isinstance(point, dict):
+            continue
+        date_text = str(point.get("date") or "")[:10]
+        pnl = optional_float(point.get("daily_realized_pnl"))
+        if not date_text or pnl is None:
+            continue
+        try:
+            day = datetime.fromisoformat(date_text).date()
+        except ValueError:
+            continue
+        month_key = f"{day.year:04d}-{day.month:02d}"
+        stats = month_stats.setdefault(month_key, {"days": 0, "pnl": 0.0})
+        stats["days"] += 1
+        stats["pnl"] += pnl
+        parsed_points.append((day, pnl))
+
+    if not parsed_points:
+        return {
+            "pnl_active_months_observed": 0,
+            "meaningful_active_months": 0,
+            "validated_profit_months": 0,
+            "pre_recent_validated_profit_months": 0,
+            "first_validated_profit_month": None,
+            "last_validated_profit_month": None,
+            "validated_profit_span_months": 0,
+            "validated_profit_floor": None,
+            "meaningful_month_floor": None,
+            "recent_90d_pnl": None,
+            "pre_recent_pnl": None,
+            "recent_90d_pnl_share": None,
+            "recent_90d_positive_pnl_share": None,
+            "recent_90d_active_days_from_curve": 0,
+        }
+
+    curve_total_pnl = sum(pnl for _, pnl in parsed_points)
+    pnl_base = abs(total_pnl) if total_pnl is not None else abs(curve_total_pnl)
+    pnl_base = max(pnl_base, 1.0)
+    validated_profit_floor = max(500.0, pnl_base * 0.03)
+    meaningful_month_floor = max(200.0, pnl_base * 0.015)
+    last_day = max(day for day, _ in parsed_points)
+    recent_cutoff = last_day - timedelta(days=89)
+    recent_90d_pnl = sum(pnl for day, pnl in parsed_points if day >= recent_cutoff)
+    recent_positive_pnl = sum(max(0.0, pnl) for day, pnl in parsed_points if day >= recent_cutoff)
+    positive_pnl = sum(max(0.0, pnl) for _, pnl in parsed_points)
+    total_return_base = curve_total_pnl if abs(curve_total_pnl) > 1e-9 else total_pnl
+    recent_90d_pnl_share = None
+    if total_return_base is not None and total_return_base > 0 and recent_90d_pnl > 0:
+        recent_90d_pnl_share = recent_90d_pnl / max(total_return_base, 1.0)
+    recent_90d_positive_pnl_share = None
+    if positive_pnl > 0:
+        recent_90d_positive_pnl_share = recent_positive_pnl / positive_pnl
+    pre_recent_pnl = curve_total_pnl - recent_90d_pnl
+
+    meaningful_months: list[str] = []
+    validated_months: list[str] = []
+    pre_recent_validated_months: list[str] = []
+    for month, stats in sorted(month_stats.items()):
+        pnl = float(stats.get("pnl") or 0.0)
+        days = int(stats.get("days") or 0)
+        if days >= 8 and abs(pnl) >= meaningful_month_floor:
+            meaningful_months.append(month)
+        if days >= 3 and pnl >= validated_profit_floor:
+            validated_months.append(month)
+            month_end = datetime.fromisoformat(f"{month}-01").date()
+            if month_end < recent_cutoff.replace(day=1):
+                pre_recent_validated_months.append(month)
+
+    def month_index(month: str) -> int:
+        year_text, month_text = month.split("-", 1)
+        return int(year_text) * 12 + int(month_text)
+
+    validated_span_months = 0
+    if validated_months:
+        validated_span_months = month_index(validated_months[-1]) - month_index(validated_months[0]) + 1
+
+    return {
+        "pnl_active_months_observed": len(month_stats),
+        "meaningful_active_months": len(meaningful_months),
+        "validated_profit_months": len(validated_months),
+        "pre_recent_validated_profit_months": len(pre_recent_validated_months),
+        "first_validated_profit_month": validated_months[0] if validated_months else None,
+        "last_validated_profit_month": validated_months[-1] if validated_months else None,
+        "validated_profit_span_months": validated_span_months,
+        "validated_profit_floor": round(validated_profit_floor, 6),
+        "meaningful_month_floor": round(meaningful_month_floor, 6),
+        "recent_90d_pnl": round(recent_90d_pnl, 6),
+        "pre_recent_pnl": round(pre_recent_pnl, 6),
+        "recent_90d_pnl_share": None if recent_90d_pnl_share is None else round(recent_90d_pnl_share, 6),
+        "recent_90d_positive_pnl_share": (
+            None if recent_90d_positive_pnl_share is None else round(recent_90d_positive_pnl_share, 6)
+        ),
+        "recent_90d_active_days_from_curve": sum(1 for day, _ in parsed_points if day >= recent_cutoff),
+    }
+
+
 def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict[str, Any]) -> tuple[float, list[str], dict[str, Any], list[str]]:
     summary = summary_node(api_summary)
     curve = pnl_curve_node(api_summary)
@@ -1889,6 +2007,38 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         recent_90d_active_day_share = active_days_90d / max(1.0, active_days)
     recent_30d_active_day_share = active_days_30d / max(1.0, active_days)
     recent_trade_days = max(active_days_30d, to_float(metrics.get("active_trading_days"), 0.0))
+    monthly_validation = monthly_pnl_validation_details(api_summary, total_pnl)
+    validated_profit_months = int(monthly_validation.get("validated_profit_months") or 0)
+    validated_profit_span_months = int(monthly_validation.get("validated_profit_span_months") or 0)
+    pre_recent_validated_profit_months = int(monthly_validation.get("pre_recent_validated_profit_months") or 0)
+    recent_90d_pnl_share = optional_float(monthly_validation.get("recent_90d_pnl_share")) or 0.0
+    recent_90d_positive_pnl_share = optional_float(monthly_validation.get("recent_90d_positive_pnl_share")) or 0.0
+    pre_recent_pnl = optional_float(monthly_validation.get("pre_recent_pnl")) or 0.0
+    short_validated_alpha_track = (
+        account_age_days is not None
+        and account_age_days >= 270
+        and total_pnl is not None
+        and total_pnl >= 5000
+        and 0 < validated_profit_months <= 3
+        and validated_profit_span_months <= 4
+        and pre_recent_validated_profit_months == 0
+        and recent_90d_pnl_share >= 0.75
+        and recent_90d_positive_pnl_share >= 0.55
+        and active_days_90d >= 45
+    )
+    recent_profit_regime_ramp = (
+        account_age_days is not None
+        and account_age_days >= 270
+        and total_pnl is not None
+        and total_pnl >= 5000
+        and 0 < validated_profit_months <= 4
+        and recent_90d_pnl_share >= 0.70
+        and recent_90d_positive_pnl_share >= 0.50
+        and pre_recent_pnl <= max(500.0, abs(total_pnl) * 0.15)
+        and active_days_90d >= 45
+        and not short_validated_alpha_track
+    )
+    track_quality_limited = short_validated_alpha_track or recent_profit_regime_ramp
     lifetime_adj = 0.0
     if (
         account_age_days is not None
@@ -1896,6 +2046,7 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         and active_month_ratio >= 0.55
         and active_days >= 90
         and (active_day_ratio_lifetime or 0.0) >= 0.20
+        and not track_quality_limited
     ):
         lifetime_adj += 4.0
         flags.append("long_consistent_activity")
@@ -1905,6 +2056,7 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         and active_month_ratio >= 0.55
         and active_days >= 35
         and (active_day_ratio_lifetime or 0.0) >= 0.16
+        and not track_quality_limited
     ):
         lifetime_adj += 3.0
         flags.append("consistent_activity")
@@ -1915,6 +2067,7 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         and active_days >= 35
         and (active_day_ratio_lifetime or 0.0) >= 0.12
         and recent_90d_active_day_share <= 0.75
+        and not track_quality_limited
     ):
         lifetime_adj += 2.0
         flags.append("consistent_activity")
@@ -1941,7 +2094,13 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         and active_month_ratio < 0.20
         and recent_trade_days >= 8
     )
-    if late_activity_ramp:
+    if short_validated_alpha_track:
+        lifetime_adj -= 4.0
+        flags.append("short_validated_alpha_track")
+    elif recent_profit_regime_ramp:
+        lifetime_adj -= 2.0
+        flags.append("recent_profit_regime_ramp")
+    elif late_activity_ramp:
         lifetime_adj -= 5.0
         flags.append("late_activity_ramp")
     elif dormant_recent_spike:
@@ -1980,6 +2139,9 @@ def compute_lifetime_pnl_rules(api_summary: dict[str, Any] | None, metrics: dict
         "closed_position_active_day_ratio_lifetime": None if active_day_ratio_lifetime is None else round(active_day_ratio_lifetime, 6),
         "closed_position_recent_90d_active_day_share": round(recent_90d_active_day_share, 6),
         "closed_position_recent_30d_active_day_share": round(recent_30d_active_day_share, 6),
+        **monthly_validation,
+        "short_validated_alpha_track": short_validated_alpha_track,
+        "recent_profit_regime_ramp": recent_profit_regime_ramp,
         "late_activity_ramp": late_activity_ramp,
         "dormant_recent_spike": dormant_recent_spike,
         "short_track_recent_activation": short_track_recent_activation,
@@ -2198,6 +2360,8 @@ def compute_scores_auto_v3(
     late_activity_ramp = bool(lifetime_details.get("late_activity_ramp"))
     dormant_recent_spike = bool(lifetime_details.get("dormant_recent_spike"))
     short_track_recent_activation = bool(lifetime_details.get("short_track_recent_activation"))
+    short_validated_alpha_track = bool(lifetime_details.get("short_validated_alpha_track"))
+    recent_profit_regime_ramp = bool(lifetime_details.get("recent_profit_regime_ramp"))
     total_buy_30d = float(capacity_details.get("total_buy_usdc_30d") or 0.0)
     positions_value = capacity_details.get("positions_value")
     positions_value = None if positions_value is None else float(positions_value)
@@ -2249,6 +2413,10 @@ def compute_scores_auto_v3(
         add_quality_cap("dormant_recent_spike_50", 50.0)
     elif short_track_recent_activation:
         add_quality_cap("short_track_recent_activation_45", 45.0)
+    if short_validated_alpha_track:
+        add_quality_cap("short_validated_alpha_track_55", 55.0)
+    elif recent_profit_regime_ramp:
+        add_quality_cap("recent_profit_regime_ramp_58", 58.0)
     elif account_age_days := lifetime_details.get("account_age_days"):
         if float(account_age_days) >= 270 and active_month_ratio < 0.15 and active_days_lifetime < 30:
             add_quality_cap("sparse_lifetime_activity_52", 52.0)
@@ -2260,6 +2428,8 @@ def compute_scores_auto_v3(
         or late_activity_ramp
         or dormant_recent_spike
         or short_track_recent_activation
+        or short_validated_alpha_track
+        or recent_profit_regime_ramp
         or (lifetime_drawdown_ratio is not None and lifetime_drawdown_ratio > 0.30)
         or (lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.20)
     )

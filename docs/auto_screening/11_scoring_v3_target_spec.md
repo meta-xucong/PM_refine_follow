@@ -30,7 +30,7 @@ Auto V3 要解决的问题：
 1. 榜单命中只保留轻量加分，不能再把差账号推高。
 2. 近期收益质量按资金规模降权，30d 买入额过小即使收益率高也不能吃满分。
 3. 资金规模进入 `copy_capacity_score`，过小、过大都扣分。
-4. 账号“有效活跃期”进入生命周期规则。长期账号如果大部分有效活跃集中在近 90 天，视为 `late_activity_ramp`。
+4. 账号“有效活跃期”进入生命周期规则。长期账号如果大部分有效活跃集中在近 90 天，视为 `late_activity_ramp`；如果收益本身主要由近 90 天贡献，且有效盈利月很少，视为 `short_validated_alpha_track`。
 5. 近期亏损、生命周期大回撤、单日巨大波动、长期稀疏活跃不再只是扣分，而是触发最终分封顶。
 6. 修复 `/closed-positions` 分页：当 API 静默把 `limit=500` 限成 50 行时，继续用观测到的行数推进 offset，避免把 50 条历史误判为完整 lifetime。
 
@@ -52,6 +52,8 @@ Auto V3 要解决的问题：
 | 上述 late ramp 且 30d 买入额 < 20000、容量分 < 4 或活跃天数 < 30 | 48 | `late_activity_ramp_small_scale_48` |
 | 长期沉睡后近期突然活跃 | 50 | `dormant_recent_spike_50` |
 | 长账号有效活跃轨迹偏短，且近期活跃集中（近 30d 活跃占比偏高） | 45 | `short_track_recent_activation_45` |
+| 长账号有效盈利月 <= 3，且近 90 天贡献绝大多数 lifetime PnL | 55 | `short_validated_alpha_track_55` |
+| 有效盈利月 <= 4，且近 90 天收益明显主导历史收益 | 58 | `recent_profit_regime_ramp_58` |
 | 体育盘买入占比 >= 90%，且活跃轨迹/波动结构不稳 | 39 | `sports_concentration_unstable_39` |
 | 体育盘买入占比 >= 80%，且稳定性不足 | 45 | `sports_concentration_watch_45` |
 | 可跟单容量分 < 4 | 48 | `copy_capacity_low_48` |
@@ -356,7 +358,7 @@ lifetime_pnl_adjustment =
 
 - all-time PnL `smooth_up`，且总 PnL 为正。
 - 最大回撤相对总收益较低。
-- 账号年龄长、活跃月份覆盖高、长期都有交易/结算活动。
+- 账号年龄长、活跃月份覆盖高、长期都有交易/结算活动，且有效盈利不只是集中在最近 90 天。
 
 扣分：
 
@@ -365,6 +367,15 @@ lifetime_pnl_adjustment =
 - 单日收益尖峰占总资金 PnL 过高。
 - 日收益波动相对总资金 PnL 过高。
 - 账号年龄长但历史活跃月份很少，且最近 30 天突然活跃。
+- 账号年龄/活跃天数看似足够，但真正产生主要盈利的有效月份只有最近 90 天。
+
+有效盈利月规则：
+
+- 从 `pnl_curve.daily_points` 按自然月聚合 `daily_realized_pnl`。
+- `validated_profit_months` 只统计月度 PnL 大于 `max(500, abs(account_total_pnl) * 3%)` 且至少 3 个活跃结算日的月份。
+- `recent_90d_pnl_share = recent_90d_pnl / all_time_daily_realized_pnl`，用于判断 lifetime PnL 是否主要由最近 90 天贡献。
+- 如果账号年龄 >= 270 天、总 PnL >= 5000、`validated_profit_months <= 3`、有效盈利跨度 <= 4 个月、近 90 天 PnL 占比 >= 75%，且近 90 天之前没有有效盈利月，则触发 `short_validated_alpha_track`，不给 `consistent_activity` 加分，并触发 55 分封顶。
+- 如果有效盈利月 <= 4 且近 90 天 PnL 占比 >= 70%，触发较轻的 `recent_profit_regime_ramp`，不给长期一致性加分，并触发 58 分封顶。
 
 输出字段：
 
@@ -374,6 +385,10 @@ lifetime_pnl_adjustment =
 - `score_breakdown_v3.pnl_smoothness_adjustment`
 - `score_breakdown_v3.lifetime_activity_adjustment`
 - `score_breakdown_v3.lifetime_pnl_adjustment`
+- `score_breakdown_v3.validated_profit_months`
+- `score_breakdown_v3.first_validated_profit_month`
+- `score_breakdown_v3.recent_90d_pnl_share`
+- `score_breakdown_v3.pre_recent_validated_profit_months`
 
 新增 flags：
 
@@ -389,6 +404,8 @@ lifetime_pnl_adjustment =
 - `consistent_activity`
 - `dormant_recent_spike`
 - `short_track_recent_activation`
+- `short_validated_alpha_track`
+- `recent_profit_regime_ramp`
 - `sparse_lifetime_activity`
 - `sports_concentration_unstable_39`
 - `sports_concentration_watch_45`
