@@ -58,6 +58,7 @@ class StorageCleanupTests(unittest.TestCase):
             cfg["progress_path"] = str(data_dir / "progress.json")
             cfg["storage_cleanup"] = {
                 "enabled": True,
+                "min_free_gb": 0.1,
                 "archives_keep_latest": 1,
                 "archives_max_age_days": 365,
                 "accounts_keep_latest": 0,

@@ -454,8 +454,17 @@ else: data_quality_adjustment = -10
 - `p90_buy_notional`
 - `tiny_trade_buy_ratio`
 - `extreme_price_trade_ratio`
+- `hard_extreme_price_buy_ratio`
+- `soft_extreme_price_buy_ratio`
+- `hard_extreme_price_event_ratio`
+- `soft_extreme_price_event_ratio`
 - `near_resolution_trade_ratio`
 - `still_open_recent_market_ratio`
+- `long_hold_sell_usdc_ratio_30d`
+- `long_hold_sell_usdc_ratio_60d`
+- `open_position_age_cost_ratio_30d`
+- `open_position_age_cost_ratio_60d`
+- `weighted_median_holding_time_sec`
 - `avg_trades_per_active_day`
 
 建议规则：
@@ -471,7 +480,8 @@ else: data_quality_adjustment = -10
 扣分：
 
 - 小额刷量占比高: `-2..-4`
-- 极端价格交易占比高: `-2..-4`
+- 极端价格交易占比高: `-2..-6`
+- 长持仓/老旧未平仓占比高: `-1.5..-4`
 - 临近结算/很短窗口交易占比高: `-2..-4`
 - 活跃日均交易数过高: `-2..-5`
 
@@ -481,6 +491,18 @@ else: data_quality_adjustment = -10
 copy_capacity_score = clamp(score, 0, 10)
 copy_capacity_adjustment = (copy_capacity_score - 5) * 2
 ```
+
+极端价格定义：
+
+- hard extreme: BUY price `<= 0.03` 或 `>= 0.97`。
+- soft extreme: BUY price `<= 0.05` 或 `>= 0.95`。
+- event ratio 只统计有效买入金额达到 `max(5 USDC, total_buy_usdc * 0.001)` 的 material event；如果某事件内 extreme BUY 占事件 BUY `>= 50%`，该事件记为 extreme event。
+
+长持仓定义：
+
+- sold long hold: FIFO 匹配 BUY/SELL，按 SELL notional 加权统计，持仓时间 `>=30d` / `>=60d`。
+- open age: 对未被 SELL 匹配的 BUY lot，按剩余成本加权统计，年龄 `>=30d` / `>=60d`。
+- `weighted_median_holding_time_sec >= 30d` 等价于大部分已卖出 notional 周转慢，需要参与最终封顶。
 
 ## Leaderboard Consistency Adjustment
 
@@ -560,6 +582,28 @@ automation_risk_penalty = clamp(total, -25, 0)
 
 - `data_quality_score < 4`: final cap `39`，不推送
 - `data_quality_score < 6`: final cap `58`
+
+### Copy Liquidity / Structured-Price Caps
+
+这组规则用于防止收益曲线把“结构化套利、结算价格套利、极慢周转”账号重新抬成高分候选。
+
+极端价格封顶：
+
+- `hard_extreme_price_buy_ratio >= 0.50` 或 `hard_extreme_price_event_ratio >= 0.60`: final cap `45`，标记 `structured_arbitrage_like`，触发 severe risk gate。
+- `hard_extreme_price_buy_ratio >= 0.35`: final cap `50`。
+- `soft_extreme_price_buy_ratio >= 0.60` 或 `soft_extreme_price_event_ratio >= 0.50`: final cap `55`。
+- `hard_extreme_price_buy_ratio >= 0.25` 或 `soft_extreme_price_buy_ratio >= 0.40` 或 `soft_extreme_price_event_ratio >= 0.35`: final cap `60`。
+
+长持仓 / 资金锁定封顶：
+
+- `long_hold_sell_usdc_ratio_60d >= 0.50` 或 `open_position_age_cost_ratio_60d >= 0.50` 或 `weighted_median_holding_time_sec >= 60d`: final cap `55`。
+- `long_hold_sell_usdc_ratio_30d >= 0.50` 或 `open_position_age_cost_ratio_30d >= 0.50` 或 `weighted_median_holding_time_sec >= 30d`: final cap `60`。
+- `long_hold_sell_usdc_ratio_30d >= 0.35` 或 `open_position_age_cost_ratio_30d >= 0.35`: 先只加 watch flag，避免因为少数长期仓位误杀。
+
+解释：
+
+- 极端价格 BUY 占比高，通常说明账号收益来自接近归零/归一的 token、结算前后或结构化组合，普通跟单的滑点和时点误差会显著放大。
+- 长持仓占比高，不一定说明账号差，但会显著降低跟单资金周转。若超过 50%，该维度最多只允许到观察/筛选级，不允许进入宽跟高分区。
 
 ## Anchor V3
 

@@ -13,6 +13,9 @@ from typing import Any
 
 FAST_WINDOW_SECONDS = 20 * 60
 HOUR_SECONDS = 60 * 60
+DAY_SECONDS = 24 * 60 * 60
+LONG_HOLD_30D_SECONDS = 30 * DAY_SECONDS
+LONG_HOLD_60D_SECONDS = 60 * DAY_SECONDS
 CONVERSION_WINDOW_SECONDS = 24 * 60 * 60
 NONCOPY_PENALTY_MIN_TOKEN_FAST_COUNT = 80
 NONCOPY_PENALTY_MIN_ACTIVE_DAYS = 8
@@ -736,6 +739,8 @@ def holding_metrics(rows: list[dict[str, Any]], total_sell_usdc: float) -> dict[
     weighted_samples: list[tuple[float, float]] = []
     sold_within_20m = 0.0
     sold_within_1h = 0.0
+    sold_after_30d = 0.0
+    sold_after_60d = 0.0
 
     for row in rows:
         tk = token_key(row)
@@ -762,25 +767,66 @@ def holding_metrics(rows: list[dict[str, Any]], total_sell_usdc: float) -> dict[
                 sold_within_20m += matched_usdc
             if duration <= HOUR_SECONDS:
                 sold_within_1h += matched_usdc
+            if duration >= LONG_HOLD_30D_SECONDS:
+                sold_after_30d += matched_usdc
+            if duration >= LONG_HOLD_60D_SECONDS:
+                sold_after_60d += matched_usdc
 
             lot["qty"] -= take
             remaining -= take
             if lot["qty"] <= 1e-9:
                 lots[tk].pop(0)
 
+    now_ts = rows[-1]["timestamp"] if rows else 0
+    open_cost_samples: list[tuple[float, float]] = []
+    open_cost_total = 0.0
+    open_cost_after_30d = 0.0
+    open_cost_after_60d = 0.0
+    for token_lots in lots.values():
+        for lot in token_lots:
+            remaining_cost = max(0.0, lot["qty"]) * max(0.0, lot["unit_usdc"])
+            if remaining_cost <= 0:
+                continue
+            age = max(0.0, now_ts - lot["timestamp"])
+            open_cost_total += remaining_cost
+            open_cost_samples.append((age, remaining_cost))
+            if age >= LONG_HOLD_30D_SECONDS:
+                open_cost_after_30d += remaining_cost
+            if age >= LONG_HOLD_60D_SECONDS:
+                open_cost_after_60d += remaining_cost
+
+    open_age_metrics = {
+        "open_position_age_cost_sum": round(open_cost_total, 6),
+        "open_position_age_cost_ratio_30d": safe_ratio(open_cost_after_30d, open_cost_total),
+        "open_position_age_cost_ratio_60d": safe_ratio(open_cost_after_60d, open_cost_total),
+        "open_position_weighted_median_age_sec": weighted_percentile(open_cost_samples, 0.5),
+        "open_position_weighted_p75_age_sec": weighted_percentile(open_cost_samples, 0.75),
+        "open_position_weighted_p90_age_sec": weighted_percentile(open_cost_samples, 0.90),
+    }
+
     if not hold_durations:
         return {
             "median_holding_time_sec": None,
             "weighted_median_holding_time_sec": None,
+            "weighted_p75_holding_time_sec": None,
+            "weighted_p90_holding_time_sec": None,
             "sell_usdc_ratio_within_20m": None,
             "sell_usdc_ratio_within_1h": None,
+            "long_hold_sell_usdc_ratio_30d": None,
+            "long_hold_sell_usdc_ratio_60d": None,
+            **open_age_metrics,
         }
 
     return {
         "median_holding_time_sec": float(median(hold_durations)),
         "weighted_median_holding_time_sec": weighted_percentile(weighted_samples, 0.5),
+        "weighted_p75_holding_time_sec": weighted_percentile(weighted_samples, 0.75),
+        "weighted_p90_holding_time_sec": weighted_percentile(weighted_samples, 0.90),
         "sell_usdc_ratio_within_20m": safe_ratio(sold_within_20m, total_sell_usdc),
         "sell_usdc_ratio_within_1h": safe_ratio(sold_within_1h, total_sell_usdc),
+        "long_hold_sell_usdc_ratio_30d": safe_ratio(sold_after_30d, total_sell_usdc),
+        "long_hold_sell_usdc_ratio_60d": safe_ratio(sold_after_60d, total_sell_usdc),
+        **open_age_metrics,
     }
 
 
@@ -815,17 +861,50 @@ def capacity_metrics(rows: list[dict[str, Any]], total_buy_usdc: float) -> dict[
     buy_rows = [r for r in rows if r["side"] == "BUY"]
     buy_notional = [float(r["usdcSize"]) for r in buy_rows if float(r["usdcSize"]) > 0]
     tiny_buy_usdc = sum(v for v in buy_notional if v < 2.0)
-    extreme_price_buy = sum(
-        float(r["usdcSize"])
-        for r in buy_rows
-        if 0.0 < float(r.get("price") or 0.0) <= 0.03 or float(r.get("price") or 0.0) >= 0.97
-    )
+    hard_extreme_price_buy = 0.0
+    soft_extreme_price_buy = 0.0
+    event_buy: dict[str, float] = defaultdict(float)
+    event_hard_extreme_buy: dict[str, float] = defaultdict(float)
+    event_soft_extreme_buy: dict[str, float] = defaultdict(float)
+    for row in buy_rows:
+        buy_usdc = float(row["usdcSize"])
+        price = float(row.get("price") or 0.0)
+        event_key = str(row.get("eventSlug") or row.get("conditionId") or "unknown_event")
+        event_buy[event_key] += buy_usdc
+        is_hard_extreme = 0.0 < price <= 0.03 or price >= 0.97
+        is_soft_extreme = 0.0 < price <= 0.05 or price >= 0.95
+        if is_hard_extreme:
+            hard_extreme_price_buy += buy_usdc
+            event_hard_extreme_buy[event_key] += buy_usdc
+        if is_soft_extreme:
+            soft_extreme_price_buy += buy_usdc
+            event_soft_extreme_buy[event_key] += buy_usdc
+
+    material_event_floor = max(5.0, total_buy_usdc * 0.001)
+    material_events = [event for event, buy_usdc in event_buy.items() if buy_usdc >= material_event_floor]
+    hard_extreme_events = [
+        event
+        for event in material_events
+        if safe_ratio(event_hard_extreme_buy.get(event, 0.0), event_buy.get(event, 0.0)) is not None
+        and (event_hard_extreme_buy.get(event, 0.0) / max(event_buy.get(event, 0.0), 1e-9)) >= 0.50
+    ]
+    soft_extreme_events = [
+        event
+        for event in material_events
+        if safe_ratio(event_soft_extreme_buy.get(event, 0.0), event_buy.get(event, 0.0)) is not None
+        and (event_soft_extreme_buy.get(event, 0.0) / max(event_buy.get(event, 0.0), 1e-9)) >= 0.50
+    ]
     return {
         "median_buy_notional": percentile(buy_notional, 0.50),
         "p10_buy_notional": percentile(buy_notional, 0.10),
         "p90_buy_notional": percentile(buy_notional, 0.90),
         "tiny_trade_buy_ratio": safe_ratio(tiny_buy_usdc, total_buy_usdc),
-        "extreme_price_trade_ratio": safe_ratio(extreme_price_buy, total_buy_usdc),
+        "extreme_price_trade_ratio": safe_ratio(hard_extreme_price_buy, total_buy_usdc),
+        "hard_extreme_price_buy_ratio": safe_ratio(hard_extreme_price_buy, total_buy_usdc),
+        "soft_extreme_price_buy_ratio": safe_ratio(soft_extreme_price_buy, total_buy_usdc),
+        "hard_extreme_price_event_ratio": safe_ratio(float(len(hard_extreme_events)), float(len(material_events))),
+        "soft_extreme_price_event_ratio": safe_ratio(float(len(soft_extreme_events)), float(len(material_events))),
+        "material_buy_event_count": float(len(material_events)),
     }
 
 
@@ -1611,9 +1690,21 @@ def compute_copy_capacity_score(metrics: dict[str, Any], api_summary: dict[str, 
     median_buy = metrics.get("median_buy_notional")
     p90_buy = metrics.get("p90_buy_notional")
     tiny_ratio = metrics.get("tiny_trade_buy_ratio") or 0.0
-    extreme_ratio = metrics.get("extreme_price_trade_ratio") or 0.0
+    hard_extreme_ratio = metrics.get("hard_extreme_price_buy_ratio")
+    if hard_extreme_ratio is None:
+        hard_extreme_ratio = metrics.get("extreme_price_trade_ratio") or 0.0
+    soft_extreme_ratio = metrics.get("soft_extreme_price_buy_ratio")
+    if soft_extreme_ratio is None:
+        soft_extreme_ratio = hard_extreme_ratio
+    hard_extreme_event_ratio = metrics.get("hard_extreme_price_event_ratio") or 0.0
+    soft_extreme_event_ratio = metrics.get("soft_extreme_price_event_ratio") or 0.0
     avg_trades = metrics.get("avg_trades_per_active_day") or 0.0
     fast_sell = metrics.get("sell_usdc_ratio_within_20m") or 0.0
+    long_hold_30d = metrics.get("long_hold_sell_usdc_ratio_30d") or 0.0
+    long_hold_60d = metrics.get("long_hold_sell_usdc_ratio_60d") or 0.0
+    open_age_30d = metrics.get("open_position_age_cost_ratio_30d") or 0.0
+    open_age_60d = metrics.get("open_position_age_cost_ratio_60d") or 0.0
+    weighted_median_hold = metrics.get("weighted_median_holding_time_sec")
     total_buy = to_float(metrics.get("total_buy_usdc"), 0.0)
     positions_value = optional_float(summary_node(api_summary).get("positions_value"))
 
@@ -1671,11 +1762,32 @@ def compute_copy_capacity_score(metrics: dict[str, Any], api_summary: dict[str, 
     elif tiny_ratio > 0.20:
         score -= 2
         flags.append("copy_capacity_low")
-    if extreme_ratio > 0.25:
-        score -= 4
+    if hard_extreme_ratio >= 0.50 or hard_extreme_event_ratio >= 0.60:
+        score -= 6
+        flags.append("structured_arbitrage_like")
         flags.append("copy_capacity_low")
-    elif extreme_ratio > 0.10:
+    elif hard_extreme_ratio >= 0.35 or soft_extreme_ratio >= 0.60 or soft_extreme_event_ratio >= 0.50:
+        score -= 5
+        flags.append("extreme_price_copy_risk")
+        flags.append("copy_capacity_low")
+    elif hard_extreme_ratio > 0.25 or soft_extreme_ratio >= 0.40 or soft_extreme_event_ratio >= 0.35:
+        score -= 4
+        flags.append("extreme_price_copy_risk")
+    elif hard_extreme_ratio > 0.10 or soft_extreme_ratio >= 0.20:
         score -= 2
+        flags.append("extreme_price_watch")
+    weighted_median_hold_long = (
+        weighted_median_hold is not None and float(weighted_median_hold) >= LONG_HOLD_30D_SECONDS
+    )
+    if long_hold_60d >= 0.50 or open_age_60d >= 0.50:
+        score -= 4
+        flags.append("slow_turnover_copy_risk")
+    elif long_hold_30d >= 0.50 or open_age_30d >= 0.50 or weighted_median_hold_long:
+        score -= 3
+        flags.append("slow_turnover_copy_risk")
+    elif long_hold_30d >= 0.35 or open_age_30d >= 0.35 or long_hold_60d >= 0.25 or open_age_60d >= 0.25:
+        score -= 1.5
+        flags.append("slow_turnover_watch")
     if fast_sell > 0.50:
         score -= 2
     if avg_trades > 600:
@@ -1697,7 +1809,16 @@ def compute_copy_capacity_score(metrics: dict[str, Any], api_summary: dict[str, 
         "total_buy_usdc_30d": round(total_buy, 6),
         "positions_value": None if positions_value is None else round(positions_value, 6),
         "tiny_trade_buy_ratio": round(tiny_ratio, 6),
-        "extreme_price_trade_ratio": round(extreme_ratio, 6),
+        "extreme_price_trade_ratio": round(hard_extreme_ratio, 6),
+        "hard_extreme_price_buy_ratio": round(hard_extreme_ratio, 6),
+        "soft_extreme_price_buy_ratio": round(soft_extreme_ratio, 6),
+        "hard_extreme_price_event_ratio": round(hard_extreme_event_ratio, 6),
+        "soft_extreme_price_event_ratio": round(soft_extreme_event_ratio, 6),
+        "long_hold_sell_usdc_ratio_30d": round(long_hold_30d, 6),
+        "long_hold_sell_usdc_ratio_60d": round(long_hold_60d, 6),
+        "open_position_age_cost_ratio_30d": round(open_age_30d, 6),
+        "open_position_age_cost_ratio_60d": round(open_age_60d, 6),
+        "weighted_median_holding_time_sec": weighted_median_hold,
     }
 
 
@@ -2237,6 +2358,24 @@ def compute_scores_auto_v3(
     leaderboard_adj, leaderboard_flags = compute_leaderboard_consistency_adj(leaderboard_context)
     lifetime_adj, lifetime_flags, lifetime_details, lifetime_hard_blocks = compute_lifetime_pnl_rules(api_summary, metrics)
     lifetime_hard_block = bool(lifetime_hard_blocks)
+    hard_extreme_buy_ratio = float(
+        capacity_details.get("hard_extreme_price_buy_ratio")
+        if capacity_details.get("hard_extreme_price_buy_ratio") is not None
+        else metrics.get("extreme_price_trade_ratio") or 0.0
+    )
+    soft_extreme_buy_ratio = float(
+        capacity_details.get("soft_extreme_price_buy_ratio")
+        if capacity_details.get("soft_extreme_price_buy_ratio") is not None
+        else hard_extreme_buy_ratio
+    )
+    hard_extreme_event_ratio = float(capacity_details.get("hard_extreme_price_event_ratio") or 0.0)
+    soft_extreme_event_ratio = float(capacity_details.get("soft_extreme_price_event_ratio") or 0.0)
+    long_hold_30d_ratio = float(capacity_details.get("long_hold_sell_usdc_ratio_30d") or 0.0)
+    long_hold_60d_ratio = float(capacity_details.get("long_hold_sell_usdc_ratio_60d") or 0.0)
+    open_age_30d_ratio = float(capacity_details.get("open_position_age_cost_ratio_30d") or 0.0)
+    open_age_60d_ratio = float(capacity_details.get("open_position_age_cost_ratio_60d") or 0.0)
+    weighted_median_hold_sec = capacity_details.get("weighted_median_holding_time_sec")
+    weighted_median_hold_sec = None if weighted_median_hold_sec is None else float(weighted_median_hold_sec)
 
     automation_risk_penalty = 0.0
     score_flags: list[str] = []
@@ -2327,6 +2466,8 @@ def compute_scores_auto_v3(
         or conversion_buy_ratio > 0.30
         or dual_side > 0.45
         or dual_side_1h > 0.25
+        or hard_extreme_buy_ratio >= 0.50
+        or hard_extreme_event_ratio >= 0.60
     )
     caution_risk_gate = (
         excl_conc > 0.45
@@ -2337,6 +2478,11 @@ def compute_scores_auto_v3(
         or conversion_buy_ratio > 0.18
         or dual_side > 0.20
         or dual_side_1h > 0.12
+        or hard_extreme_buy_ratio >= 0.25
+        or soft_extreme_buy_ratio >= 0.40
+        or soft_extreme_event_ratio >= 0.35
+        or long_hold_30d_ratio >= 0.50
+        or open_age_30d_ratio >= 0.50
     )
 
     quality_caps: list[tuple[str, float]] = []
@@ -2441,6 +2587,28 @@ def compute_scores_auto_v3(
         or (lifetime_daily_vol_ratio is not None and lifetime_daily_vol_ratio > 0.15)
     ):
         add_quality_cap("sports_concentration_watch_45", 45.0)
+
+    if hard_extreme_buy_ratio >= 0.50 or hard_extreme_event_ratio >= 0.60:
+        add_quality_cap("extreme_price_structured_45", 45.0)
+    elif hard_extreme_buy_ratio >= 0.35:
+        add_quality_cap("hard_extreme_price_structure_50", 50.0)
+    elif soft_extreme_buy_ratio >= 0.60 or soft_extreme_event_ratio >= 0.50:
+        add_quality_cap("soft_extreme_price_structure_55", 55.0)
+    elif hard_extreme_buy_ratio >= 0.25 or soft_extreme_buy_ratio >= 0.40 or soft_extreme_event_ratio >= 0.35:
+        add_quality_cap("extreme_price_copy_risk_60", 60.0)
+
+    weighted_median_hold_30d = (
+        weighted_median_hold_sec is not None and weighted_median_hold_sec >= LONG_HOLD_30D_SECONDS
+    )
+    weighted_median_hold_60d = (
+        weighted_median_hold_sec is not None and weighted_median_hold_sec >= LONG_HOLD_60D_SECONDS
+    )
+    if long_hold_60d_ratio >= 0.50 or open_age_60d_ratio >= 0.50 or weighted_median_hold_60d:
+        add_quality_cap("slow_turnover_55", 55.0)
+    elif long_hold_30d_ratio >= 0.50 or open_age_30d_ratio >= 0.50 or weighted_median_hold_30d:
+        add_quality_cap("slow_turnover_60", 60.0)
+    elif long_hold_30d_ratio >= 0.35 or open_age_30d_ratio >= 0.35:
+        score_flags.append("slow_turnover_watch")
 
     if copy_capacity < 4:
         add_quality_cap("copy_capacity_low_48", 48.0)
@@ -2573,6 +2741,20 @@ def compute_scores_auto_v3(
         score_flags.append("noncopyable_fast_observed_low_confidence")
     if conversion_buy_ratio > 0.12:
         score_flags.append("high_outcome_conversion")
+    if hard_extreme_buy_ratio >= 0.50 or hard_extreme_event_ratio >= 0.60:
+        score_flags.append("structured_arbitrage_like")
+    elif hard_extreme_buy_ratio >= 0.25 or soft_extreme_buy_ratio >= 0.40 or soft_extreme_event_ratio >= 0.35:
+        score_flags.append("extreme_price_copy_risk")
+    elif hard_extreme_buy_ratio > 0.10 or soft_extreme_buy_ratio >= 0.20:
+        score_flags.append("extreme_price_watch")
+    if long_hold_30d_ratio >= 0.50 or weighted_median_hold_30d:
+        score_flags.append("slow_turnover_copy_risk")
+    elif long_hold_30d_ratio >= 0.35:
+        score_flags.append("slow_turnover_watch")
+    if open_age_30d_ratio >= 0.50:
+        score_flags.append("capital_lock_risk")
+    elif open_age_30d_ratio >= 0.35:
+        score_flags.append("capital_lock_watch")
     pnl_retention_ok = (
         pnl_details.get("total_pnl_retention_ratio") is None
         or float(pnl_details.get("total_pnl_retention_ratio") or 0.0) >= 0.55
@@ -2696,6 +2878,12 @@ def build_narrative(
         risks.append("non-copyable token-fast exposure")
     if (metrics.get("dual_side_buy_usdc_ratio") or 0) > 0.20:
         risks.append("material dual-side condition buying")
+    if (metrics.get("soft_extreme_price_buy_ratio") or metrics.get("extreme_price_trade_ratio") or 0) >= 0.40:
+        risks.append("high extreme-price BUY exposure")
+    if (metrics.get("long_hold_sell_usdc_ratio_30d") or 0) >= 0.50:
+        risks.append("slow turnover with many positions held over 30 days")
+    if (metrics.get("open_position_age_cost_ratio_30d") or 0) >= 0.50:
+        risks.append("material capital locked in older open positions")
 
     strengths = []
     if (metrics.get("deployable_event_equivalent") or 0) >= 8:
@@ -2762,6 +2950,14 @@ def build_behavior_summary(data: dict[str, Any], keyword_profile: dict[str, Any]
     nested = m.get("nested_concurrent_leg_ratio") or 0
     exclusive = m.get("exclusive_concurrent_leg_ratio") or 0
     weighted = m.get("weighted_multi_market_risk_ratio") or 0
+    hard_extreme = m.get("hard_extreme_price_buy_ratio")
+    if hard_extreme is None:
+        hard_extreme = m.get("extreme_price_trade_ratio") or 0
+    soft_extreme = m.get("soft_extreme_price_buy_ratio")
+    if soft_extreme is None:
+        soft_extreme = hard_extreme
+    long_hold_30d = m.get("long_hold_sell_usdc_ratio_30d") or 0
+    open_age_30d = m.get("open_position_age_cost_ratio_30d") or 0
 
     if dual_side < 0.10:
         strengths.append("Low dual-side condition exposure, indicating cleaner directional expression.")
@@ -2784,6 +2980,15 @@ def build_behavior_summary(data: dict[str, Any], keyword_profile: dict[str, Any]
         strengths.append("Weighted multi-market structure risk is controlled.")
     elif weighted > 0.40:
         risks.append("Weighted multi-market risk is elevated.")
+
+    if hard_extreme >= 0.35 or soft_extreme >= 0.60:
+        risks.append("Extreme-price BUY concentration suggests structured or settlement-adjacent edge that is hard to copy.")
+    elif hard_extreme >= 0.25 or soft_extreme >= 0.40:
+        risks.append("Extreme-price BUY exposure is material and should reduce copy sizing.")
+    if long_hold_30d >= 0.50:
+        risks.append("More than half of sold notional was held for over 30 days, reducing capital turnover for followers.")
+    if open_age_30d >= 0.50:
+        risks.append("A large share of open-position cost is older than 30 days, indicating capital-lock risk.")
 
     if score.get("caution_risk_gate_triggered"):
         risks.append("Risk gate is triggered, so broad-copy mode is disabled and only strict filtering is allowed.")
@@ -3065,7 +3270,10 @@ def main() -> None:
         f"dual_side={pct(result['metrics'].get('dual_side_buy_usdc_ratio'))}, "
         f"exclusive_concurrent={pct(result['metrics'].get('exclusive_concurrent_leg_ratio'))}, "
         f"nested_concurrent={pct(result['metrics'].get('nested_concurrent_leg_ratio'))}, "
-        f"noncopyable_fast_buy={pct(result['metrics'].get('noncopyable_token_fast_buy_ratio'))}"
+        f"noncopyable_fast_buy={pct(result['metrics'].get('noncopyable_token_fast_buy_ratio'))}, "
+        f"soft_extreme_buy={pct(result['metrics'].get('soft_extreme_price_buy_ratio'))}, "
+        f"long_hold_30d_sell={pct(result['metrics'].get('long_hold_sell_usdc_ratio_30d'))}, "
+        f"open_age_30d_cost={pct(result['metrics'].get('open_position_age_cost_ratio_30d'))}"
     )
 
 

@@ -129,6 +129,134 @@ class AutoV3ScoringTests(unittest.TestCase):
         self.assertIn("raw_base_score_v3", data)
         self.assertNotEqual(data["raw_base_score_v3"], data.get("legacy_raw_base_score"))
 
+    def test_holding_metrics_tracks_long_sold_and_old_open_lots(self):
+        day = 24 * 60 * 60
+        rows = [
+            {
+                "timestamp": 0,
+                "side": "BUY",
+                "conditionId": "c1",
+                "outcome": "Yes",
+                "size": 100.0,
+                "usdcSize": 50.0,
+            },
+            {
+                "timestamp": day,
+                "side": "BUY",
+                "conditionId": "c2",
+                "outcome": "Yes",
+                "size": 200.0,
+                "usdcSize": 80.0,
+            },
+            {
+                "timestamp": 31 * day,
+                "side": "SELL",
+                "conditionId": "c1",
+                "outcome": "Yes",
+                "size": 100.0,
+                "usdcSize": 70.0,
+            },
+            {
+                "timestamp": 70 * day,
+                "side": "BUY",
+                "conditionId": "c3",
+                "outcome": "Yes",
+                "size": 1.0,
+                "usdcSize": 1.0,
+            },
+        ]
+        metrics = self.analyze.holding_metrics(rows, total_sell_usdc=70.0)
+
+        self.assertEqual(metrics["long_hold_sell_usdc_ratio_30d"], 1.0)
+        self.assertEqual(metrics["long_hold_sell_usdc_ratio_60d"], 0.0)
+        self.assertAlmostEqual(metrics["open_position_age_cost_sum"], 81.0)
+        self.assertAlmostEqual(metrics["open_position_age_cost_ratio_30d"], 80.0 / 81.0)
+        self.assertAlmostEqual(metrics["open_position_age_cost_ratio_60d"], 80.0 / 81.0)
+
+    def test_capacity_metrics_separates_hard_soft_extreme_price_events(self):
+        rows = [
+            {"side": "BUY", "usdcSize": 100.0, "price": 0.04, "eventSlug": "soft-low"},
+            {"side": "BUY", "usdcSize": 100.0, "price": 0.98, "eventSlug": "hard-high"},
+            {"side": "BUY", "usdcSize": 100.0, "price": 0.50, "eventSlug": "normal"},
+        ]
+        metrics = self.analyze.capacity_metrics(rows, total_buy_usdc=300.0)
+
+        self.assertAlmostEqual(metrics["hard_extreme_price_buy_ratio"], 1 / 3)
+        self.assertAlmostEqual(metrics["soft_extreme_price_buy_ratio"], 2 / 3)
+        self.assertAlmostEqual(metrics["hard_extreme_price_event_ratio"], 1 / 3)
+        self.assertAlmostEqual(metrics["soft_extreme_price_event_ratio"], 2 / 3)
+        self.assertEqual(metrics["material_buy_event_count"], 3.0)
+
+    def test_extreme_price_structured_account_is_hard_capped(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "total_buy_usdc": 90000.0,
+                "hard_extreme_price_buy_ratio": 0.52,
+                "soft_extreme_price_buy_ratio": 0.70,
+                "hard_extreme_price_event_ratio": 0.65,
+                "soft_extreme_price_event_ratio": 0.80,
+                "extreme_price_trade_ratio": 0.52,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+        breakdown = result["score_breakdown_v3"]
+
+        self.assertLessEqual(result["final_score"], 45)
+        self.assertEqual(result["decision"], "not_recommended")
+        self.assertEqual(result["alert_grade"], "none")
+        self.assertIn("structured_arbitrage_like", result["score_flags"])
+        self.assertIn("extreme_price_structured_45", result["score_flags"])
+        self.assertLess(breakdown["copy_capacity_score"], 5)
+        self.assertEqual(breakdown["soft_extreme_price_buy_ratio"], 0.7)
+
+    def test_soft_extreme_price_structure_is_capped_to_watchlist(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "total_buy_usdc": 90000.0,
+                "hard_extreme_price_buy_ratio": 0.08,
+                "soft_extreme_price_buy_ratio": 0.62,
+                "soft_extreme_price_event_ratio": 0.52,
+                "extreme_price_trade_ratio": 0.08,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+
+        self.assertLessEqual(result["final_score"], 55)
+        self.assertIn("soft_extreme_price_structure_55", result["score_flags"])
+        self.assertIn("extreme_price_copy_risk", result["score_flags"])
+
+    def test_long_holding_turnover_caps_score_at_sixty(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "long_hold_sell_usdc_ratio_30d": 0.56,
+                "long_hold_sell_usdc_ratio_60d": 0.20,
+                "weighted_median_holding_time_sec": 35 * 24 * 60 * 60,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+
+        self.assertLessEqual(result["final_score"], 60)
+        self.assertIn("slow_turnover_60", result["score_flags"])
+        self.assertIn("slow_turnover_copy_risk", result["score_flags"])
+
+    def test_old_open_position_cost_caps_capital_lock_risk(self):
+        metrics = base_metrics()
+        metrics.update(
+            {
+                "open_position_age_cost_ratio_30d": 0.58,
+                "open_position_age_cost_ratio_60d": 0.18,
+                "open_position_age_cost_sum": 12000.0,
+            }
+        )
+        result = self.analyze.compute_scores_auto_v3(metrics, good_api_summary(), None, {}, 50.0, 60.0, None)
+
+        self.assertLessEqual(result["final_score"], 60)
+        self.assertIn("slow_turnover_60", result["score_flags"])
+        self.assertIn("capital_lock_risk", result["score_flags"])
+
     def test_data_quality_cap_blocks_alert_when_activity_incomplete(self):
         metrics = base_metrics()
         metrics["activity_incomplete"] = True
