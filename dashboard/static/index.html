@@ -104,6 +104,7 @@
         <button class="tab" data-tab="candidates">候选账号</button>
         <button class="tab" data-tab="alerts">告警与 Agent</button>
         <button class="tab" data-tab="pushed">推送历史</button>
+        <button class="tab" data-tab="watchlist">高分复核</button>
         <button class="tab" data-tab="config">配置</button>
         <button class="tab" data-tab="logs">日志</button>
       </nav>
@@ -182,6 +183,35 @@
         </section>
       </section>
 
+      <section id="watchlist" class="tab-panel">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>高分复核小队列</h2>
+            <div class="panel-actions">
+              <span id="watchlistHint" class="muted">-</span>
+              <button id="runWatchlistRefreshBtn" type="button" class="primary">立即复核</button>
+              <button id="downloadWatchlistCsvBtn" type="button">导出CSV</button>
+            </div>
+          </div>
+          <div class="watchlist-grid">
+            <div class="live-card"><span>复核进程</span><strong id="watchlistProcess">-</strong><p id="watchlistProcessHint">-</p></div>
+            <div class="live-card"><span>最新批次</span><strong id="watchlistBatch">-</strong><p id="watchlistBatchHint">-</p></div>
+            <div class="live-card"><span>复核结果</span><strong id="watchlistSummary">-</strong><p id="watchlistSummaryHint">-</p></div>
+            <div class="live-card"><span>ServerChan</span><strong id="watchlistPush">-</strong><p id="watchlistPushHint">-</p></div>
+          </div>
+          <div class="table-wrap tall">
+            <table class="watchlist-table">
+              <thead>
+                <tr>
+                  <th>账号</th><th>来源</th><th>旧分</th><th>fresh</th><th>变化</th><th>结论</th><th>flags/caps</th><th>时间</th>
+                </tr>
+              </thead>
+              <tbody id="watchlistBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
       <section id="config" class="tab-panel">
         <div class="grid two">
           <section class="panel">
@@ -230,6 +260,6 @@
     </main>
 
     <div id="toast" class="toast"></div>
-    <script src="/app.js?v=live-refresh-20260515"></script>
+    <script src="/app.js?v=watchlist-refresh-20260608"></script>
   </body>
 </html>

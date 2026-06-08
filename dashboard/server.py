@@ -33,6 +33,7 @@ AUTO_CONFIG_EXAMPLE = env_path("PM_AUTO_CONFIG_EXAMPLE", ROOT / "auto_screen_con
 AGENT_CONFIG_EXAMPLE = env_path("PM_AGENT_CONFIG_EXAMPLE", ROOT / "agent_core_config.example.json")
 PID_FILE = UI_DIR / "auto_screen_process.json"
 LOG_FILE = env_path("PM_DASHBOARD_AUTO_LOG", UI_DIR / "auto_screen.log")
+WATCHLIST_PID_FILE = UI_DIR / "watchlist_refresh_process.json"
 
 
 def ensure_ui_files() -> None:
@@ -138,6 +139,64 @@ def launch_auto_screen(args: list[str], mode: str) -> dict[str, Any]:
         "started_at": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
     write_json(PID_FILE, state)
+    return {"started": True, **state}
+
+
+def read_watchlist_process_state() -> dict[str, Any]:
+    state = read_json(WATCHLIST_PID_FILE, {}) or {}
+    pid = int(state.get("pid") or 0)
+    state["running"] = pid_running(pid)
+    if not state["running"] and pid:
+        state["stale"] = True
+    return state
+
+
+def launch_watchlist_refresh(body: dict[str, Any]) -> dict[str, Any]:
+    state = read_watchlist_process_state()
+    if state.get("running"):
+        return {"started": False, "reason": "already_running", "pid": state.get("pid")}
+    ensure_ui_files()
+    UI_DIR.mkdir(parents=True, exist_ok=True)
+    args = [
+        "-m",
+        "auto_screen.cli",
+        "--config",
+        str(AUTO_CONFIG),
+        "refresh-watchlist",
+        "--min-score",
+        str(float(body.get("min_score") or 60.0)),
+        "--limit",
+        str(int(body.get("limit") or 200)),
+        "--interval-hours",
+        str(float(body.get("interval_hours") or 48.0)),
+    ]
+    if bool(body.get("include_recent")):
+        args.append("--include-recent")
+    if bool(body.get("dry_run_serverchan")):
+        args.append("--dry-run-serverchan")
+    env = os.environ.copy()
+    env.setdefault("PYTHONUTF8", "1")
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    popen_kwargs: dict[str, Any] = {
+        "cwd": str(ROOT),
+        "stdin": subprocess.DEVNULL,
+        "stderr": subprocess.STDOUT,
+        "text": True,
+        "env": env,
+    }
+    if os.name == "nt":
+        popen_kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    with LOG_FILE.open("a", encoding="utf-8") as log:
+        log.write(f"\n\n=== {time.strftime('%Y-%m-%d %H:%M:%S')} start watchlist-refresh ===\n")
+        log.flush()
+        proc = subprocess.Popen([sys.executable, *args], stdout=log, **popen_kwargs)
+    state = {
+        "pid": proc.pid,
+        "mode": "watchlist-refresh",
+        "command": [sys.executable, *args],
+        "started_at": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    write_json(WATCHLIST_PID_FILE, state)
     return {"started": True, **state}
 
 
@@ -391,6 +450,79 @@ def pushed_accounts_csv(auto_cfg: dict[str, Any]) -> str:
             ]
         )
     return out.getvalue()
+
+
+def _json_list(value: Any) -> list[Any]:
+    if value in (None, ""):
+        return []
+    if isinstance(value, list):
+        return value
+    try:
+        parsed = json.loads(str(value))
+        return parsed if isinstance(parsed, list) else []
+    except json.JSONDecodeError:
+        return []
+
+
+def watchlist_refresh_csv(auto_cfg: dict[str, Any]) -> str:
+    data_dir = resolve_auto_path(auto_cfg, "data_dir", "auto_screen_data")
+    latest_csv = data_dir / "watchlist_refresh" / "latest_summary.csv"
+    if latest_csv.exists():
+        return latest_csv.read_text(encoding="utf-8-sig")
+    return "address,label,old_score,fresh_score,score_delta,recommendation,error\n"
+
+
+def watchlist_refresh_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
+    db_path = resolve_auto_path(auto_cfg, "state_db", "auto_screen_data/state.sqlite3")
+    data_dir = resolve_auto_path(auto_cfg, "data_dir", "auto_screen_data")
+    latest_json = data_dir / "watchlist_refresh" / "latest_summary.json"
+    latest_file_payload = read_json(latest_json, {}) or {}
+    batches = sqlite_rows(
+        db_path,
+        """
+        SELECT *
+        FROM watchlist_refresh_batches
+        ORDER BY id DESC
+        LIMIT 12
+        """,
+    )
+    runs = sqlite_rows(
+        db_path,
+        """
+        SELECT *
+        FROM watchlist_refresh_runs
+        ORDER BY id DESC
+        LIMIT 120
+        """,
+    )
+    for row in runs:
+        row["score_flags"] = _json_list(row.get("score_flags"))
+        row["applied_caps"] = _json_list(row.get("applied_caps"))
+    latest_batch = batches[0] if batches else {}
+    if latest_batch.get("summary_json"):
+        latest_batch["summary"] = read_json_like(latest_batch.get("summary_json"), {})
+    if latest_batch.get("serverchan_push_result"):
+        latest_batch["serverchan_push_result_json"] = read_json_like(latest_batch.get("serverchan_push_result"), {})
+    return {
+        "process": read_watchlist_process_state(),
+        "latest_batch": latest_batch,
+        "batches": batches,
+        "runs": runs,
+        "latest_file": latest_file_payload,
+        "latest_json_path": str(latest_json),
+        "latest_csv_path": str(data_dir / "watchlist_refresh" / "latest_summary.csv"),
+    }
+
+
+def read_json_like(value: Any, default: Any = None) -> Any:
+    if value in (None, ""):
+        return default
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(str(value))
+    except json.JSONDecodeError:
+        return default
 
 
 def scoring_history_for_addresses(db_path: Path, addresses: list[str], per_address: int = 5) -> dict[str, list[dict[str, Any]]]:
@@ -749,6 +881,18 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(raw)
             return
+        if path == "/api/watchlist-refresh/status":
+            self.write_json(watchlist_refresh_summary(auto_cfg))
+            return
+        if path == "/api/watchlist-refresh/export.csv":
+            raw = watchlist_refresh_csv(auto_cfg).encode("utf-8-sig")
+            self.send_response(int(HTTPStatus.OK))
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="watchlist_refresh_summary.csv"')
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
         if path == "/api/accounts":
             limit = int((query.get("limit") or ["60"])[0])
             self.write_json({"accounts": list_accounts(auto_cfg, limit=limit)})
@@ -801,6 +945,9 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             return
         if path == "/api/stop":
             self.write_json(stop_process())
+            return
+        if path == "/api/watchlist-refresh/run":
+            self.write_json(launch_watchlist_refresh(body))
             return
         self.write_json({"error": "not_found"}, HTTPStatus.NOT_FOUND)
 

@@ -18,6 +18,12 @@ from auto_screen.official_sources import scan_candidates as scan_official_candid
 from auto_screen.prefilter import prefilter_account
 from auto_screen.progress import ProgressReporter
 from auto_screen.state_store import StateStore
+from auto_screen.watchlist_refresh import (
+    format_watchlist_refresh_message,
+    recommendation_for_result,
+    run_watchlist_refresh,
+    select_watchlist_candidates,
+)
 
 
 class FakeClient:
@@ -355,6 +361,219 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertEqual(alert_rows[0]["id"], pending_alert)
             self.assertEqual(alert_rows[0]["push_status"], "superseded")
             self.assertEqual(alert_rows[1]["push_status"], "sent")
+
+    def test_watchlist_candidates_use_latest_score_and_skip_recent_refresh(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            store = StateStore(root / "state.sqlite3")
+            stale_high = "0x1111111111111111111111111111111111111111"
+            still_high = "0x2222222222222222222222222222222222222222"
+            pushed_high = "0x3333333333333333333333333333333333333333"
+            manual_high = "0x4444444444444444444444444444444444444444"
+            manual_low = "0x5555555555555555555555555555555555555555"
+            store.record_scoring(
+                ScoringResult(
+                    address=stale_high,
+                    final_score=66,
+                    decision="old",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "old.json"),
+                    payload={"account_label": "OldHigh"},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address=stale_high,
+                    final_score=55,
+                    decision="new",
+                    alert_grade="C",
+                    auto_action="store_only",
+                    analysis_path=str(root / "new.json"),
+                    payload={"account_label": "OldHigh"},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address=still_high,
+                    final_score=64,
+                    decision="new",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "high.json"),
+                    payload={"account_label": "StillHigh"},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address=manual_high,
+                    final_score=61,
+                    decision="new",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "manual_high.json"),
+                    payload={"account_label": "ManualHighOldLabel"},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address=manual_low,
+                    final_score=59,
+                    decision="new",
+                    alert_grade="C",
+                    auto_action="store_only",
+                    analysis_path=str(root / "manual_low.json"),
+                    payload={"account_label": "ManualLow"},
+                )
+            )
+            store.record_alert(
+                pushed_high,
+                61,
+                "B",
+                "账号筛选结果：B级｜61.00 分｜PushedHigh",
+                "message",
+                push_status="pending",
+            )
+            alert_id = store.record_alert(
+                pushed_high,
+                63,
+                "B",
+                "账号筛选结果：B级｜63.00 分｜PushedHigh",
+                "message",
+                push_status="pending",
+            )
+            store.mark_alert_push_result([alert_id], "batch-1", {"sent": True})
+            store.upsert_manual_watchlist_account(manual_high, "ManualPick")
+            store.upsert_manual_watchlist_account(manual_low, "ManualLow")
+            candidates, skipped = select_watchlist_candidates(store, min_score=60, limit=20, include_recent=True)
+            addresses = {item.address for item in candidates}
+            self.assertNotIn(stale_high, addresses)
+            self.assertIn(still_high, addresses)
+            self.assertIn(pushed_high, addresses)
+            self.assertIn(manual_high, addresses)
+            self.assertNotIn(manual_low, addresses)
+            self.assertEqual(next(item for item in candidates if item.address == manual_high).label, "ManualPick")
+            self.assertFalse(skipped)
+
+            store.record_watchlist_refresh_run(
+                {
+                    "batch_id": 1,
+                    "address": still_high,
+                    "label": "StillHigh",
+                    "source_reason": "unit",
+                    "old_score": 64,
+                    "fresh_score": 64,
+                    "recommendation": "watch",
+                }
+            )
+            candidates, skipped = select_watchlist_candidates(store, min_score=60, limit=20, refresh_interval_hours=48)
+            addresses = {item.address for item in candidates}
+            store.close()
+            self.assertNotIn(still_high, addresses)
+            self.assertEqual(skipped[0]["address"], still_high)
+
+    def test_watchlist_recommendation_hard_caps_and_score_bands(self):
+        self.assertEqual(recommendation_for_result(66, [], []), "stable")
+        self.assertEqual(recommendation_for_result(62, [], []), "watch")
+        self.assertEqual(recommendation_for_result(58, [], []), "downgrade")
+        self.assertEqual(recommendation_for_result(54, [], []), "remove_candidate")
+        self.assertEqual(recommendation_for_result(70, ["copy_capacity_low_48"], []), "remove_candidate")
+
+    def test_watchlist_refresh_persists_batch_outputs_and_serverchan_summary(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            cfg = load_config(None)
+            cfg["data_dir"] = str(root / "data")
+            cfg["state_db"] = str(root / "state.sqlite3")
+            cfg["serverchan"]["enabled"] = True
+            cfg["serverchan"]["dry_run"] = True
+            store = StateStore(root / "state.sqlite3")
+            address = "0x5555555555555555555555555555555555555555"
+            store.record_scoring(
+                ScoringResult(
+                    address=address,
+                    final_score=66,
+                    decision="selective_copying_only",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "old.json"),
+                    payload={"account_address": address, "account_label": "FreshTarget"},
+                )
+            )
+            store.close()
+
+            def fake_collect(account, label, _config, output_root):
+                account_dir = Path(output_root) / "accounts" / account
+                account_dir.mkdir(parents=True, exist_ok=True)
+                csv_path = account_dir / "activity.csv"
+                summary_path = account_dir / "account_summary.json"
+                csv_path.write_text("timestamp,type\n", encoding="utf-8")
+                summary_path.write_text("{}", encoding="utf-8")
+                return csv_path, summary_path
+
+            def fake_score(account, *_args):
+                return ScoringResult(
+                    address=account,
+                    final_score=62,
+                    decision="selective_copying_only",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path=str(root / "analysis.json"),
+                    score_flags=["unit_test_flag"],
+                    payload={
+                        "account_address": account,
+                        "account_label": "FreshTarget",
+                        "score_breakdown_v3": {"applied_final_caps": []},
+                    },
+                )
+
+            with (
+                patch("auto_screen.watchlist_refresh.collect_account_files", side_effect=fake_collect),
+                patch("auto_screen.watchlist_refresh.score_account", side_effect=fake_score),
+                patch("auto_screen.watchlist_refresh.send_serverchan", return_value={"sent": True, "serverchan_code": 0}) as send,
+            ):
+                result = run_watchlist_refresh(cfg, include_recent=True, dry_run_serverchan=False)
+
+            self.assertEqual(result["summary"]["attempted"], 1)
+            self.assertEqual(result["summary"]["watch_count"], 1)
+            self.assertEqual(result["rows"][0]["recommendation"], "watch")
+            send.assert_called_once()
+            title, message = send.call_args.args[:2]
+            self.assertIn("高分复核完成", title)
+            self.assertIn("FreshTarget", message)
+            self.assertTrue((root / "data" / "watchlist_refresh" / "latest_summary.csv").exists())
+            verify = StateStore(root / "state.sqlite3")
+            batch = verify.conn.execute("SELECT status, watch_count, serverchan_push_status FROM watchlist_refresh_batches").fetchone()
+            run = verify.conn.execute("SELECT recommendation, fresh_score FROM watchlist_refresh_runs").fetchone()
+            verify.close()
+            self.assertEqual(batch["status"], "done")
+            self.assertEqual(batch["watch_count"], 1)
+            self.assertEqual(batch["serverchan_push_status"], "sent")
+            self.assertEqual(run["recommendation"], "watch")
+            self.assertEqual(run["fresh_score"], 62)
+
+    def test_watchlist_refresh_message_includes_decision_counts(self):
+        title, message = format_watchlist_refresh_message(
+            {
+                "total": 2,
+                "attempted": 2,
+                "succeeded": 2,
+                "failed": 0,
+                "skipped_recent": 0,
+                "stable_count": 1,
+                "watch_count": 0,
+                "downgrade_count": 1,
+                "remove_count": 0,
+                "hard_cap_count": 1,
+            },
+            [
+                {"address": "0x1", "label": "Alpha", "old_score": 66, "fresh_score": 67, "score_delta": 1, "recommendation": "stable"},
+                {"address": "0x2", "label": "Beta", "old_score": 64, "fresh_score": 58, "score_delta": -6, "recommendation": "downgrade", "score_flags": ["recent_pnl_negative_45"]},
+            ],
+        )
+        self.assertIn("稳定 1", title)
+        self.assertIn("降级/移出", message)
+        self.assertIn("recent_pnl_negative_45", message)
 
     def _run_alert_batch_scenario(self, root: Path, candidate_count: int):
         cfg = load_config(None)

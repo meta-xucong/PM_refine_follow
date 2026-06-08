@@ -7,6 +7,7 @@ from .config import load_config, resolve_path
 from .housekeeping import perform_storage_cleanup
 from .scheduler import run_forever, run_once
 from .state_store import StateStore
+from .watchlist_refresh import run_watchlist_refresh
 
 
 def parse_args() -> argparse.Namespace:
@@ -33,6 +34,13 @@ def parse_args() -> argparse.Namespace:
     sub.add_parser("status", help="Print state DB status")
     cleanup = sub.add_parser("cleanup", help="Run one storage cleanup pass")
     cleanup.add_argument("--light", action="store_true", help="Skip SQLite pruning/vacuum")
+
+    refresh = sub.add_parser("refresh-watchlist", help="Fresh re-score high-score watchlist accounts")
+    refresh.add_argument("--min-score", type=float, default=60.0, help="Minimum recent/pushed score to refresh")
+    refresh.add_argument("--limit", type=int, default=200, help="Maximum accounts to refresh")
+    refresh.add_argument("--interval-hours", type=float, default=48.0, help="Skip accounts refreshed within this window")
+    refresh.add_argument("--include-recent", action="store_true", help="Refresh even if refreshed recently")
+    refresh.add_argument("--dry-run-serverchan", action="store_true", help="Do not send the ServerChan summary")
     return parser.parse_args()
 
 
@@ -61,6 +69,17 @@ def main() -> None:
         return
     if args.command == "cleanup":
         result = perform_storage_cleanup(config, reason="cli", include_sqlite=not args.light)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+    if args.command == "refresh-watchlist":
+        result = run_watchlist_refresh(
+            config,
+            min_score=args.min_score,
+            limit=args.limit,
+            refresh_interval_hours=args.interval_hours,
+            include_recent=args.include_recent,
+            dry_run_serverchan=args.dry_run_serverchan,
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return
     if args.command == "once":

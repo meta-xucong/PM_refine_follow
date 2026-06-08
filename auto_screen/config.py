@@ -123,6 +123,12 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "长期活跃表现：||长期活跃调整:",
         ],
     },
+    "watchlist_refresh": {
+        "enabled": True,
+        "min_score": 60,
+        "limit": 200,
+        "interval_hours": 48,
+    },
     "storage_cleanup": {
         "enabled": True,
         "min_free_gb": 4.0,

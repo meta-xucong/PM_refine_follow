@@ -361,6 +361,94 @@ function renderPushedAccounts(rows) {
   }).join("") || `<tr><td colspan="5">暂无已推送账号</td></tr>`;
 }
 
+function recommendationText(value) {
+  const mapping = {
+    stable: "稳定",
+    watch: "观察",
+    downgrade: "降级",
+    remove_candidate: "移出",
+    error: "失败",
+  };
+  return mapping[value] || value || "-";
+}
+
+function recommendationClass(value) {
+  return `recommendation-pill rec-${String(value || "unknown").replace(/[^a-z0-9_-]/gi, "_")}`;
+}
+
+function renderFlagStack(flags, caps) {
+  const values = [...(flags || []), ...(caps || [])].filter(Boolean).slice(0, 5);
+  if (!values.length) return "-";
+  return `<div class="flag-stack">${values.map((value) => `<span class="flag-chip">${html(value)}</span>`).join("")}</div>`;
+}
+
+function renderScoreDelta(value) {
+  if (value === null || value === undefined || value === "") return "-";
+  const n = Number(value);
+  const className = n > 0 ? "delta-up" : (n < 0 ? "delta-down" : "delta-flat");
+  const text = Number.isNaN(n) ? fmt(value) : `${n > 0 ? "+" : ""}${n.toFixed(2)}`;
+  return `<span class="${className}">${html(text)}</span>`;
+}
+
+function renderWatchlistRefresh(data) {
+  if (!$("watchlistBody")) return;
+  const process = data.process || {};
+  const latestBatch = data.latest_batch || {};
+  const latestFile = data.latest_file || {};
+  const summary = latestBatch.summary || latestFile.summary || {};
+  const rows = (latestFile.rows && latestFile.rows.length ? latestFile.rows : (data.runs || [])).slice(0, 120);
+  const isRunning = Boolean(process.running);
+
+  $("watchlistProcess").textContent = isRunning ? `运行中 PID ${process.pid}` : "空闲";
+  $("watchlistProcessHint").textContent = process.started_at
+    ? `启动时间 ${fmtTime(process.started_at)}`
+    : (process.stale ? "上次进程已结束" : "等待定时或手动触发");
+
+  $("watchlistBatch").textContent = latestBatch.id ? `#${fmt(latestBatch.id)} ${fmt(latestBatch.status)}` : "-";
+  $("watchlistBatchHint").textContent = latestBatch.started_at
+    ? `${fmtTime(latestBatch.started_at)} -> ${fmtTime(latestBatch.finished_at)}`
+    : "暂无复核批次";
+
+  $("watchlistSummary").textContent = latestBatch.id
+    ? `稳 ${fmt(latestBatch.stable_count)} / 观 ${fmt(latestBatch.watch_count)} / 降 ${fmt(latestBatch.downgrade_count)} / 移 ${fmt(latestBatch.remove_count)}`
+    : "-";
+  $("watchlistSummaryHint").textContent = latestBatch.id
+    ? `实际复核 ${fmt(summary.attempted ?? latestBatch.succeeded + latestBatch.failed)}，成功 ${fmt(latestBatch.succeeded)}，失败 ${fmt(latestBatch.failed)}，48小时跳过 ${fmt(latestBatch.skipped_recent)}`
+    : "只复核最新评分或最新推送分数 >= 60 的账号";
+
+  const pushStatus = latestBatch.serverchan_push_status || "-";
+  $("watchlistPush").textContent = pushStatus === "sent" ? "已推送" : fmt(pushStatus);
+  $("watchlistPushHint").textContent = latestBatch.serverchan_pushed_at
+    ? `推送时间 ${fmtTime(latestBatch.serverchan_pushed_at)}`
+    : "每个批次结束后发送一次汇总";
+
+  $("watchlistHint").textContent = latestBatch.id
+    ? `最近批次 ${fmtTime(latestBatch.finished_at || latestBatch.started_at)}，表格显示 ${rows.length} 条`
+    : "暂无复核结果";
+
+  $("watchlistBody").innerHTML = rows.map((r) => {
+    const recommendation = r.recommendation || (r.error ? "error" : "-");
+    return `
+      <tr>
+        <td class="account-cell" title="${html(r.address)}">
+          ${r.label && r.label !== r.address ? `<div class="account-label">${html(r.label)}</div>` : ""}
+          <div class="address-row">
+            <span class="address-full">${html(r.address)}</span>
+            ${copyButton(r.address)}
+          </div>
+        </td>
+        <td>${html(r.source_reason)}</td>
+        <td>${html(r.old_score)}</td>
+        <td>${html(r.fresh_score)}</td>
+        <td>${renderScoreDelta(r.score_delta)}</td>
+        <td><span class="${recommendationClass(recommendation)}">${html(recommendationText(recommendation))}</span>${r.error ? `<br><span class="muted">${html(r.error)}</span>` : ""}</td>
+        <td>${renderFlagStack(r.score_flags, r.applied_caps)}</td>
+        <td title="${html(r.created_at)}">${html(fmtTime(r.created_at))}</td>
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="8">暂无复核记录</td></tr>`;
+}
+
 function renderServerchanKey(info) {
   if (!info) return;
   const source = info.active_source || "未设置";
@@ -412,33 +500,37 @@ function collectConfigFromForm() {
 }
 
 async function refreshAll() {
-  const [status, config, accounts, proc, sendkey] = await Promise.all([
+  const [status, config, accounts, proc, sendkey, watchlist] = await Promise.all([
     api("/api/status"),
     api("/api/config"),
     api("/api/accounts?limit=80"),
     api("/api/process"),
     api("/api/serverchan-key"),
+    api("/api/watchlist-refresh/status"),
   ]);
   renderStatus(status);
   renderAccounts(accounts.accounts || []);
   $("logTail").textContent = proc.log_tail || "";
   loadConfigForms(config);
   renderServerchanKey(sendkey);
+  renderWatchlistRefresh(watchlist);
   lastFullRefreshAt = Date.now();
   setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
 
 async function refreshDashboardData() {
-  const [status, accounts, proc, sendkey] = await Promise.all([
+  const [status, accounts, proc, sendkey, watchlist] = await Promise.all([
     api("/api/status"),
     api("/api/accounts?limit=80"),
     api("/api/process"),
     api("/api/serverchan-key"),
+    api("/api/watchlist-refresh/status"),
   ]);
   renderStatus(status);
   renderAccounts(accounts.accounts || []);
   $("logTail").textContent = proc.log_tail || "";
   renderServerchanKey(sendkey);
+  renderWatchlistRefresh(watchlist);
   lastFullRefreshAt = Date.now();
   setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
@@ -497,8 +589,28 @@ function downloadPushedCsv() {
   window.location.href = "/api/export/pushed.csv";
 }
 
+function downloadWatchlistCsv() {
+  window.location.href = "/api/watchlist-refresh/export.csv";
+}
+
+async function runWatchlistRefresh() {
+  const cfg = configs.auto_config?.watchlist_refresh || {};
+  const body = {
+    min_score: Number(cfg.min_score ?? 60),
+    limit: Number(cfg.limit ?? 200),
+    interval_hours: Number(cfg.interval_hours ?? 48),
+    dry_run_serverchan: $("dryRunAlerts").checked,
+  };
+  const res = await api("/api/watchlist-refresh/run", { method: "POST", body: JSON.stringify(body) });
+  toast(res.started ? `高分复核已启动 PID ${res.pid}` : `未启动：${res.reason}`);
+  await refreshDashboardData();
+}
+
 async function refreshProcessOnly() {
-  const proc = await api("/api/process");
+  const [proc, watchlist] = await Promise.all([
+    api("/api/process"),
+    api("/api/watchlist-refresh/status"),
+  ]);
   const merged = {
     process: proc.process || state.process || {},
     progress: proc.progress || state.progress || {},
@@ -507,6 +619,7 @@ async function refreshProcessOnly() {
     excel: proc.excel || state.excel || {},
   };
   renderStatus(merged);
+  renderWatchlistRefresh(watchlist);
   $("logTail").textContent = proc.log_tail || "";
   setRefreshStatus(`已更新 ${refreshTimeText()}`);
 }
@@ -563,6 +676,8 @@ $("refreshSendkeyBtn").addEventListener("click", () => loadServerchanKeyStatus()
 $("saveSendkeyBtn").addEventListener("click", () => saveServerchanKey().catch((e) => toast(e.message)));
 $("downloadPushedCsvBtn").addEventListener("click", downloadPushedCsv);
 $("downloadExcelCsvBtn").addEventListener("click", downloadPushedCsv);
+$("downloadWatchlistCsvBtn").addEventListener("click", downloadWatchlistCsv);
+$("runWatchlistRefreshBtn").addEventListener("click", () => runWatchlistRefresh().catch((e) => toast(e.message)));
 document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-copy]");
   if (!button) return;

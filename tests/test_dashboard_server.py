@@ -369,6 +369,99 @@ class DashboardServerTests(unittest.TestCase):
             self.assertEqual(kwargs["env"]["PYTHONIOENCODING"], "utf-8")
             self.assertEqual(json.loads(pid_file.read_text(encoding="utf-8"))["pid"], 4321)
 
+    def test_launch_watchlist_refresh_uses_detached_safe_stdio(self) -> None:
+        class FakeProcess:
+            pid = 2468
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ui_dir = root / "auto_screen_data" / "dashboard"
+            auto_config = root / "auto_screen_config.ui.json"
+            auto_example = root / "auto_screen_config.example.json"
+            agent_config = root / "agent_core_config.ui.json"
+            agent_example = root / "agent_core_config.example.json"
+            auto_example.write_text("{}", encoding="utf-8")
+            agent_example.write_text("{}", encoding="utf-8")
+            pid_file = ui_dir / "watchlist_refresh_process.json"
+            log_file = ui_dir / "auto_screen.log"
+
+            with (
+                patch.object(dashboard_server, "ROOT", root),
+                patch.object(dashboard_server, "UI_DIR", ui_dir),
+                patch.object(dashboard_server, "AUTO_CONFIG", auto_config),
+                patch.object(dashboard_server, "AGENT_CONFIG", agent_config),
+                patch.object(dashboard_server, "AUTO_CONFIG_EXAMPLE", auto_example),
+                patch.object(dashboard_server, "AGENT_CONFIG_EXAMPLE", agent_example),
+                patch.object(dashboard_server, "WATCHLIST_PID_FILE", pid_file),
+                patch.object(dashboard_server, "LOG_FILE", log_file),
+                patch.object(dashboard_server, "read_watchlist_process_state", return_value={"running": False}),
+                patch.object(dashboard_server.subprocess, "Popen", return_value=FakeProcess()) as popen,
+            ):
+                result = dashboard_server.launch_watchlist_refresh(
+                    {"min_score": 60, "limit": 120, "interval_hours": 48, "dry_run_serverchan": True}
+                )
+
+            self.assertTrue(result["started"])
+            args, kwargs = popen.call_args
+            self.assertIn("refresh-watchlist", args[0])
+            self.assertIn("--min-score", args[0])
+            self.assertIn("60.0", args[0])
+            self.assertIn("--interval-hours", args[0])
+            self.assertIn("48.0", args[0])
+            self.assertIn("--dry-run-serverchan", args[0])
+            self.assertIs(kwargs["stdin"], dashboard_server.subprocess.DEVNULL)
+            self.assertEqual(kwargs["stderr"], dashboard_server.subprocess.STDOUT)
+            self.assertEqual(json.loads(pid_file.read_text(encoding="utf-8"))["pid"], 2468)
+
+    def test_watchlist_refresh_summary_reads_db_and_latest_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "auto_screen_data"
+            latest_dir = data_dir / "watchlist_refresh"
+            latest_dir.mkdir(parents=True)
+            db_path = data_dir / "state.sqlite3"
+            store = StateStore(db_path)
+            batch_id = store.start_watchlist_refresh_batch()
+            store.record_watchlist_refresh_run(
+                {
+                    "batch_id": batch_id,
+                    "address": "0x1111111111111111111111111111111111111111",
+                    "label": "Alpha",
+                    "source_reason": "latest_score>=60",
+                    "old_score": 66,
+                    "fresh_score": 62,
+                    "score_delta": -4,
+                    "recommendation": "watch",
+                    "score_flags": ["unit"],
+                    "applied_caps": ["cap"],
+                }
+            )
+            store.finish_watchlist_refresh_batch(
+                batch_id,
+                "done",
+                {"total": 1, "attempted": 1, "succeeded": 1, "failed": 0, "watch_count": 1},
+                {"sent": True, "serverchan_code": 0},
+            )
+            store.close()
+            (latest_dir / "latest_summary.json").write_text(
+                json.dumps({"summary": {"attempted": 1}, "rows": [{"address": "0x1111111111111111111111111111111111111111"}]}),
+                encoding="utf-8",
+            )
+            (latest_dir / "latest_summary.csv").write_text("address,label\n0x1,Alpha\n", encoding="utf-8-sig")
+
+            with (
+                patch.object(dashboard_server, "ROOT", root),
+                patch.object(dashboard_server, "read_watchlist_process_state", return_value={"running": False}),
+            ):
+                summary = dashboard_server.watchlist_refresh_summary({"data_dir": "auto_screen_data", "state_db": "auto_screen_data/state.sqlite3"})
+                csv_text = dashboard_server.watchlist_refresh_csv({"data_dir": "auto_screen_data"})
+
+            self.assertEqual(summary["latest_batch"]["status"], "done")
+            self.assertEqual(summary["latest_batch"]["summary"]["watch_count"], 1)
+            self.assertEqual(summary["runs"][0]["score_flags"], ["unit"])
+            self.assertEqual(summary["runs"][0]["applied_caps"], ["cap"])
+            self.assertIn("0x1,Alpha", csv_text)
+
     def test_build_auto_screen_args_defaults_to_real_alerts(self) -> None:
         self.assertEqual(dashboard_server.build_auto_screen_args("run", {}), ["run"])
         self.assertEqual(

@@ -78,9 +78,55 @@ class StateStore:
               pushed_at TEXT,
               push_result TEXT
             );
+            CREATE TABLE IF NOT EXISTS watchlist_manual_accounts (
+              address TEXT PRIMARY KEY,
+              label TEXT,
+              note TEXT,
+              enabled INTEGER NOT NULL DEFAULT 1,
+              created_at TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS watchlist_refresh_batches (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              started_at TEXT NOT NULL,
+              finished_at TEXT,
+              status TEXT NOT NULL,
+              total INTEGER NOT NULL DEFAULT 0,
+              succeeded INTEGER NOT NULL DEFAULT 0,
+              failed INTEGER NOT NULL DEFAULT 0,
+              skipped_recent INTEGER NOT NULL DEFAULT 0,
+              stable_count INTEGER NOT NULL DEFAULT 0,
+              watch_count INTEGER NOT NULL DEFAULT 0,
+              downgrade_count INTEGER NOT NULL DEFAULT 0,
+              remove_count INTEGER NOT NULL DEFAULT 0,
+              serverchan_push_status TEXT,
+              serverchan_pushed_at TEXT,
+              serverchan_push_result TEXT,
+              summary_json TEXT
+            );
+            CREATE TABLE IF NOT EXISTS watchlist_refresh_runs (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              batch_id INTEGER,
+              address TEXT NOT NULL,
+              label TEXT,
+              source_reason TEXT,
+              old_score REAL,
+              fresh_score REAL,
+              score_delta REAL,
+              fresh_grade TEXT,
+              decision TEXT,
+              auto_action TEXT,
+              recommendation TEXT,
+              score_flags TEXT,
+              applied_caps TEXT,
+              analysis_path TEXT,
+              error TEXT,
+              created_at TEXT NOT NULL
+            );
             """
         )
         self._ensure_alert_push_columns()
+        self._ensure_indexes()
         self.conn.commit()
 
     def _ensure_alert_push_columns(self) -> None:
@@ -96,6 +142,22 @@ class StateStore:
             self.conn.execute("ALTER TABLE alerts ADD COLUMN push_result TEXT")
         if legacy_without_status:
             self.conn.execute("UPDATE alerts SET push_status='sent' WHERE push_status IS NULL")
+
+    def _ensure_indexes(self) -> None:
+        self.conn.executescript(
+            """
+            CREATE INDEX IF NOT EXISTS idx_runs_status_address_created
+              ON runs(status, address, created_at DESC, id DESC);
+            CREATE INDEX IF NOT EXISTS idx_runs_status_created
+              ON runs(status, created_at DESC, id DESC);
+            CREATE INDEX IF NOT EXISTS idx_alerts_push_address_created
+              ON alerts(push_status, address, pushed_at DESC, created_at DESC, id DESC);
+            CREATE INDEX IF NOT EXISTS idx_alerts_push_created
+              ON alerts(push_status, pushed_at DESC, created_at DESC, id DESC);
+            CREATE INDEX IF NOT EXISTS idx_watchlist_refresh_runs_address_created
+              ON watchlist_refresh_runs(address, created_at DESC, id DESC);
+            """
+        )
 
     def start_cycle(self) -> int:
         now = utc_now()
@@ -446,6 +508,118 @@ class StateStore:
             WHERE id IN ({placeholders})
             """,
             (status, batch_id, pushed_at, payload, *alert_ids),
+        )
+        self.conn.commit()
+
+    def upsert_manual_watchlist_account(self, address: str, label: str = "", note: str = "", enabled: bool = True) -> None:
+        now = utc_now()
+        self.conn.execute(
+            """
+            INSERT INTO watchlist_manual_accounts(address, label, note, enabled, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON CONFLICT(address) DO UPDATE SET
+              label=excluded.label,
+              note=excluded.note,
+              enabled=excluded.enabled,
+              updated_at=excluded.updated_at
+            """,
+            (address.lower(), label, note, 1 if enabled else 0, now, now),
+        )
+        self.conn.commit()
+
+    def set_manual_watchlist_enabled(self, address: str, enabled: bool) -> None:
+        self.conn.execute(
+            "UPDATE watchlist_manual_accounts SET enabled=?, updated_at=? WHERE address=?",
+            (1 if enabled else 0, utc_now(), address.lower()),
+        )
+        self.conn.commit()
+
+    def start_watchlist_refresh_batch(self) -> int:
+        cur = self.conn.execute(
+            "INSERT INTO watchlist_refresh_batches(started_at, status) VALUES (?, ?)",
+            (utc_now(), "running"),
+        )
+        self.conn.commit()
+        return int(cur.lastrowid)
+
+    def record_watchlist_refresh_run(self, row: dict[str, Any]) -> int:
+        cur = self.conn.execute(
+            """
+            INSERT INTO watchlist_refresh_runs(
+              batch_id, address, label, source_reason, old_score, fresh_score, score_delta,
+              fresh_grade, decision, auto_action, recommendation, score_flags, applied_caps,
+              analysis_path, error, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                row.get("batch_id"),
+                str(row.get("address") or "").lower(),
+                row.get("label"),
+                row.get("source_reason"),
+                row.get("old_score"),
+                row.get("fresh_score"),
+                row.get("score_delta"),
+                row.get("fresh_grade"),
+                row.get("decision"),
+                row.get("auto_action"),
+                row.get("recommendation"),
+                json.dumps(row.get("score_flags") or [], ensure_ascii=False),
+                json.dumps(row.get("applied_caps") or [], ensure_ascii=False),
+                row.get("analysis_path"),
+                row.get("error"),
+                row.get("created_at") or utc_now(),
+            ),
+        )
+        self.conn.commit()
+        return int(cur.lastrowid)
+
+    def finish_watchlist_refresh_batch(
+        self,
+        batch_id: int,
+        status: str,
+        summary: dict[str, Any],
+        serverchan_result: dict[str, Any] | None = None,
+    ) -> None:
+        result = serverchan_result or {}
+        push_status = "sent" if bool(result.get("sent")) else str(result.get("reason") or "not_sent")
+        pushed_at = utc_now() if bool(result.get("sent")) else None
+        self.conn.execute(
+            """
+            UPDATE watchlist_refresh_batches
+            SET finished_at=?,
+                status=?,
+                total=?,
+                succeeded=?,
+                failed=?,
+                skipped_recent=?,
+                stable_count=?,
+                watch_count=?,
+                downgrade_count=?,
+                remove_count=?,
+                serverchan_push_status=?,
+                serverchan_pushed_at=?,
+                serverchan_push_result=?,
+                summary_json=?
+            WHERE id=?
+            """,
+            (
+                utc_now(),
+                status,
+                int(summary.get("total") or 0),
+                int(summary.get("succeeded") or 0),
+                int(summary.get("failed") or 0),
+                int(summary.get("skipped_recent") or 0),
+                int(summary.get("stable_count") or 0),
+                int(summary.get("watch_count") or 0),
+                int(summary.get("downgrade_count") or 0),
+                int(summary.get("remove_count") or 0),
+                push_status,
+                pushed_at,
+                json.dumps(result, ensure_ascii=False),
+                json.dumps(summary, ensure_ascii=False),
+                batch_id,
+            ),
         )
         self.conn.commit()
 
