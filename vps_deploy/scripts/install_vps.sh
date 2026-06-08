@@ -28,6 +28,9 @@ RUN_USER="${RUN_USER:-pmfollow}"
 RUN_GROUP="${RUN_GROUP:-$RUN_USER}"
 DASHBOARD_PORT="${DASHBOARD_PORT:-8787}"
 AUTOSTART_SCAN="${AUTOSTART_SCAN:-1}"
+WATCHLIST_REFRESH_ENABLED="${WATCHLIST_REFRESH_ENABLED:-1}"
+WATCHLIST_REFRESH_ON_BOOT_SEC="${WATCHLIST_REFRESH_ON_BOOT_SEC:-30min}"
+WATCHLIST_REFRESH_INTERVAL="${WATCHLIST_REFRESH_INTERVAL:-2d}"
 SERVER_NAME="${DOMAIN:-_}"
 BASIC_AUTH_USER="${BASIC_AUTH_USER:-admin}"
 BASIC_AUTH_PASSWORD="${BASIC_AUTH_PASSWORD:-}"
@@ -36,7 +39,7 @@ ENABLE_LETSENCRYPT="${ENABLE_LETSENCRYPT:-0}"
 LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:-}"
 SCT_SENDKEY="${SCT_SENDKEY:-}"
 
-export APP_DIR CONFIG_DIR DATA_DIR LOG_DIR RUN_USER RUN_GROUP DASHBOARD_PORT AUTOSTART_SCAN SERVER_NAME
+export APP_DIR CONFIG_DIR DATA_DIR LOG_DIR RUN_USER RUN_GROUP DASHBOARD_PORT AUTOSTART_SCAN WATCHLIST_REFRESH_ON_BOOT_SEC WATCHLIST_REFRESH_INTERVAL SERVER_NAME
 
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -100,6 +103,8 @@ for key in (
     "RUN_GROUP",
     "DASHBOARD_PORT",
     "AUTOSTART_SCAN",
+    "WATCHLIST_REFRESH_ON_BOOT_SEC",
+    "WATCHLIST_REFRESH_INTERVAL",
     "SERVER_NAME",
 ):
     text = text.replace(f"__{key}__", os.environ[key])
@@ -111,6 +116,8 @@ PY
 render_template "$APP_DIR/vps_deploy/templates/auto_screen_config.vps.json" "$CONFIG_DIR/auto_screen_config.json"
 render_template "$APP_DIR/vps_deploy/templates/agent_core_config.vps.json" "$CONFIG_DIR/agent_core_config.json"
 render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-dashboard.service" "/etc/systemd/system/pm-refine-follow-dashboard.service"
+render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-watchlist-refresh.service" "/etc/systemd/system/pm-refine-follow-watchlist-refresh.service"
+render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-watchlist-refresh.timer" "/etc/systemd/system/pm-refine-follow-watchlist-refresh.timer"
 render_template "$APP_DIR/vps_deploy/templates/nginx.pm-refine-follow.conf" "/etc/nginx/sites-available/pm-refine-follow.conf"
 
 if [ -n "$SCT_SENDKEY" ]; then
@@ -137,6 +144,11 @@ systemctl enable --now nginx
 systemctl reload nginx
 systemctl daemon-reload
 systemctl enable --now pm-refine-follow-dashboard
+if [ "$WATCHLIST_REFRESH_ENABLED" = "1" ]; then
+  systemctl enable --now pm-refine-follow-watchlist-refresh.timer
+else
+  systemctl disable --now pm-refine-follow-watchlist-refresh.timer 2>/dev/null || true
+fi
 
 if [ "$ENABLE_LETSENCRYPT" = "1" ]; then
   if [ "$SERVER_NAME" = "_" ] || [ -z "$LETSENCRYPT_EMAIL" ]; then
@@ -164,5 +176,7 @@ echo
 echo "Useful commands:"
 echo "  systemctl status pm-refine-follow-dashboard"
 echo "  journalctl -u pm-refine-follow-dashboard -f"
+echo "  systemctl list-timers pm-refine-follow-watchlist-refresh.timer"
+echo "  journalctl -u pm-refine-follow-watchlist-refresh -f"
 echo "  tail -f ${LOG_DIR}/auto_screen.log"
 echo "  bash ${APP_DIR}/vps_deploy/scripts/status.sh"

@@ -63,6 +63,12 @@ sudo journalctl -u pm-refine-follow-dashboard -f
 # 看扫描日志
 sudo tail -f /var/log/pm-refine-follow/auto_screen.log
 
+# 看高分复核小队列定时器
+sudo systemctl list-timers pm-refine-follow-watchlist-refresh.timer
+
+# 手动触发一次 60 分以上账号复核
+sudo systemctl start pm-refine-follow-watchlist-refresh.service
+
 # 看当前 API 状态
 bash /opt/pm-refine-follow/current/vps_deploy/scripts/status.sh
 
@@ -123,4 +129,6 @@ vps_deploy/
     agent_core_config.vps.json
     nginx.pm-refine-follow.conf
     pm-refine-follow-dashboard.service
+    pm-refine-follow-watchlist-refresh.service
+    pm-refine-follow-watchlist-refresh.timer
 ```

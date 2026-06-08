@@ -1,0 +1,15 @@
+[Unit]
+Description=PM Refine Follow high-score watchlist refresh
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=__RUN_USER__
+Group=__RUN_GROUP__
+WorkingDirectory=__APP_DIR__
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONUTF8=1
+Environment=PYTHONIOENCODING=utf-8
+Environment=PM_APP_ROOT=__APP_DIR__
+ExecStart=__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json refresh-watchlist --min-score 60 --limit 200 --interval-hours 48

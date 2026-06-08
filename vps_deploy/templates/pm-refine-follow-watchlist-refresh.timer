@@ -1,0 +1,12 @@
+[Unit]
+Description=Run PM Refine Follow high-score watchlist refresh periodically
+
+[Timer]
+OnBootSec=__WATCHLIST_REFRESH_ON_BOOT_SEC__
+OnUnitActiveSec=__WATCHLIST_REFRESH_INTERVAL__
+Persistent=true
+RandomizedDelaySec=10min
+Unit=pm-refine-follow-watchlist-refresh.service
+
+[Install]
+WantedBy=timers.target
