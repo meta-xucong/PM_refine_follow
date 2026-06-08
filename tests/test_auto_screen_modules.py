@@ -479,6 +479,19 @@ class AutoScreenModuleTests(unittest.TestCase):
         self.assertEqual(recommendation_for_result(54, [], []), "remove_candidate")
         self.assertEqual(recommendation_for_result(70, ["copy_capacity_low_48"], []), "remove_candidate")
 
+    def test_watchlist_refresh_batch_interrupts_previous_running_batch(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = StateStore(Path(tmp) / "state.sqlite3")
+            first = store.start_watchlist_refresh_batch()
+            second = store.start_watchlist_refresh_batch()
+            rows = [dict(row) for row in store.conn.execute("SELECT id, status, finished_at FROM watchlist_refresh_batches ORDER BY id")]
+            store.close()
+
+            self.assertEqual([row["id"] for row in rows], [first, second])
+            self.assertEqual(rows[0]["status"], "interrupted")
+            self.assertIsNotNone(rows[0]["finished_at"])
+            self.assertEqual(rows[1]["status"], "running")
+
     def test_watchlist_refresh_persists_batch_outputs_and_serverchan_summary(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

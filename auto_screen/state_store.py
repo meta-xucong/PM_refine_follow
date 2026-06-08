@@ -535,9 +535,18 @@ class StateStore:
         self.conn.commit()
 
     def start_watchlist_refresh_batch(self) -> int:
+        now = utc_now()
+        self.conn.execute(
+            """
+            UPDATE watchlist_refresh_batches
+            SET finished_at=?, status=?
+            WHERE status='running' AND finished_at IS NULL
+            """,
+            (now, "interrupted"),
+        )
         cur = self.conn.execute(
             "INSERT INTO watchlist_refresh_batches(started_at, status) VALUES (?, ?)",
-            (utc_now(), "running"),
+            (now, "running"),
         )
         self.conn.commit()
         return int(cur.lastrowid)
