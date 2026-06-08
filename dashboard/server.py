@@ -464,12 +464,78 @@ def _json_list(value: Any) -> list[Any]:
         return []
 
 
+def hydrate_watchlist_run_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    for row in rows:
+        row["score_flags"] = _json_list(row.get("score_flags"))
+        row["applied_caps"] = _json_list(row.get("applied_caps"))
+    return rows
+
+
 def watchlist_refresh_csv(auto_cfg: dict[str, Any]) -> str:
     data_dir = resolve_auto_path(auto_cfg, "data_dir", "auto_screen_data")
     latest_csv = data_dir / "watchlist_refresh" / "latest_summary.csv"
     if latest_csv.exists():
         return latest_csv.read_text(encoding="utf-8-sig")
     return "address,label,old_score,fresh_score,score_delta,recommendation,error\n"
+
+
+def watchlist_account_histories(db_path: Path, latest_limit: int = 120, per_account: int = 20) -> list[dict[str, Any]]:
+    latest_rows = hydrate_watchlist_run_rows(
+        sqlite_rows(
+            db_path,
+            """
+            SELECT r.*
+            FROM watchlist_refresh_runs r
+            JOIN (
+              SELECT address, MAX(id) AS latest_id
+              FROM watchlist_refresh_runs
+              GROUP BY address
+            ) latest ON latest.latest_id = r.id
+            ORDER BY r.id DESC
+            LIMIT ?
+            """,
+            (latest_limit,),
+        )
+    )
+    addresses = [str(row.get("address") or "").lower() for row in latest_rows if row.get("address")]
+    if not addresses:
+        return []
+
+    placeholders = ",".join("?" for _ in addresses)
+    history_rows = hydrate_watchlist_run_rows(
+        sqlite_rows(
+            db_path,
+            f"""
+            SELECT *
+            FROM watchlist_refresh_runs
+            WHERE address IN ({placeholders})
+            ORDER BY id DESC
+            """,
+            tuple(addresses),
+        )
+    )
+    grouped: dict[str, list[dict[str, Any]]] = {address: [] for address in addresses}
+    for row in history_rows:
+        address = str(row.get("address") or "").lower()
+        history = grouped.setdefault(address, [])
+        if len(history) < per_account:
+            history.append(row)
+
+    out: list[dict[str, Any]] = []
+    for latest in latest_rows:
+        address = str(latest.get("address") or "").lower()
+        history = grouped.get(address, [])
+        out.append(
+            {
+                "address": address,
+                "label": latest.get("label") or address,
+                "latest": latest,
+                "history_count": len(history),
+                "recent_history": history[:3],
+                "hidden_history": history[3:],
+            }
+        )
+    return out
 
 
 def watchlist_refresh_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
@@ -495,9 +561,8 @@ def watchlist_refresh_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
         LIMIT 120
         """,
     )
-    for row in runs:
-        row["score_flags"] = _json_list(row.get("score_flags"))
-        row["applied_caps"] = _json_list(row.get("applied_caps"))
+    hydrate_watchlist_run_rows(runs)
+    account_histories = watchlist_account_histories(db_path)
     latest_batch = batches[0] if batches else {}
     if latest_batch.get("summary_json"):
         latest_batch["summary"] = read_json_like(latest_batch.get("summary_json"), {})
@@ -517,6 +582,7 @@ def watchlist_refresh_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
         "latest_batch": latest_batch,
         "batches": batches,
         "runs": runs,
+        "account_histories": account_histories,
         "latest_file": latest_file_payload,
         "latest_json_path": str(latest_json),
         "latest_csv_path": str(data_dir / "watchlist_refresh" / "latest_summary.csv"),

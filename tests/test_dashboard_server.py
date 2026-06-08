@@ -436,10 +436,35 @@ class DashboardServerTests(unittest.TestCase):
                     "applied_caps": ["cap"],
                 }
             )
+            for index, score in enumerate([61, 60, 59], start=2):
+                store.record_watchlist_refresh_run(
+                    {
+                        "batch_id": batch_id,
+                        "address": "0x1111111111111111111111111111111111111111",
+                        "label": "Alpha",
+                        "source_reason": "latest_score>=60",
+                        "old_score": 66 - index,
+                        "fresh_score": score,
+                        "score_delta": score - (66 - index),
+                        "recommendation": "watch" if score >= 60 else "downgrade",
+                    }
+                )
+            store.record_watchlist_refresh_run(
+                {
+                    "batch_id": batch_id,
+                    "address": "0x2222222222222222222222222222222222222222",
+                    "label": "Beta",
+                    "source_reason": "latest_score>=60",
+                    "old_score": 70,
+                    "fresh_score": 67,
+                    "score_delta": -3,
+                    "recommendation": "stable",
+                }
+            )
             store.finish_watchlist_refresh_batch(
                 batch_id,
                 "done",
-                {"total": 1, "attempted": 1, "succeeded": 1, "failed": 0, "watch_count": 1},
+                {"total": 5, "attempted": 5, "succeeded": 5, "failed": 0, "watch_count": 3, "downgrade_count": 1, "stable_count": 1},
                 {"sent": True, "serverchan_code": 0},
             )
             store.close()
@@ -457,9 +482,16 @@ class DashboardServerTests(unittest.TestCase):
                 csv_text = dashboard_server.watchlist_refresh_csv({"data_dir": "auto_screen_data"})
 
             self.assertEqual(summary["latest_batch"]["status"], "done")
-            self.assertEqual(summary["latest_batch"]["summary"]["watch_count"], 1)
-            self.assertEqual(summary["runs"][0]["score_flags"], ["unit"])
-            self.assertEqual(summary["runs"][0]["applied_caps"], ["cap"])
+            self.assertEqual(summary["latest_batch"]["summary"]["watch_count"], 3)
+            flagged_run = next(row for row in summary["runs"] if row["score_flags"] == ["unit"])
+            self.assertEqual(flagged_run["applied_caps"], ["cap"])
+            histories = {item["address"]: item for item in summary["account_histories"]}
+            alpha = histories["0x1111111111111111111111111111111111111111"]
+            self.assertEqual(alpha["history_count"], 4)
+            self.assertEqual(len(alpha["recent_history"]), 3)
+            self.assertEqual(len(alpha["hidden_history"]), 1)
+            self.assertEqual(alpha["latest"]["fresh_score"], 59)
+            self.assertEqual(histories["0x2222222222222222222222222222222222222222"]["history_count"], 1)
             self.assertIn("0x1,Alpha", csv_text)
 
     def test_watchlist_refresh_summary_marks_running_batch_as_running_process(self) -> None:

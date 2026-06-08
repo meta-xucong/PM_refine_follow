@@ -505,6 +505,12 @@ th:nth-child(2) {
 .history-details .score-stack {
   margin-top: 8px;
 }
+.watchlist-score-chip {
+  gap: 5px;
+}
+.watchlist-history-details {
+  margin-top: 7px;
+}
 
 .recommendation-pill,
 .flag-chip {

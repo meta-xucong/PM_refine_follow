@@ -390,13 +390,45 @@ function renderScoreDelta(value) {
   return `<span class="${className}">${html(text)}</span>`;
 }
 
+function renderWatchlistScoreChip(run, index) {
+  const recommendation = run.recommendation || (run.error ? "error" : "");
+  const label = index === 0 ? "最新" : `旧${index}`;
+  const title = [
+    `批次 ${fmt(run.batch_id)}`,
+    fmtTime(run.created_at),
+    `旧分 ${fmt(run.old_score)}`,
+    `fresh ${fmt(run.fresh_score)}`,
+    recommendationText(recommendation),
+  ].join("｜");
+  return `
+    <span class="score-pill watchlist-score-chip" title="${html(title)}">
+      ${html(label)}：${html(run.fresh_score)} ${renderScoreDelta(run.score_delta)}
+    </span>
+  `;
+}
+
+function renderWatchlistHistory(row) {
+  const recent = row.recent_history || [];
+  const hidden = row.hidden_history || [];
+  if (!recent.length) return "-";
+  return `
+    <div class="score-stack">${recent.map((run, index) => renderWatchlistScoreChip(run, index)).join("")}</div>
+    ${hidden.length ? `
+      <details class="history-details watchlist-history-details">
+        <summary>查看剩余 ${hidden.length} 次</summary>
+        <div class="score-stack">${hidden.map((run, index) => renderWatchlistScoreChip(run, index + recent.length)).join("")}</div>
+      </details>
+    ` : ""}
+  `;
+}
+
 function renderWatchlistRefresh(data) {
   if (!$("watchlistBody")) return;
   const process = data.process || {};
   const latestBatch = data.latest_batch || {};
   const latestFile = data.latest_file || {};
   const summary = latestBatch.summary || latestFile.summary || {};
-  const rows = (latestFile.rows && latestFile.rows.length ? latestFile.rows : (data.runs || [])).slice(0, 120);
+  const accountRows = (data.account_histories || []).slice(0, 120);
   const isRunning = Boolean(process.running);
 
   $("watchlistProcess").textContent = isRunning ? (process.pid ? `运行中 PID ${process.pid}` : "运行中") : "空闲";
@@ -423,10 +455,11 @@ function renderWatchlistRefresh(data) {
     : "每个批次结束后发送一次汇总";
 
   $("watchlistHint").textContent = latestBatch.id
-    ? `最近批次 ${fmtTime(latestBatch.finished_at || latestBatch.started_at)}，表格显示 ${rows.length} 条`
+    ? `最近批次 ${fmtTime(latestBatch.finished_at || latestBatch.started_at)}，表格显示 ${accountRows.length} 个账号`
     : "暂无复核结果";
 
-  $("watchlistBody").innerHTML = rows.map((r) => {
+  $("watchlistBody").innerHTML = accountRows.map((row) => {
+    const r = row.latest || {};
     const recommendation = r.recommendation || (r.error ? "error" : "-");
     return `
       <tr>
@@ -438,10 +471,10 @@ function renderWatchlistRefresh(data) {
           </div>
         </td>
         <td>${html(r.source_reason)}</td>
-        <td>${html(r.old_score)}</td>
         <td>${html(r.fresh_score)}</td>
         <td>${renderScoreDelta(r.score_delta)}</td>
         <td><span class="${recommendationClass(recommendation)}">${html(recommendationText(recommendation))}</span>${r.error ? `<br><span class="muted">${html(r.error)}</span>` : ""}</td>
+        <td>${renderWatchlistHistory(row)}</td>
         <td>${renderFlagStack(r.score_flags, r.applied_caps)}</td>
         <td title="${html(r.created_at)}">${html(fmtTime(r.created_at))}</td>
       </tr>
