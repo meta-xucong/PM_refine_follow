@@ -399,9 +399,9 @@ function renderWatchlistRefresh(data) {
   const rows = (latestFile.rows && latestFile.rows.length ? latestFile.rows : (data.runs || [])).slice(0, 120);
   const isRunning = Boolean(process.running);
 
-  $("watchlistProcess").textContent = isRunning ? `运行中 PID ${process.pid}` : "空闲";
+  $("watchlistProcess").textContent = isRunning ? (process.pid ? `运行中 PID ${process.pid}` : "运行中") : "空闲";
   $("watchlistProcessHint").textContent = process.started_at
-    ? `启动时间 ${fmtTime(process.started_at)}`
+    ? `启动时间 ${fmtTime(process.started_at)}${process.source ? ` · ${fmt(process.source)}` : ""}`
     : (process.stale ? "上次进程已结束" : "等待定时或手动触发");
 
   $("watchlistBatch").textContent = latestBatch.id ? `#${fmt(latestBatch.id)} ${fmt(latestBatch.status)}` : "-";

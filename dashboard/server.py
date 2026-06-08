@@ -503,8 +503,17 @@ def watchlist_refresh_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
         latest_batch["summary"] = read_json_like(latest_batch.get("summary_json"), {})
     if latest_batch.get("serverchan_push_result"):
         latest_batch["serverchan_push_result_json"] = read_json_like(latest_batch.get("serverchan_push_result"), {})
+    process = read_watchlist_process_state()
+    if latest_batch.get("status") == "running" and not latest_batch.get("finished_at") and not process.get("running"):
+        process = {
+            **process,
+            "running": True,
+            "mode": "watchlist-refresh",
+            "source": "watchlist_refresh_batches",
+            "started_at": latest_batch.get("started_at"),
+        }
     return {
-        "process": read_watchlist_process_state(),
+        "process": process,
         "latest_batch": latest_batch,
         "batches": batches,
         "runs": runs,

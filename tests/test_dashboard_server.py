@@ -462,6 +462,23 @@ class DashboardServerTests(unittest.TestCase):
             self.assertEqual(summary["runs"][0]["applied_caps"], ["cap"])
             self.assertIn("0x1,Alpha", csv_text)
 
+    def test_watchlist_refresh_summary_marks_running_batch_as_running_process(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            db_path = root / "auto_screen_data" / "state.sqlite3"
+            store = StateStore(db_path)
+            store.start_watchlist_refresh_batch()
+            store.close()
+
+            with (
+                patch.object(dashboard_server, "ROOT", root),
+                patch.object(dashboard_server, "read_watchlist_process_state", return_value={"running": False}),
+            ):
+                summary = dashboard_server.watchlist_refresh_summary({"data_dir": "auto_screen_data", "state_db": "auto_screen_data/state.sqlite3"})
+
+            self.assertTrue(summary["process"]["running"])
+            self.assertEqual(summary["process"]["source"], "watchlist_refresh_batches")
+
     def test_build_auto_screen_args_defaults_to_real_alerts(self) -> None:
         self.assertEqual(dashboard_server.build_auto_screen_args("run", {}), ["run"])
         self.assertEqual(
