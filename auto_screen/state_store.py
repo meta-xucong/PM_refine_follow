@@ -148,6 +148,8 @@ class StateStore:
             """
             CREATE INDEX IF NOT EXISTS idx_runs_status_address_created
               ON runs(status, address, created_at DESC, id DESC);
+            CREATE INDEX IF NOT EXISTS idx_runs_status_address_id
+              ON runs(status, address, id DESC);
             CREATE INDEX IF NOT EXISTS idx_runs_status_created
               ON runs(status, created_at DESC, id DESC);
             CREATE INDEX IF NOT EXISTS idx_alerts_push_address_created

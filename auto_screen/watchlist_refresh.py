@@ -101,6 +101,21 @@ def _latest_rows_by_address(rows: list[Any]) -> dict[str, dict[str, Any]]:
     return latest
 
 
+def _payloads_by_run_id(store: StateStore, run_ids: list[int]) -> dict[int, str]:
+    payloads: dict[int, str] = {}
+    for start in range(0, len(run_ids), 400):
+        chunk = run_ids[start : start + 400]
+        if not chunk:
+            continue
+        placeholders = ",".join("?" for _ in chunk)
+        rows = store.conn.execute(
+            f"SELECT id, payload FROM runs WHERE id IN ({placeholders})",
+            tuple(chunk),
+        ).fetchall()
+        payloads.update({int(row["id"]): str(row["payload"] or "") for row in rows})
+    return payloads
+
+
 def select_watchlist_candidates(
     store: StateStore,
     *,
@@ -127,29 +142,50 @@ def select_watchlist_candidates(
                 priority=priority,
             )
 
-    run_rows = store.conn.execute(
+    latest_run_rows = store.conn.execute(
         """
-        SELECT address, final_score, payload, created_at
-        FROM runs
-        WHERE status='scored'
-        ORDER BY created_at DESC, id DESC
+        WITH latest AS (
+          SELECT address, MAX(id) AS latest_id
+          FROM runs
+          WHERE status='scored'
+          GROUP BY address
+        )
+        SELECT r.id, r.address, r.final_score, r.created_at
+        FROM runs r
+        JOIN latest ON latest.latest_id = r.id
+        ORDER BY r.created_at DESC, r.id DESC
         """
     ).fetchall()
-    latest_run_by_address = _latest_rows_by_address(run_rows)
+    latest_run_by_address = _latest_rows_by_address(latest_run_rows)
+    high_run_ids = [
+        int(row["id"])
+        for row in latest_run_by_address.values()
+        if (_to_float(row["final_score"]) or 0.0) >= min_score
+    ]
+    payloads = _payloads_by_run_id(store, high_run_ids)
     for row in latest_run_by_address.values():
         score = _to_float(row["final_score"])
         if score is None or score < min_score:
             continue
-        label = _label_from_payload(row["payload"], str(row["address"] or ""))
+        label = _label_from_payload(payloads.get(int(row["id"])), str(row["address"] or ""))
         add(row["address"], label, score, f"latest_score>={min_score:g}", 80)
 
     alert_rows = store.conn.execute(
         """
-        SELECT address, final_score, alert_grade, title, created_at, pushed_at
-        FROM alerts
-        WHERE push_status='sent'
-        ORDER BY COALESCE(pushed_at, created_at) DESC, id DESC
+        WITH latest AS (
+          SELECT address, MAX(id) AS latest_id
+          FROM alerts
+          WHERE push_status='sent'
+          GROUP BY address
+        )
+        SELECT a.address, a.final_score, a.alert_grade, a.title, a.created_at, a.pushed_at
+        FROM alerts a
+        JOIN latest ON latest.latest_id = a.id
+        WHERE COALESCE(a.final_score, 0) >= ?
+        ORDER BY COALESCE(a.pushed_at, a.created_at) DESC, a.id DESC
         """
+        ,
+        (min_score,),
     ).fetchall()
     for row in _latest_rows_by_address(alert_rows).values():
         address = str(row["address"] or "").lower()

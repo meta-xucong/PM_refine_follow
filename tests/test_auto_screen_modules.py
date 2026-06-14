@@ -472,6 +472,40 @@ class AutoScreenModuleTests(unittest.TestCase):
             self.assertNotIn(still_high, addresses)
             self.assertEqual(skipped[0]["address"], still_high)
 
+    def test_watchlist_candidate_selection_ignores_low_score_payloads(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = StateStore(Path(tmp) / "state.sqlite3")
+            low_address = "0x1111111111111111111111111111111111111111"
+            high_address = "0x2222222222222222222222222222222222222222"
+            store.record_scoring(
+                ScoringResult(
+                    address=low_address,
+                    final_score=59,
+                    decision="store",
+                    alert_grade="C",
+                    auto_action="store_only",
+                    analysis_path="low.json",
+                    payload={"account_label": "LowShouldNotLoad", "blob": "x" * 200000},
+                )
+            )
+            store.record_scoring(
+                ScoringResult(
+                    address=high_address,
+                    final_score=61,
+                    decision="watch",
+                    alert_grade="B",
+                    auto_action="push_watchlist",
+                    analysis_path="high.json",
+                    payload={"account_label": "HighLoaded"},
+                )
+            )
+
+            candidates, _skipped = select_watchlist_candidates(store, min_score=60, include_recent=True)
+            store.close()
+
+            self.assertEqual([item.address for item in candidates], [high_address])
+            self.assertEqual(candidates[0].label, "HighLoaded")
+
     def test_watchlist_recommendation_hard_caps_and_score_bands(self):
         self.assertEqual(recommendation_for_result(66, [], []), "stable")
         self.assertEqual(recommendation_for_result(62, [], []), "watch")
