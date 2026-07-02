@@ -27,10 +27,13 @@ LOG_DIR="${LOG_DIR:-/var/log/pm-refine-follow}"
 RUN_USER="${RUN_USER:-pmfollow}"
 RUN_GROUP="${RUN_GROUP:-$RUN_USER}"
 DASHBOARD_PORT="${DASHBOARD_PORT:-8787}"
-AUTOSTART_SCAN="${AUTOSTART_SCAN:-1}"
+AUTOSTART_SCAN="${AUTOSTART_SCAN:-0}"
+AUTO_SCREEN_SERVICE_ENABLED="${AUTO_SCREEN_SERVICE_ENABLED:-1}"
 WATCHLIST_REFRESH_ENABLED="${WATCHLIST_REFRESH_ENABLED:-1}"
 WATCHLIST_REFRESH_ON_BOOT_SEC="${WATCHLIST_REFRESH_ON_BOOT_SEC:-30min}"
 WATCHLIST_REFRESH_INTERVAL="${WATCHLIST_REFRESH_INTERVAL:-2d}"
+ENABLE_SWAPFILE="${ENABLE_SWAPFILE:-1}"
+SWAPFILE_SIZE="${SWAPFILE_SIZE:-2G}"
 SERVER_NAME="${DOMAIN:-_}"
 BASIC_AUTH_USER="${BASIC_AUTH_USER:-admin}"
 BASIC_AUTH_PASSWORD="${BASIC_AUTH_PASSWORD:-}"
@@ -38,6 +41,11 @@ DISABLE_NGINX_DEFAULT="${DISABLE_NGINX_DEFAULT:-1}"
 ENABLE_LETSENCRYPT="${ENABLE_LETSENCRYPT:-0}"
 LETSENCRYPT_EMAIL="${LETSENCRYPT_EMAIL:-}"
 SCT_SENDKEY="${SCT_SENDKEY:-}"
+
+if [ "$AUTO_SCREEN_SERVICE_ENABLED" = "1" ] && [ "$AUTOSTART_SCAN" = "1" ]; then
+  echo "AUTO_SCREEN_SERVICE_ENABLED=1; forcing AUTOSTART_SCAN=0 so dashboard and scanner do not double-run."
+  AUTOSTART_SCAN=0
+fi
 
 export APP_DIR CONFIG_DIR DATA_DIR LOG_DIR RUN_USER RUN_GROUP DASHBOARD_PORT AUTOSTART_SCAN WATCHLIST_REFRESH_ON_BOOT_SEC WATCHLIST_REFRESH_INTERVAL SERVER_NAME
 
@@ -52,6 +60,20 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y \
   python3 \
   python3-pip \
   python3-venv
+
+if [ "$ENABLE_SWAPFILE" = "1" ]; then
+  if ! /sbin/swapon --show=NAME --noheadings 2>/dev/null | grep -qx '/swapfile'; then
+    if [ ! -f /swapfile ]; then
+      fallocate -l "$SWAPFILE_SIZE" /swapfile
+      chmod 600 /swapfile
+      mkswap /swapfile
+    fi
+    /sbin/swapon /swapfile
+  fi
+  if ! grep -Eq '^/swapfile[[:space:]]' /etc/fstab; then
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  fi
+fi
 
 if [ -z "$BASIC_AUTH_PASSWORD" ]; then
   BASIC_AUTH_PASSWORD="$(openssl rand -base64 18 | tr -d '\n')"
@@ -116,6 +138,7 @@ PY
 render_template "$APP_DIR/vps_deploy/templates/auto_screen_config.vps.json" "$CONFIG_DIR/auto_screen_config.json"
 render_template "$APP_DIR/vps_deploy/templates/agent_core_config.vps.json" "$CONFIG_DIR/agent_core_config.json"
 render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-dashboard.service" "/etc/systemd/system/pm-refine-follow-dashboard.service"
+render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-auto-screen.service" "/etc/systemd/system/pm-refine-follow-auto-screen.service"
 render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-watchlist-refresh.service" "/etc/systemd/system/pm-refine-follow-watchlist-refresh.service"
 render_template "$APP_DIR/vps_deploy/templates/pm-refine-follow-watchlist-refresh.timer" "/etc/systemd/system/pm-refine-follow-watchlist-refresh.timer"
 render_template "$APP_DIR/vps_deploy/templates/nginx.pm-refine-follow.conf" "/etc/nginx/sites-available/pm-refine-follow.conf"
@@ -144,6 +167,11 @@ systemctl enable --now nginx
 systemctl reload nginx
 systemctl daemon-reload
 systemctl enable --now pm-refine-follow-dashboard
+if [ "$AUTO_SCREEN_SERVICE_ENABLED" = "1" ]; then
+  systemctl enable --now pm-refine-follow-auto-screen
+else
+  systemctl disable --now pm-refine-follow-auto-screen 2>/dev/null || true
+fi
 if [ "$WATCHLIST_REFRESH_ENABLED" = "1" ]; then
   systemctl enable --now pm-refine-follow-watchlist-refresh.timer
 else
@@ -175,7 +203,9 @@ echo "SendKey file: ${CONFIG_DIR}/secrets/serverchan_sendkey.txt"
 echo
 echo "Useful commands:"
 echo "  systemctl status pm-refine-follow-dashboard"
+echo "  systemctl status pm-refine-follow-auto-screen"
 echo "  journalctl -u pm-refine-follow-dashboard -f"
+echo "  journalctl -u pm-refine-follow-auto-screen -f"
 echo "  systemctl list-timers pm-refine-follow-watchlist-refresh.timer"
 echo "  journalctl -u pm-refine-follow-watchlist-refresh -f"
 echo "  tail -f ${LOG_DIR}/auto_screen.log"

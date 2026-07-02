@@ -633,6 +633,29 @@ def scoring_history_for_addresses(db_path: Path, addresses: list[str], per_addre
     return grouped
 
 
+def recent_run_rows(db_path: Path, limit: int = 20) -> list[dict[str, Any]]:
+    return sqlite_rows(
+        db_path,
+        """
+        SELECT
+          id,
+          address,
+          status,
+          final_score,
+          decision,
+          alert_grade,
+          auto_action,
+          reason,
+          created_at,
+          LENGTH(payload) AS payload_bytes
+        FROM runs
+        ORDER BY id DESC
+        LIMIT ?
+        """,
+        (limit,),
+    )
+
+
 def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
     db_path = resolve_auto_path(auto_cfg, "state_db", "auto_screen_data/state.sqlite3")
     counts = {}
@@ -649,7 +672,7 @@ def auto_state_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
         "candidate_total_count": candidate_total_count,
         "alert_push_counts": alert_push_counts,
         "latest_cycles": sqlite_rows(db_path, "SELECT * FROM cycles ORDER BY id DESC LIMIT 8"),
-        "recent_runs": sqlite_rows(db_path, "SELECT * FROM runs ORDER BY id DESC LIMIT 20"),
+        "recent_runs": recent_run_rows(db_path, limit=20),
         "recent_alerts": sqlite_rows(db_path, "SELECT * FROM alerts ORDER BY id DESC LIMIT 20"),
         "pushed_accounts": pushed_accounts_summary(db_path),
     }

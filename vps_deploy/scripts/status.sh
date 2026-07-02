@@ -6,6 +6,12 @@ BASE_URL="http://127.0.0.1:${PORT}"
 
 echo "== systemd =="
 systemctl --no-pager --lines=8 status pm-refine-follow-dashboard || true
+echo
+systemctl --no-pager --lines=8 status pm-refine-follow-auto-screen || true
+
+echo
+echo "== memory =="
+free -h || true
 
 echo
 echo "== /api/process =="

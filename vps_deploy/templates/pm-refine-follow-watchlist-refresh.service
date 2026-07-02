@@ -2,6 +2,9 @@
 Description=PM Refine Follow high-score watchlist refresh
 Wants=network-online.target
 After=network-online.target
+Conflicts=pm-refine-follow-auto-screen.service
+OnSuccess=pm-refine-follow-auto-screen.service
+OnFailure=pm-refine-follow-auto-screen.service
 
 [Service]
 Type=oneshot
@@ -13,3 +16,7 @@ Environment=PYTHONUTF8=1
 Environment=PYTHONIOENCODING=utf-8
 Environment=PM_APP_ROOT=__APP_DIR__
 ExecStart=__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json refresh-watchlist --min-score 60 --limit 200 --interval-hours 48
+MemoryHigh=550M
+MemoryMax=750M
+OOMPolicy=stop
+Nice=5

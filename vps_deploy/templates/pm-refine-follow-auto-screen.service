@@ -1,7 +1,9 @@
 [Unit]
-Description=PM Refine Follow dashboard
+Description=PM Refine Follow auto screen runner
 Wants=network-online.target
 After=network-online.target
+StartLimitIntervalSec=1800
+StartLimitBurst=4
 
 [Service]
 Type=simple
@@ -15,17 +17,16 @@ Environment=PM_APP_ROOT=__APP_DIR__
 Environment=PM_DATA_DIR=__DATA_DIR__
 Environment=PM_UI_DIR=__DATA_DIR__/dashboard
 Environment=PM_AUTO_CONFIG=__CONFIG_DIR__/auto_screen_config.json
-Environment=PM_AGENT_CONFIG=__CONFIG_DIR__/agent_core_config.json
-Environment=PM_DASHBOARD_AUTO_LOG=__LOG_DIR__/auto_screen.log
-Environment=PM_AUTOSTART_SCAN=__AUTOSTART_SCAN__
-ExecStart=__APP_DIR__/.venv/bin/python -m dashboard.server --host 127.0.0.1 --port __DASHBOARD_PORT__
-Restart=always
-RestartSec=5
+ExecStart=__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json run
+Restart=on-failure
+RestartSec=60
 KillMode=control-group
-TimeoutStopSec=30
-MemoryHigh=250M
-MemoryMax=400M
-OOMPolicy=continue
+TimeoutStopSec=60
+MemoryHigh=1050M
+MemoryMax=1400M
+OOMPolicy=stop
+Nice=5
+TasksMax=128
 
 [Install]
 WantedBy=multi-user.target

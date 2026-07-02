@@ -6,9 +6,10 @@
 - 创建 Python venv 并安装运行依赖。
 - 生成 VPS 专用配置。
 - 把运行数据、配置、密钥和日志分离到 Linux 标准目录。
-- 创建 systemd dashboard 服务，并在服务启动时自动拉起常驻扫描。
+- 创建独立的 systemd dashboard 服务和常驻扫描服务，避免扫描 OOM 拖死前端。
 - 配置 Nginx 反向代理和登录保护。
 - 内置自动磁盘清理策略，避免历史归档和缓存长期堆积导致磁盘打满。
+- 默认准备 2GB swapfile，降低小内存 VPS 被瞬时内存峰值打死的概率。
 
 ## VPS 与本地版的关键差异
 
@@ -54,11 +55,20 @@ http://你的域名或IP/
 # 看 dashboard 服务
 sudo systemctl status pm-refine-follow-dashboard
 
-# 重启 dashboard。默认会自动拉起扫描。
+# 看常驻扫描服务
+sudo systemctl status pm-refine-follow-auto-screen
+
+# 重启 dashboard。只影响前端，不会连带重启常驻扫描。
 sudo systemctl restart pm-refine-follow-dashboard
+
+# 重启常驻扫描
+sudo systemctl restart pm-refine-follow-auto-screen
 
 # 看 dashboard 日志
 sudo journalctl -u pm-refine-follow-dashboard -f
+
+# 看常驻扫描服务日志
+sudo journalctl -u pm-refine-follow-auto-screen -f
 
 # 看扫描日志
 sudo tail -f /var/log/pm-refine-follow/auto_screen.log
@@ -67,6 +77,7 @@ sudo tail -f /var/log/pm-refine-follow/auto_screen.log
 sudo systemctl list-timers pm-refine-follow-watchlist-refresh.timer
 
 # 手动触发一次 60 分以上账号复核
+# 复核运行时会暂停常驻扫描，结束后再拉起，避免两个重任务叠加。
 sudo systemctl start pm-refine-follow-watchlist-refresh.service
 
 # 看当前 API 状态
@@ -128,6 +139,7 @@ vps_deploy/
     auto_screen_config.vps.json
     agent_core_config.vps.json
     nginx.pm-refine-follow.conf
+    pm-refine-follow-auto-screen.service
     pm-refine-follow-dashboard.service
     pm-refine-follow-watchlist-refresh.service
     pm-refine-follow-watchlist-refresh.timer
