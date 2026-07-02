@@ -346,6 +346,7 @@ def _cleanup_state_db(
     removed_cycles = 0
     trimmed_runs = 0
     trimmed_alerts = 0
+    vacuumed = False
     try:
         conn.execute("PRAGMA busy_timeout=20000")
         runs_cutoff = _utc_cutoff_iso(runs_retention_days)
@@ -380,7 +381,10 @@ def _cleanup_state_db(
 
         conn.commit()
         conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
-        conn.execute("VACUUM")
+        vacuumed = any([removed_runs, removed_alerts, removed_cycles, trimmed_runs, trimmed_alerts])
+        if vacuumed:
+            conn.execute("VACUUM")
+            conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
     finally:
         conn.close()
     return {
@@ -389,6 +393,7 @@ def _cleanup_state_db(
         "removed_cycles": removed_cycles,
         "trimmed_runs": trimmed_runs,
         "trimmed_alerts": trimmed_alerts,
+        "vacuumed": vacuumed,
     }
 
 
