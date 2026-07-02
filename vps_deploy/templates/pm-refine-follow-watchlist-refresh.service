@@ -15,6 +15,7 @@ Environment=PYTHONUNBUFFERED=1
 Environment=PYTHONUTF8=1
 Environment=PYTHONIOENCODING=utf-8
 Environment=PM_APP_ROOT=__APP_DIR__
+ExecStartPre=-__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json checkpoint-state-db --timeout 60
 ExecStart=__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json refresh-watchlist --min-score 60 --limit 200 --interval-hours 48
 MemoryHigh=550M
 MemoryMax=750M

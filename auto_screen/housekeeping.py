@@ -392,6 +392,27 @@ def _cleanup_state_db(
     }
 
 
+def checkpoint_state_db(state_db: Path, timeout_seconds: float = 60.0) -> dict[str, Any]:
+    if not state_db.exists():
+        return {"skipped": True, "reason": "state_db_missing", "state_db": str(state_db)}
+    wal_path = Path(f"{state_db}-wal")
+    before_bytes = wal_path.stat().st_size if wal_path.exists() else 0
+    conn = sqlite3.connect(state_db, timeout=max(1.0, float(timeout_seconds)))
+    try:
+        conn.execute(f"PRAGMA busy_timeout={int(max(1.0, float(timeout_seconds)) * 1000)}")
+        row = conn.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+    finally:
+        conn.close()
+    after_bytes = wal_path.stat().st_size if wal_path.exists() else 0
+    return {
+        "state_db": str(state_db),
+        "wal_before_bytes": before_bytes,
+        "wal_after_bytes": after_bytes,
+        "freed_bytes": max(0, before_bytes - after_bytes),
+        "checkpoint": list(row) if row is not None else None,
+    }
+
+
 def perform_storage_cleanup(
     config: dict[str, Any],
     *,

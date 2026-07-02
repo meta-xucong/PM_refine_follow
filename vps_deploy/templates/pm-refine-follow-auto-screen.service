@@ -17,6 +17,7 @@ Environment=PM_APP_ROOT=__APP_DIR__
 Environment=PM_DATA_DIR=__DATA_DIR__
 Environment=PM_UI_DIR=__DATA_DIR__/dashboard
 Environment=PM_AUTO_CONFIG=__CONFIG_DIR__/auto_screen_config.json
+ExecStartPre=-__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json checkpoint-state-db --timeout 30
 ExecStart=__APP_DIR__/.venv/bin/python -m auto_screen.cli --config __CONFIG_DIR__/auto_screen_config.json run
 Restart=on-failure
 RestartSec=60

@@ -4,7 +4,7 @@ import argparse
 import json
 
 from .config import load_config, resolve_path
-from .housekeeping import perform_storage_cleanup
+from .housekeeping import checkpoint_state_db, perform_storage_cleanup
 from .scheduler import run_forever, run_once
 from .state_store import StateStore
 from .watchlist_refresh import run_watchlist_refresh
@@ -34,6 +34,8 @@ def parse_args() -> argparse.Namespace:
     sub.add_parser("status", help="Print state DB status")
     cleanup = sub.add_parser("cleanup", help="Run one storage cleanup pass")
     cleanup.add_argument("--light", action="store_true", help="Skip SQLite pruning/vacuum")
+    checkpoint = sub.add_parser("checkpoint-state-db", help="Run a lightweight SQLite WAL checkpoint")
+    checkpoint.add_argument("--timeout", type=float, default=60.0, help="SQLite busy timeout in seconds")
 
     refresh = sub.add_parser("refresh-watchlist", help="Fresh re-score high-score watchlist accounts")
     refresh.add_argument("--min-score", type=float, default=60.0, help="Minimum recent/pushed score to refresh")
@@ -69,6 +71,10 @@ def main() -> None:
         return
     if args.command == "cleanup":
         result = perform_storage_cleanup(config, reason="cli", include_sqlite=not args.light)
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return
+    if args.command == "checkpoint-state-db":
+        result = checkpoint_state_db(resolve_path(config, "state_db"), timeout_seconds=args.timeout)
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return
     if args.command == "refresh-watchlist":
