@@ -613,7 +613,7 @@ def scoring_history_for_addresses(db_path: Path, addresses: list[str], per_addre
         SELECT id, address, final_score, alert_grade, decision, auto_action, created_at
         FROM runs
         WHERE status='scored'
-          AND lower(address) IN ({placeholders})
+          AND address IN ({placeholders})
         ORDER BY created_at DESC, id DESC
         """,
         tuple(normalized),
