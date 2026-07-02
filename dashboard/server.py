@@ -34,6 +34,8 @@ AGENT_CONFIG_EXAMPLE = env_path("PM_AGENT_CONFIG_EXAMPLE", ROOT / "agent_core_co
 PID_FILE = UI_DIR / "auto_screen_process.json"
 LOG_FILE = env_path("PM_DASHBOARD_AUTO_LOG", UI_DIR / "auto_screen.log")
 WATCHLIST_PID_FILE = UI_DIR / "watchlist_refresh_process.json"
+PROCESS_CACHE_TTL_SECONDS = 2.0
+_PROCESS_CACHE: dict[str, Any] = {"ts": 0.0, "payload": None}
 
 
 def ensure_ui_files() -> None:
@@ -846,13 +848,25 @@ def agent_state_summary(agent_cfg: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def excel_sidecar_summary(auto_cfg: dict[str, Any]) -> dict[str, Any]:
+def excel_sidecar_summary(auto_cfg: dict[str, Any], *, include_rows: bool = False) -> dict[str, Any]:
     excel_path = resolve_auto_path(auto_cfg, "excel_path", "auto_screen_data/polymarket_candidates.xlsx")
     sidecar = excel_path.with_suffix(excel_path.suffix + ".json")
-    data = read_json(sidecar, {}) or {}
-    return {
+    summary: dict[str, Any] = {
         "excel_path": str(excel_path),
         "sidecar_path": str(sidecar),
+        "sidecar_exists": sidecar.exists(),
+        "sidecar_size_bytes": sidecar.stat().st_size if sidecar.exists() else 0,
+        "sheet_counts": {},
+        "alerts": [],
+        "all_scored": [],
+        "agent_reviews": [],
+        "skipped": [],
+    }
+    if not include_rows:
+        return summary
+    data = read_json(sidecar, {}) or {}
+    return {
+        **summary,
         "sheet_counts": {k: len(v or []) for k, v in data.items()},
         "alerts": list(reversed((data.get("alerts") or [])[-20:])),
         "all_scored": list(reversed((data.get("all_scored") or [])[-30:])),
@@ -959,12 +973,11 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             return
         if path == "/api/status":
             process = read_process_state()
-            auto_state = auto_state_summary(auto_cfg)
             self.write_json(
                 {
                     "process": process,
-                    "progress": progress_summary(auto_cfg, process, auto_state),
-                    "auto": auto_state,
+                    "progress": progress_summary(auto_cfg, process, {}),
+                    "auto": {},
                     "agent": agent_state_summary(agent_cfg),
                     "excel": excel_sidecar_summary(auto_cfg),
                 }
@@ -996,25 +1009,40 @@ class DashboardHandler(SimpleHTTPRequestHandler):
             self.write_json({"accounts": list_accounts(auto_cfg, limit=limit)})
             return
         if path == "/api/process":
+            now = time.monotonic()
+            cached = _PROCESS_CACHE.get("payload")
+            if cached is not None and now - float(_PROCESS_CACHE.get("ts") or 0.0) < PROCESS_CACHE_TTL_SECONDS:
+                self.write_json(cached)
+                return
             process = read_process_state()
             auto_state = auto_state_summary(auto_cfg)
-            self.write_json(
-                {
-                    "process": process,
-                    "progress": progress_summary(auto_cfg, process, auto_state),
-                    "auto": {
-                        "candidate_counts": auto_state.get("candidate_counts", {}),
-                        "candidate_total_count": auto_state.get("candidate_total_count", 0),
-                        "alert_push_counts": auto_state.get("alert_push_counts", {}),
-                        "latest_cycles": auto_state.get("latest_cycles", []),
-                        "recent_runs": auto_state.get("recent_runs", []),
-                        "recent_alerts": auto_state.get("recent_alerts", []),
-                        "pushed_accounts": auto_state.get("pushed_accounts", []),
+            agent_summary = agent_state_summary(agent_cfg)
+            payload = {
+                "process": process,
+                "progress": progress_summary(auto_cfg, process, auto_state),
+                "auto": {
+                    "candidate_counts": auto_state.get("candidate_counts", {}),
+                    "candidate_total_count": auto_state.get("candidate_total_count", 0),
+                    "alert_push_counts": auto_state.get("alert_push_counts", {}),
+                    "latest_cycles": auto_state.get("latest_cycles", []),
+                    "recent_runs": auto_state.get("recent_runs", []),
+                    "recent_alerts": auto_state.get("recent_alerts", []),
+                    "pushed_accounts": auto_state.get("pushed_accounts", []),
+                },
+                "agent": agent_summary,
+                "excel": {
+                    **excel_sidecar_summary(auto_cfg),
+                    "sheet_counts": {
+                        "alerts": len(auto_state.get("recent_alerts", [])),
+                        "agent_reviews": int((agent_summary.get("counts") or {}).get("agent_decisions") or 0),
                     },
-                    "excel": excel_sidecar_summary(auto_cfg),
-                    "log_tail": tail_text(LOG_FILE),
-                }
-            )
+                    "alerts": auto_state.get("recent_alerts", []),
+                    "agent_reviews": agent_summary.get("recent_decisions", []),
+                },
+                "log_tail": tail_text(LOG_FILE),
+            }
+            _PROCESS_CACHE.update({"ts": now, "payload": payload})
+            self.write_json(payload)
             return
         self.write_json({"error": "not_found"}, HTTPStatus.NOT_FOUND)
 

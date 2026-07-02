@@ -23,8 +23,8 @@ Restart=always
 RestartSec=5
 KillMode=control-group
 TimeoutStopSec=30
-MemoryHigh=250M
-MemoryMax=400M
+MemoryHigh=512M
+MemoryMax=768M
 OOMPolicy=continue
 
 [Install]
